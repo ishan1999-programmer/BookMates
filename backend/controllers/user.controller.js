@@ -18,7 +18,7 @@ const createUser = async (req, res) => {
     const newUser = await User.create({
       ...userDetails,
       password: hashedPassword,
-    }).select("-password");
+    });
     res.status(201).json({ success: true, data: newUser });
   } catch (error) {
     if (error.name === "ValidationError") {

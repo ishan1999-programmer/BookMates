@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
-const readSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+
+const readSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     bookId: { type: String, required: [true, "BookId is required"] },

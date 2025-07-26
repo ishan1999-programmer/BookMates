@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+
+const postSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User" },
     bookTitle: { type: String, required: [true, "Book title is required"] },

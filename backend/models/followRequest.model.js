@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
-const followRequestSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+
+const followRequestSchema = new Schema(
   {
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },

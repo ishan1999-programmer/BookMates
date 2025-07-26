@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const notificationSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const notificationSchema = new Schema(
   {
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },
