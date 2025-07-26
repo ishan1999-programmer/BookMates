@@ -29,3 +29,7 @@ const readSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+const Read = mongoose.model("Read", readSchema);
+
+module.exports = Read;
