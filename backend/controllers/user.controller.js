@@ -10,7 +10,7 @@ const createUser = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "User already exists with this email",
+        message: "User already exists with this email.",
       });
     }
     const salt = await bcrypt.genSalt(10);
@@ -24,13 +24,13 @@ const createUser = async (req, res) => {
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
-        message: "Validation failed while creating user",
+        message: "Validation failed while creating user.",
       });
     }
     res.status(500).json({
       success: false,
       message:
-        error.message || "An unexpected error occurred while creating user",
+        error.message || "An unexpected error occurred while creating user.",
     });
   }
 };
@@ -43,7 +43,7 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({
       success: false,
       message:
-        error.message || "An unexpected error occurred while getting all users",
+        error.message || "An unexpected error occurred while getting all users.",
     });
   }
 };
@@ -55,14 +55,14 @@ const getUser = async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "User not found." });
     }
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({
       success: false,
       message:
-        error.message || "An unexpected error occurred while getting user",
+        error.message || "An unexpected error occurred while getting user.",
     });
   }
 };
@@ -79,20 +79,20 @@ const updateUser = async (req, res) => {
     if (!updatedUser) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "User not found." });
     }
     res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
-        message: "Validation failed while updating user",
+        message: "Validation failed while updating user.",
       });
     }
     res.status(500).json({
       success: false,
       message:
-        error.message || "An unexpected error occurred while updating user",
+        error.message || "An unexpected error occurred while updating user.",
     });
   }
 };
@@ -106,14 +106,14 @@ const deleteUser = async (req, res) => {
     if (!deletedUser) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "User not found." });
     }
     res.status(200).json({ success: true, data: deletedUser });
   } catch (error) {
     res.status(500).json({
       success: false,
       message:
-        error.message || "An unexpected error occurred while deleting user",
+        error.message || "An unexpected error occurred while deleting user.",
     });
   }
 };
