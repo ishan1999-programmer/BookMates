@@ -2,10 +2,9 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-
 const postSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User" },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     bookTitle: { type: String, required: [true, "Book title is required"] },
     bookAuthor: { type: String, required: [true, "Book author is required"] },
     bookGenres: [

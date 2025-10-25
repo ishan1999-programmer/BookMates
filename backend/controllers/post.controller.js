@@ -1,9 +1,19 @@
 const Post = require("../models/post.model");
+const User = require("../models/user.model");
+const Comment = require("../models/comment.model");
+const Like = require("../models/like.model");
 
 const createPost = async (req, res) => {
   try {
-    const postDetails = res.body;
-    const createdPost = await User.create(postDetails);
+    const { userId } = req.user;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+    const postDetails = req.body;
+    const createdPost = await Post.create({ ...postDetails, user: userId });
     res.status(201).json({ success: true, data: createdPost });
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -15,20 +25,6 @@ const createPost = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while creating post.",
-    });
-  }
-};
-
-const getAllPosts = async (req, res) => {
-  try {
-    const allPosts = await Post.find();
-    res.status(200).json({ success: true, data: allPosts });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error.message ||
-        "An unexpected error occurred while getting all posts.",
     });
   }
 };
@@ -47,19 +43,6 @@ const getPost = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while getting post.",
-    });
-  }
-};
-
-const getAllPostsOfUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const userPosts = await Post.find({ user: userId });
-    res.status(200).json({ success: true, data: userPosts });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An unexpected error occurred while getting posts of user.",
     });
   }
 };
@@ -112,11 +95,96 @@ const deletePost = async (req, res) => {
   }
 };
 
+const getCommentsOfPost = async (req, res) => {
+  try {
+    const { id: postId } = req.params;
+    const postComments = await Comment.find({ post: postId });
+    res.status(200).json({ success: true, data: postComments });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting comments of post.",
+    });
+  }
+};
+
+const likePost = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { id: postId } = req.params;
+    const existingPost = await Post.findById(postId);
+    if (!existingPost) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found." });
+    }
+    const existingLike = await Like.findOne({ user: userId, post: postId });
+    if (existingLike) {
+      return res
+        .status(409)
+        .json({ success: false, message: "User already liked this post." });
+    }
+    await Like.create({ user: userId, post: postId });
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $inc: { likesCount: 1 },
+      },
+      { runValidators: true, new: true }
+    );
+
+    res
+      .status(201)
+      .json({ success: true, data: { postId, likesCount: post.likesCount } });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while liking post.",
+    });
+  }
+};
+
+const unlikePost = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { id: postId } = req.params;
+    const existingPost = await Post.findById(postId);
+    if (!existingPost) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found." });
+    }
+    const unlike = await Like.findOneAndDelete({ post: postId, user: userId });
+    if (!unlike) {
+      return res
+        .status(404)
+        .json({ success: false, message: "This user/post does not exist." });
+    }
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $inc: { likesCount: -1 },
+      },
+      { runValidators: true, new: true }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, data: { postId, likesCount: post.likesCount } });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while unliking post.",
+    });
+  }
+};
+
 module.exports = {
   createPost,
-  getAllPosts,
   getPost,
-  getAllPostsOfUser,
   updatePost,
   deletePost,
+  getCommentsOfPost,
+  likePost,
+  unlikePost
 };

@@ -1,21 +1,24 @@
 const express = require("express");
 
-import {
+const {
   createPost,
-  getAllPosts,
   getPost,
-  getAllPostsOfUser,
   updatePost,
   deletePost,
-} from "../controllers/post.controller";
+  getCommentsOfPost,
+  likePost,
+  unlikePost
+} = require("../controllers/post.controller");
 
 const postRouter = express.Router();
 
 postRouter.post("/", createPost);
-postRouter.get("/", getAllPosts);
 postRouter.get("/:id", getPost);
-postRouter.get("/:userId", getAllPostsOfUser);
 postRouter.put("/:id", updatePost);
 postRouter.delete("/:id", deletePost);
+postRouter.get("/:id/comments", getCommentsOfPost);
+postRouter.post("/:id/like", likePost);
+postRouter.delete("/:id/like", unlikePost);
 
-export default postRouter;
+
+module.exports = postRouter;

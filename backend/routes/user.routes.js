@@ -6,6 +6,7 @@ const {
   getUser,
   updateUser,
   deleteUser,
+  getPostsOfUser
 } = require("../controllers/user.controller");
 
 const userRouter = express.Router();
@@ -15,5 +16,6 @@ userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUser);
 userRouter.put("/:id", updateUser);
 userRouter.delete("/:id", deleteUser);
+userRouter.get("/:id/posts",getPostsOfUser);
 
 module.exports = userRouter;

@@ -1,10 +1,11 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/user.model");
+const Post = require("../models/post.model");
 
 const createUser = async (req, res) => {
   try {
-    const userDetails = req.body;
+    const userDetails = req.body;    
     const { email, password } = userDetails;
     const existingUser = await User.findOne({ email }).select("email");
     if (existingUser) {
@@ -21,6 +22,7 @@ const createUser = async (req, res) => {
     });
     res.status(201).json({ success: true, data: newUser });
   } catch (error) {
+    console.log(error);
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
@@ -118,4 +120,23 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, getUser, updateUser, deleteUser, createUser };
+const getPostsOfUser = async (req, res) => {
+  try {
+    const { id:userId } = req.params;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+    const userPosts = await Post.find({ user: userId });
+    res.status(200).json({ success: true, data: userPosts });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting posts of user.",
+    });
+  }
+};
+
+module.exports = { getAllUsers, getUser, updateUser, deleteUser, createUser ,getPostsOfUser};
