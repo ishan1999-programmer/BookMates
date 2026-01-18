@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 25 25% 25%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 25% 25%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 25% 25%;
+
+    --primary: 25 50% 35%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 35 25% 90%;
+    --secondary-foreground: 25 25% 25%;
+
+    --muted: 35 25% 95%;
+    --muted-foreground: 25 15% 45%;
+
+    --accent: 35 25% 88%;
+    --accent-foreground: 25 25% 25%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 35 25% 85%;
+    --input: 35 25% 85%;
+    --ring: 25 50% 35%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 25 25% 25%;
+    --sidebar-primary: 25 50% 35%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 35 25% 88%;
+    --sidebar-accent-foreground: 25 25% 25%;
+    --sidebar-border: 35 25% 85%;
+    --sidebar-ring: 25 50% 35%;
+  }
+
+  .dark {
+    --background: 25 25% 15%;
+    --foreground: 0 0% 98%;
+
+    --card: 25 25% 18%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 25 25% 18%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 35 50% 65%;
+    --primary-foreground: 25 25% 15%;
+
+    --secondary: 25 25% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 25 25% 22%;
+    --muted-foreground: 25 15% 63%;
+
+    --accent: 25 25% 25%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 25 25% 25%;
+    --input: 25 25% 25%;
+    --ring: 35 50% 65%;
+
+    --sidebar-background: 25 25% 15%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 35 50% 65%;
+    --sidebar-primary-foreground: 25 25% 15%;
+    --sidebar-accent: 25 25% 25%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 25 25% 25%;
+    --sidebar-ring: 35 50% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+}
