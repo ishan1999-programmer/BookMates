@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose; 
 
 const postSchema = new Schema(
   {
@@ -27,6 +27,6 @@ const postSchema = new Schema(
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", postSchema);
+const Post = model("Post", postSchema);
 
 module.exports = Post;

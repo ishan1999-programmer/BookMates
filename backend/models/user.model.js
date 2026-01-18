@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose; 
 
 const userSchema = new Schema(
   {
@@ -9,7 +9,6 @@ const userSchema = new Schema(
       required: [true, "Email is required"],
       unique: true,
       match: [/.+\@.+\..+/, "Please use a valid email address"],
-      lowercase: true,
     },
     password: {
       type: String,
@@ -30,7 +29,7 @@ const userSchema = new Schema(
     },
     bio: { type: String, default: "" },
     avatar: { type: String, default: "" },
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], 
     followersCount: { type: Number, default: 0 },
     followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followingsCount: { type: Number, default: 0 },
@@ -44,6 +43,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = model("User", userSchema);
 
 module.exports = User;

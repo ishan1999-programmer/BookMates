@@ -4,40 +4,48 @@ const FollowRequest = require("../models/followRequest.model");
 const sendFollowRequest = async (req, res) => {
   try {
     const { userId: senderId } = req.user;
-    const receiverId = req.body.receiverId;
-    if (senderId === receiverId) {
-      return res.status(400).json({
-        success: false,
-        message: "You cannot send a follow request to yourself.",
-      });
+    const { receiver: receiverId } = req.body;
+
+    const existingSender = await User.findById(senderId);
+    if (!existingSender) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Sender not found" });
     }
+
     const existingReceiver = await User.findById(receiverId);
     if (!existingReceiver) {
       return res
         .status(404)
-        .json({ success: false, message: "Receiver user not found." });
+        .json({ success: false, message: "Receiver not found" });
     }
+
+    if (senderId === receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot send request to yourself",
+      });
+    }
+
     const existingFollowRequest = await FollowRequest.findOne({
       sender: senderId,
       receiver: receiverId,
     });
     if (existingFollowRequest) {
-      return res.status(409).json({
+      res.status(409).json({
         success: false,
-        message:
-          existingFollowRequest.status === "pending"
-            ? "You already sent follow request to this user which is still pending."
-            : "You already follow this user.",
+        message: "You already sent a follow request to this user",
       });
     }
-    const followRequest = await FollowRequest.create({
+
+    const createdFollowRequest = await FollowRequest.create({
       sender: senderId,
       receiver: receiverId,
-      status: "pending",
     });
 
-    res.status(201).json({ success: true, data: followRequest });
+    return res.status(201).json({ success: true, data: createdFollowRequest });
   } catch (error) {
+    console.log(error);
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
@@ -46,58 +54,79 @@ const sendFollowRequest = async (req, res) => {
     }
     res.status(500).json({
       success: false,
-      message:
-        error.message ||
-        "An unexpected error occurred while sending follow request.",
+      message: "An unexpected error occurred while sending follow request.",
     });
   }
 };
 
-const acceptOrRejectFollowRequest = async (req, res) => {
+const handleFollowRequest = async (req, res) => {
   try {
-    const { userId: receiverId } = req.user;
-    const { id: requestId } = req.params;
-    const { status } = req.body;
+    const { followRequestId } = req.params;
+    const { action } = req.body;
 
-    const followRequest = await FollowRequest.findOneAndUpdate(
-      { _id: requestId, receiver: receiverId, status: "pending" },
-      { status },
-      { new: true }
+    const existingFollowRequest = await FollowRequest.findById(followRequestId);
+    if (!existingFollowRequest) {
+      res
+        .status(404)
+        .json({ success: false, message: "Follow request not found." });
+    }
+
+    const senderId = existingFollowRequest.sender;
+    const existingSender = await User.findById(senderId);
+    if (!existingSender) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Sender not found" });
+    }
+
+    const { userId: receiverId } = req.user;
+    const existingReceiver = await User.findById(receiverId);
+    if (!existingReceiver) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Receiver not found" });
+    }
+
+    let updatedSender, updatedReceiver;
+    if (action === "accepted") {
+      updatedSender = await User.findByIdAndUpdate(
+        senderId,
+        {
+          $inc: { followingsCount: 1 },
+          $addToSet: { followings: receiverId },
+        },
+        { runValidators: true, new: true }
+      );
+      updatedReceiver = await User.findByIdAndUpdate(
+        receiverId,
+        {
+          $inc: { followersCount: 1 },
+          $addToSet: { followers: senderId },
+        },
+        { runValidators: true, new: true }
+      );
+    }
+
+    const deletedFollowRequest = await FollowRequest.findByIdAndDelete(
+      followRequestId
     );
 
-    if (!followRequest) {
-      return res.status(404).json({
-        success: false,
-        message: "No pending follow request found for this user.",
-      });
-    }
-
-    const { sender: senderId } = followRequest;
-
-    if (status === "accepted") {
-      await User.findByIdAndUpdate(senderId, {
-        $addToSet: { followings: receiverId },
-        $inc: { followingsCount: 1 },
-      });
-
-      await User.findByIdAndUpdate(receiverId, {
-        $addToSet: { followers: senderId },
-        $inc: { followersCount: 1 },
-      });
-    }
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      data: { senderId, receiverId },
+      data: {
+        sender: deletedFollowRequest.sender,
+        receiver: deletedFollowRequest.receiver,
+        followersCount: updatedReceiver.followersCount,
+      },
     });
   } catch (error) {
-    res.status(500).json({
+    console.log(error);
+    return res.status(500).json({
       success: false,
       message:
-        error.message ||
-        "An unexpected error occurred while accepting follow request.",
+        "An unexpected error occurred while accepting/rejecting follow request.",
     });
   }
 };
 
-module.exports = { sendFollowRequest, acceptOrRejectFollowRequest };
+module.exports = { sendFollowRequest, handleFollowRequest };

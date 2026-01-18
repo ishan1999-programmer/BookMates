@@ -57,6 +57,19 @@ const getComment = async (req, res) => {
   }
 };
 
+const getCommentsByPost = async (req, res) => {
+  try {
+    const { id: postId } = req.params;
+    const postComments = await Comment.find({ post: postId });
+    res.status(200).json({ success: true, data: postComments });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting comments of post.",
+    });
+  }
+};
+
 const updateComment = async (req, res) => {
   try {
     const { id: commentId } = req.params;
@@ -107,6 +120,7 @@ const deleteComment = async (req, res) => {
 module.exports = {
   createComment,
   getComment,
+  getCommentsByPost,
   updateComment,
   deleteComment,
 };

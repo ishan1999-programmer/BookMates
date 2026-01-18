@@ -1,11 +1,10 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/user.model");
-const Post = require("../models/post.model");
 
 const createUser = async (req, res) => {
   try {
-    const userDetails = req.body;    
+    const userDetails = req.body;
     const { email, password } = userDetails;
     const existingUser = await User.findOne({ email }).select("email");
     if (existingUser) {
@@ -37,22 +36,9 @@ const createUser = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+const getUserById = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-    res.status(200).json({ success: true, data: users });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error.message || "An unexpected error occurred while getting all users.",
-    });
-  }
-};
-
-const getUser = async (req, res) => {
-  try {
-    const { id: userId } = req.params;
+    const { userId } = req.params;
     const user = await User.findById(userId).select("-password");
     if (!user) {
       return res
@@ -69,9 +55,84 @@ const getUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const getCurrentUser = async (req, res) => {
   try {
-    const { id: userId } = req.params;
+    const { userId } = req.user;
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error.message || "An unexpected error occurred while getting user.",
+    });
+  }
+};
+
+const unfollowUser = async (req, res) => {
+  try {
+    const { userId: followerUserId } = req.user;
+    const { userId: followeeUserId } = req.params;
+
+    if (followerUserId === followeeUserId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot unfollow yourself.",
+      });
+    }
+
+    const isFollowing = await User.exists({
+      _id: followerUserId,
+      followings: followeeUserId,
+    });
+
+    if (!isFollowing) {
+      res
+        .status(400)
+        .json({ success: false, message: "You are not following this user." });
+    }
+
+    const updatedFollower = await User.findByIdAndUpdate(
+      followerUserId,
+      {
+        $inc: { followingsCount: -1 },
+        $pull: { followings: followeeUserId },
+      },
+      { new: true, runValidators: true }
+    );
+    const updatedFollowee = await User.findByIdAndUpdate(
+      followeeUserId,
+      {
+        $inc: { followersCount: -1 },
+        $pull: { followers: followerUserId },
+      },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        unfollowedUser: followeeUserId,
+        followingsCount: updatedFollower.followingsCount,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error.message || "An unexpected error occurred while deleting user.",
+    });
+  }
+};
+
+const updateCurrentUser = async (req, res) => {
+  try {
+    const { userId } = req.user;
     const updatedUserDetails = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -99,9 +160,9 @@ const updateUser = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteCurrentUser = async (req, res) => {
   try {
-    const { id: userId } = req.params;
+    const { userId } = req.user;
     const deletedUser = await User.findByIdAndDelete(userId).select(
       "-password"
     );
@@ -120,23 +181,11 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const getPostsOfUser = async (req, res) => {
-  try {
-    const { id:userId } = req.params;
-    const existingUser = await User.findById(userId);
-    if (!existingUser) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found." });
-    }
-    const userPosts = await Post.find({ user: userId });
-    res.status(200).json({ success: true, data: userPosts });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An unexpected error occurred while getting posts of user.",
-    });
-  }
+module.exports = {
+  getUserById,
+  getCurrentUser,
+  updateCurrentUser,
+  deleteCurrentUser,
+  createUser,
+  unfollowUser,
 };
-
-module.exports = { getAllUsers, getUser, updateUser, deleteUser, createUser ,getPostsOfUser};

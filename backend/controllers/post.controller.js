@@ -1,6 +1,5 @@
 const Post = require("../models/post.model");
 const User = require("../models/user.model");
-const Comment = require("../models/comment.model");
 const Like = require("../models/like.model");
 
 const createPost = async (req, res) => {
@@ -31,7 +30,7 @@ const createPost = async (req, res) => {
 
 const getPost = async (req, res) => {
   try {
-    const { id: postId } = req.params;
+    const { postId } = req.params;
     const post = await Post.findById(postId);
     if (!post) {
       return res
@@ -47,9 +46,71 @@ const getPost = async (req, res) => {
   }
 };
 
+const getPostsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+    const userPosts = await Post.find({ user: userId });
+    res.status(200).json({ success: true, data: userPosts });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting posts of user.",
+    });
+  }
+};
+
+const getCurrentUserPosts = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+    const userPosts = await Post.find({ user: userId });
+    res.status(200).json({ success: true, data: userPosts });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting posts of user.",
+    });
+  }
+};
+
+const getCurrentUserFeed = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+
+    const userFollowers = existingUser.followings;
+
+    const userFeed = await Post.find({ user: { $in: userFollowers } });
+
+    return res.status(200).json({ success: true, data: userFeed });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while getting feed posts.",
+    });
+  }
+};
+
 const updatePost = async (req, res) => {
   try {
-    const { id: postId } = req.params;
+    const { postId } = req.params;
     const updatedPostDetails = req.body;
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
@@ -79,7 +140,7 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    const { id: postId } = req.params;
+    const { postId } = req.params;
     const deletedPost = await Post.findByIdAndDelete(postId);
     if (!deletedPost) {
       return res
@@ -95,23 +156,10 @@ const deletePost = async (req, res) => {
   }
 };
 
-const getCommentsOfPost = async (req, res) => {
-  try {
-    const { id: postId } = req.params;
-    const postComments = await Comment.find({ post: postId });
-    res.status(200).json({ success: true, data: postComments });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An unexpected error occurred while getting comments of post.",
-    });
-  }
-};
-
 const likePost = async (req, res) => {
   try {
     const { userId } = req.user;
-    const { id: postId } = req.params;
+    const { postId } = req.params;
     const existingPost = await Post.findById(postId);
     if (!existingPost) {
       return res
@@ -147,7 +195,7 @@ const likePost = async (req, res) => {
 const unlikePost = async (req, res) => {
   try {
     const { userId } = req.user;
-    const { id: postId } = req.params;
+    const { postId } = req.params;
     const existingPost = await Post.findById(postId);
     if (!existingPost) {
       return res
@@ -182,9 +230,11 @@ const unlikePost = async (req, res) => {
 module.exports = {
   createPost,
   getPost,
+  getPostsByUser,
+  getCurrentUserFeed,
+  getCurrentUserPosts,
   updatePost,
   deletePost,
-  getCommentsOfPost,
   likePost,
-  unlikePost
+  unlikePost,
 };

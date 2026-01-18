@@ -1,12 +1,13 @@
 const express = require("express");
-const {
-  sendFollowRequest,
-  acceptOrRejectFollowRequest,
-} = require("../controllers/followRequest.controller");
 
 const followRequestRouter = express.Router();
 
-followRequestRouter.post("/send", sendFollowRequest);
-followRequestRouter.put("/:id", acceptOrRejectFollowRequest);
+const {
+  sendFollowRequest,
+  handleFollowRequest,
+} = require("../controllers/followRequest.controller");
+
+followRequestRouter.post("/", sendFollowRequest);
+followRequestRouter.delete("/:followRequestId", handleFollowRequest);
 
 module.exports = followRequestRouter;

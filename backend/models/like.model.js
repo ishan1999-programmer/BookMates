@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+const { Schema,model} = mongoose;
 
 const likeSchema = new Schema(
   {
@@ -10,6 +10,6 @@ const likeSchema = new Schema(
   { timestamps: true }
 );
 
-const Like = mongoose.model("Like", likeSchema);
+const Like = model("Like", likeSchema);
 
 module.exports = Like;
