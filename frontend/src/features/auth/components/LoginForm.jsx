@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
-  //   CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,8 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
+import login from "../auth.api";
+import { useState } from "react";
 
 const LoginForm = () => {
+  const [isLoginFormSubmitting, setIsLoginFormSubmitting] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -22,8 +27,17 @@ const LoginForm = () => {
   } = useForm();
 
   const handleLoginFormSubmit = async (formData) => {
-    console.log(formData);
-    alert("Success");
+    try {
+      setIsLoginFormSubmitting(true);
+      const loginResponse = await login(formData);
+      const accessToken = loginResponse.data.data.token;
+      localStorage.setItem("accessToken", accessToken);
+      navigate("/feed");
+    } catch (error) {
+      setError("root", { message: error?.message });
+    } finally {
+      setIsLoginFormSubmitting(false);
+    }
   };
 
   return (
@@ -81,10 +95,17 @@ const LoginForm = () => {
               )}
             </div>
           </div>
+          <p className="text-sm text-red-500 text-center mt-2">
+            {errors.root?.message}
+          </p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Sign In
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoginFormSubmitting}
+          >
+            {isLoginFormSubmitting ? <Spinner /> : "Sign In"}
           </Button>
           <Button variant="outline" className="w-full">
             Sign In with Google
