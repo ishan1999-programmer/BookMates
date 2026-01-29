@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -13,17 +14,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
-import login from "../auth.api";
-import { useState } from "react";
+import { login } from "../apis/auth.api";
+import { useEffect, useState } from "react";
 
 const LoginForm = () => {
   const [isLoginFormSubmitting, setIsLoginFormSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
 
   const handleLoginFormSubmit = async (formData) => {
@@ -39,6 +42,14 @@ const LoginForm = () => {
       setIsLoginFormSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (location.state?.signupSuccess) {
+      toast.success("Account created successfully. Please log in.", {
+        position: "top-center",
+      });
+    }
+  }, [location.state]);
 
   return (
     <Card className="w-full max-w-sm">
@@ -65,7 +76,7 @@ const LoginForm = () => {
                   },
                 })}
               />
-              {errors.password && (
+              {errors.email && (
                 <p className="text-sm text-red-500">{errors.email?.message}</p>
               )}
             </div>
@@ -113,7 +124,7 @@ const LoginForm = () => {
           <div className="footer-links-login-form">
             <a href="">Forgot your password?</a>
             <p>
-              Don't have an account? <a href="">Sign up</a>
+              Don't have an account? <a href="/signup">Sign up</a>
             </p>
           </div>
         </CardFooter>
