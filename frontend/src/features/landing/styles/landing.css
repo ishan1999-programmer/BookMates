@@ -1,0 +1,21 @@
+.landing-page {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px;
+  gap: 20px;
+}
+
+.hero-section > p {
+  text-align: center;
+}
+
+.signup-login-buttons {
+  display: flex;
+  gap: 15px;
+}
