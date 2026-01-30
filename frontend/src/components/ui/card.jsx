@@ -7,7 +7,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     style={{ minWidth: "420px" }}
     className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow",
+      "rounded-xl border bg-card text-card-foreground shadow feature-card",
       className
     )}
     {...props}

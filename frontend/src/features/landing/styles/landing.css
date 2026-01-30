@@ -9,6 +9,7 @@
   align-items: center;
   padding-top: 80px;
   gap: 20px;
+  margin-bottom: 250px;
 }
 
 .hero-section > p {
@@ -18,4 +19,10 @@
 .signup-login-buttons {
   display: flex;
   gap: 15px;
+}
+
+.features-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

@@ -3,6 +3,8 @@ import "../styles/landing.css";
 import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import features from "../data/features";
+import FeatureCard from "../components/FeatureCard";
 
 const Landing = () => {
   return (
@@ -33,7 +35,25 @@ const Landing = () => {
           </Button>
         </div>
       </div>
-      <div className="features-section"></div>
+      <div className="features-section">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-primary">
+          Everything You Need for Your Reading Life
+        </h1>
+        <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto">
+          Discover powerful features designed to enhance your reading experience
+          and connect you with fellow book lovers.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((feature, index) => (
+            <FeatureCard
+              key={index}
+              cardTitle={feature.title}
+              cardDescription={feature.description}
+              cardIcon={feature.icon}
+            />
+          ))}
+        </div>
+      </div>
       <div className="testimonial-section bg-primary/5"></div>
       <div className="invitation-section"></div>
       <div className="footer-section bg-muted"></div>
