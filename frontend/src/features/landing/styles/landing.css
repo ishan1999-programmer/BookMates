@@ -4,25 +4,48 @@
 }
 
 .hero-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 80px;
-  gap: 20px;
   margin-bottom: 250px;
 }
 
-.hero-section > p {
+.hero-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
   text-align: center;
 }
 
 .signup-login-buttons {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
-.features-section {
+.features-section{
+    padding-bottom: 40px;
+}
+
+.features-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.features-cards{
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(2,450px);
+    
+}
+
+@media (max-width: 425px) {
+  .signup-login-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
 }
