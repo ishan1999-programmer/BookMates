@@ -1,9 +1,9 @@
 .landing-page {
   min-height: 100vh;
-  padding: 20px;
 }
 
 .hero-section {
+  padding-top: 100px;
   margin-bottom: 250px;
 }
 
@@ -22,8 +22,8 @@
   gap: 10px;
 }
 
-.features-section{
-    padding-bottom: 40px;
+.features-section {
+  padding-bottom: 40px;
 }
 
 .features-section-container {
@@ -36,11 +36,54 @@
   text-align: center;
 }
 
-.features-cards{
-    display: grid;
-    gap: 30px;
-    grid-template-columns: repeat(2,450px);
-    
+.features-cards {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(2, 450px);
+}
+
+.testimonial-section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 25px;
+  padding: 50px;
+}
+
+.five-stars {
+  display: flex;
+  gap: 5px;
+}
+
+
+
+.cta-section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+  padding: 50px;
+}
+
+.cta-section{
+    margin-bottom: 30px;
+}
+
+.footer-section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  text-align: center;
+  padding: 25px;
 }
 
 @media (max-width: 425px) {

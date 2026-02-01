@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/landing.css";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import features from "../data/features";
@@ -59,10 +59,52 @@ const Landing = () => {
         </div>
       </section>
       <section className="testomonial-section bg-primary/5">
-        <div className="testimonial-section-content"></div>
+        <div className="testimonial-section-content">
+          <Quote className="h-12 w-12 text-primary" />
+          <h1 className="text-2xl md:text-3xl font-medium text-primary leading-relaxed italic">
+            "BookMates has completely transformed how I discover and track my
+            reading. The community is incredibly welcoming, and I've found so
+            many amazing books through other readers' recommendations!"
+          </h1>
+          <div className="five-stars">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className="h-5 w-5 fill-primary text-primary" />
+            ))}
+          </div>
+          <p className="text-muted-foreground text-lg italic">
+            - Ishan T., BookMates Community Member
+          </p>
+        </div>
       </section>
-      <div className="invitation-section"></div>
-      <div className="footer-section bg-muted"></div>
+      <section className="cta-section">
+        <div className="cta-section-content">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary">
+            Ready to Begin Your Reading Adventure?
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl">
+            Join thousands of readers who are already tracking their books,
+            sharing their thoughts, and discovering their next great read.
+          </p>
+          <Button
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg"
+          >
+            <Link to="/signup">Join BookMates Today</Link>
+          </Button>
+        </div>
+      </section>
+      <section className="footer-section bg-muted">
+        <div className="footer-section-content">
+          <div className="flex gap-2 items-center">
+            <BookOpen className="h-6 w-6 text-primary" />
+            <p className="text-lg font-semibold text-primary">BookMates</p>
+          </div>
+          <p className="text-muted-foreground">
+            © 2024 BookMates. Building a community of readers, one book at a
+            time.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };
