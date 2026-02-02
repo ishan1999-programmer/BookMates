@@ -42,7 +42,7 @@ const Sidebar = () => {
   const isActive = (url) => location.pathname === url;
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
     navigate("/login");
   };
 
@@ -54,7 +54,7 @@ const Sidebar = () => {
       <SidebarContent className="bg-sidebar border-r border-sidebar-border">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className={`space-y-2 ${isMobile ? "p-4" : "p-6"}`}>
+            <SidebarMenu className={`space-y-2 ${isMobile ? "p-4" : "p-6 mt-12"}`}>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
