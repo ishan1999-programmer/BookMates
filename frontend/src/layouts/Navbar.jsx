@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import NotificationButton from "@/features/notification/components/NotificationButton";
+import FollowRequestButton from "@/features/follow/components/FollowRequestButton";
 
 const Navbar = () => {
   const isMobile = useIsMobile();
@@ -42,36 +44,9 @@ const Navbar = () => {
             </Link>
           </Button>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative hover:bg-accent"
-          >
-            <Bell
-              className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
-            />{" "}
-            <Badge
-              variant="destructive"
-              className="absolute -top-2 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
-            >
-              5
-            </Badge>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative hover:bg-accent"
-          >
-            <User
-              className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
-            />{" "}
-            <Badge
-              variant="destructive"
-              className="absolute -top-2 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
-            >
-              5
-            </Badge>
-          </Button>
+          <NotificationButton />
+
+          <FollowRequestButton />
         </div>
       </div>
     </div>
