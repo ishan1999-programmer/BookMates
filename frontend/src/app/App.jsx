@@ -3,6 +3,7 @@ import Login from "../features/auth/pages/Login.jsx";
 import Signup from "../features/auth/pages/Signup.jsx";
 import Feed from "../features/post/pages/Feed.jsx";
 import Landing from "../features/landing/pages/Landing.jsx";
+import Settings from "@/features/user/pages/Settings.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout.jsx";
 
@@ -15,6 +16,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
           <Route path="/feed" element={<Feed />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
     </Routes>
