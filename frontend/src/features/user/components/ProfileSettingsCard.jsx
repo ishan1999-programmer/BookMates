@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const ProfileInfoCard = () => {
+const ProfileSettingsCard = () => {
   const [genresData, setGenresData] = useState([
     { id: "literary_fiction", label: "Literary Fiction" },
     { id: "contemporary_fiction", label: "Contemporary Fiction" },
@@ -110,4 +110,4 @@ const ProfileInfoCard = () => {
   );
 };
 
-export default ProfileInfoCard;
+export default ProfileSettingsCard;

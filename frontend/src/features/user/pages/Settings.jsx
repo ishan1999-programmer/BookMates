@@ -1,5 +1,5 @@
 import React from "react";
-import ProfileInfoCard from "../components/ProfileInfoCard";
+import ProfileSettingsCard from "../components/ProfileSettingsCard";
 import PrivacySettingsCard from "../components/PrivacySettingsCard";
 import ChangePasswordCard from "../components/ChangePasswordCard";
 import DeleteAccountCard from "../components/DeleteAccountCard";
@@ -13,7 +13,7 @@ const Settings = () => {
           Manage your account and preferences
         </p>
       </div>
-      <ProfileInfoCard />
+      <ProfileSettingsCard />
       <PrivacySettingsCard />
       <ChangePasswordCard />
       <DeleteAccountCard />
