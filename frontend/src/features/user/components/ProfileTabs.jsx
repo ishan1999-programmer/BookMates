@@ -8,6 +8,7 @@ import {
   BookOpen,
   Rss,
 } from "lucide-react";
+import PostCard from "@/features/post/components/PostCard";
 import FollowCard from "@/features/follow/components/FollowCard";
 const ProfileTabs = ({ isOwnProfile }) => {
   const followData = [
@@ -86,7 +87,13 @@ const ProfileTabs = ({ isOwnProfile }) => {
           <User className="h-4 w-4" /> Followings
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="posts"></TabsContent>
+      <TabsContent value="posts">
+        <div className="flex flex-col gap-8 mt-5">
+          <PostCard />
+          <PostCard />
+          <PostCard />
+        </div>
+      </TabsContent>
       <TabsContent value="reads"></TabsContent>
       <TabsContent value="followers">
         <div className="flex gap-4 flex-wrap mt-5">

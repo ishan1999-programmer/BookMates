@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import NotificationButton from "@/features/notification/components/NotificationButton";
 import FollowRequestButton from "@/features/follow/components/FollowRequestButton";
 
+
 const Navbar = () => {
   const isMobile = useIsMobile();
   return (
@@ -37,7 +38,7 @@ const Navbar = () => {
             />
           </div>
           <Button variant="default" className="px-3 py-2 h-auto">
-            <Link to="/post">
+            <Link to="/add-post">
               <span className="text-primary-foreground font-medium">
                 + Post
               </span>
@@ -45,7 +46,6 @@ const Navbar = () => {
           </Button>
 
           <NotificationButton />
-
           <FollowRequestButton />
         </div>
       </div>
