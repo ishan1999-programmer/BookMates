@@ -1,7 +1,12 @@
 import React from "react";
+import PostCard from "../components/PostCard";
 
 const Feed = () => {
-  return <div style={{height:"300vh"}}>feed</div>;
+  return (
+    <div className="flex flex-col gap-5">
+      <PostCard />
+    </div>
+  );
 };
 
 export default Feed;
