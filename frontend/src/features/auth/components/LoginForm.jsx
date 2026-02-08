@@ -14,11 +14,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
-import { login } from "../apis/auth.api";
 import { useEffect, useState } from "react";
+import useLogin from "../hooks/useLogin";
 
 const LoginForm = () => {
-  const [isLoginFormSubmitting, setIsLoginFormSubmitting] = useState(false);
+  const { isSubmitting, login } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,17 +29,15 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm();
 
-  const handleLoginFormSubmit = async (formData) => {
+  const onSubmit = async (formData) => {
     try {
-      setIsLoginFormSubmitting(true);
-      const loginResponse = await login(formData);
-      const accessToken = loginResponse.data.data.token;
-      localStorage.setItem("accessToken", accessToken);
+      const { token } = await login(formData);
+      localStorage.setItem("accessToken", token);
       navigate("/feed");
     } catch (error) {
-      setError("root", { message: error?.message });
-    } finally {
-      setIsLoginFormSubmitting(false);
+      setError("root", {
+        message: error?.message || "Login failed. Please try again.",
+      });
     }
   };
 
@@ -49,7 +47,7 @@ const LoginForm = () => {
         position: "top-center",
       });
     }
-  }, [location.state]);
+  }, [location.state?.signupSuccess]);
 
   return (
     <Card className="w-full max-w-sm">
@@ -59,7 +57,7 @@ const LoginForm = () => {
           Enter your credentials to access your reading community
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit(handleLoginFormSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -111,12 +109,8 @@ const LoginForm = () => {
           </p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoginFormSubmitting}
-          >
-            {isLoginFormSubmitting ? <Spinner /> : "Sign In"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? <Spinner /> : "Sign In"}
           </Button>
           <Button variant="outline" className="w-full">
             Sign In with Google

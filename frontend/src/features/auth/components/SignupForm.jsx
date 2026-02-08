@@ -13,11 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
-import { signup } from "../apis/auth.api";
-import { useState } from "react";
+import useSignup from "../hooks/useSignup";
 
 const SignupForm = () => {
-  const [isSignupFormSubmitting, setIsSignupFormSubmitting] = useState(false);
+  const { isSubmitting, signup } = useSignup();
   const navigate = useNavigate();
   const {
     register,
@@ -27,16 +26,15 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm();
 
-  const handleSignupFormSubmit = async (formData) => {
+  const onSubmit = async (formData) => {
     try {
-      setIsSignupFormSubmitting(true);
       delete formData.confirmPassword;
       await signup(formData);
       navigate("/login", { replace: true, state: { signupSuccess: true } });
     } catch (error) {
-      setError("root", { message: error?.message });
-    } finally {
-      setIsSignupFormSubmitting(false);
+      setError("root", {
+        message: error?.message || "Signup failed. Please try again.",
+      });
     }
   };
 
@@ -48,7 +46,7 @@ const SignupForm = () => {
           Start your journey with fellow readers
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit(handleSignupFormSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -167,12 +165,8 @@ const SignupForm = () => {
           </p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isSignupFormSubmitting}
-          >
-            {isSignupFormSubmitting ? <Spinner /> : "Create Account"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? <Spinner /> : "Create Account"}
           </Button>
           <div className="footer-links-signup-form">
             <p>
