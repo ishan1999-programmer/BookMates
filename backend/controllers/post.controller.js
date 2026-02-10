@@ -15,6 +15,7 @@ const createPost = async (req, res) => {
     const createdPost = await Post.create({ ...postDetails, user: userId });
     res.status(201).json({ success: true, data: createdPost });
   } catch (error) {
+    console.log(error);
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
@@ -115,7 +116,7 @@ const updatePost = async (req, res) => {
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
       updatedPostDetails,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!updatedPost) {
       return res
@@ -178,7 +179,7 @@ const likePost = async (req, res) => {
       {
         $inc: { likesCount: 1 },
       },
-      { runValidators: true, new: true }
+      { runValidators: true, new: true },
     );
 
     res
@@ -213,7 +214,7 @@ const unlikePost = async (req, res) => {
       {
         $inc: { likesCount: -1 },
       },
-      { runValidators: true, new: true }
+      { runValidators: true, new: true },
     );
 
     res

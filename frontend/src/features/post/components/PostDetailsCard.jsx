@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,17 +9,35 @@ import { User, Camera, ClipboardList, BookOpen, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import genres from "@/data/genres";
 import { useForm, Controller } from "react-hook-form";
+import useCreatePost from "../hooks/useCreatePost";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+
 const PostDetailsCard = () => {
+  const { isSubmitting, createPost } = useCreatePost();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setError,
+    reset,
     control,
     formState: { errors },
   } = useForm();
 
   const onSubmit = async (formData) => {
-    console.log(formData);
+    try {
+      await createPost(formData);
+      reset();
+      toast.success("Post published successfully.", {
+        position: "top-center",
+      });
+      navigate("/feed");
+    } catch (error) {
+      setError("root", {
+        message: error?.message || "Something went wrong. Please try again.",
+      });
+    }
   };
 
   return (
@@ -53,13 +72,13 @@ const PostDetailsCard = () => {
             <Label className="block text-sm font-medium mb-2">Title *</Label>
             <Input
               placeholder="Enter book title..."
-              {...register("title", {
+              {...register("bookTitle", {
                 required: "Title is required",
               })}
             />
-            {errors.title && (
+            {errors.bookTitle && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.title?.message}
+                {errors.bookTitle?.message}
               </p>
             )}
           </div>
@@ -67,20 +86,20 @@ const PostDetailsCard = () => {
             <Label className="block text-sm font-medium mb-2">Author *</Label>
             <Input
               placeholder="Enter author name"
-              {...register("author", {
+              {...register("bookAuthor", {
                 required: "Author is required",
               })}
             />
-            {errors.author && (
+            {errors.bookAuthor && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.author?.message}
+                {errors.bookAuthor?.message}
               </p>
             )}
           </div>
           <div className="mt-4">
             <Label className="block text-sm font-medium mb-2">Genres</Label>
             <Controller
-              name="genres"
+              name="bookGenres"
               control={control}
               defaultValue={[]}
               rules={{
@@ -112,16 +131,16 @@ const PostDetailsCard = () => {
                 </div>
               )}
             />
-            {errors.genres && (
+            {errors.bookGenres && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.genres?.message}
+                {errors.bookGenres?.message}
               </p>
             )}
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium mb-2">Rating</label>
             <Controller
-              name="rating"
+              name="bookRating"
               defaultValue={0}
               control={control}
               rules={{ min: { value: 1, message: "Rating is required" } }}
@@ -144,9 +163,9 @@ const PostDetailsCard = () => {
                 </div>
               )}
             />
-            {errors.rating && (
+            {errors.bookRating && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.rating?.message}
+                {errors.bookRating?.message}
               </p>
             )}
           </div>
@@ -157,20 +176,41 @@ const PostDetailsCard = () => {
             <Textarea
               placeholder="Share your thoughts about this book..."
               rows={5}
-              {...register("review", {
+              {...register("bookReview", {
+                required: "Book review is required.",
+                minLength: {
+                  value: 10,
+                  message: "Review must be atlest 10 charecters long.",
+                },
                 maxLength: {
-                  value: 200,
-                  message: "Review must be atmost 200 characters",
+                  value: 500,
+                  message: "Review must be atmost 500 characters long.",
                 },
               })}
             />
-            {errors.review && (
-              <p className="text-sm text-red-500">{errors.review?.message}</p>
+            {errors.bookReview && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.bookReview?.message}
+              </p>
             )}
           </div>
+          {errors.root && (
+            <p className="text-sm text-red-500 mt-1 text-center">
+              {errors.root?.message}
+            </p>
+          )}
           <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline">Reset</Button>
-            <Button type="submit">Post</Button>
+            <Button
+              disabled={isSubmitting}
+              variant="outline"
+              type="button"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? <Spinner /> : "Post"}
+            </Button>
           </div>
         </form>
       </CardContent>
