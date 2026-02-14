@@ -71,7 +71,7 @@ const ProfileInformationCard = ({isOwnProfile}) => {
                   <Badge
                     variant="secondary"
                     className="bg-accent/50"
-                    key={genre}
+                    key={genre.id}
                   >
                     {genre.label}
                   </Badge>

@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Post = require("../models/post.model");
 const User = require("../models/user.model");
 const Like = require("../models/like.model");
@@ -88,18 +89,66 @@ const getCurrentUserPosts = async (req, res) => {
 const getCurrentUserFeed = async (req, res) => {
   try {
     const { userId } = req.user;
-    const existingUser = await User.findById(userId);
+    const { createdAt, _id } = req.query;
+
+    const existingUser = await User.findById(userId).select("followings");
     if (!existingUser) {
       return res
         .status(404)
         .json({ success: false, message: "User not found." });
     }
 
-    const userFollowers = existingUser.followings;
+    const feedAuthorIds = existingUser.followings;
+    const newFeedAuthorIds = [...feedAuthorIds, userId];
 
-    const userFeed = await Post.find({ user: { $in: userFollowers } });
+    let isCursorValid = false;
+    let parsedDate = null;
+    let parsedId = null;
 
-    return res.status(200).json({ success: true, data: userFeed });
+    if (createdAt && _id) {
+      const tempDate = new Date(createdAt);
+      const isDateValid = !isNaN(tempDate.getTime());
+      const isIdValid = mongoose.Types.ObjectId.isValid(_id);
+
+      if (isDateValid && isIdValid) {
+        parsedDate = tempDate;
+        parsedId = new mongoose.Types.ObjectId(_id);
+        isCursorValid = true;
+      }
+    }
+
+    let userFeed = isCursorValid
+      ? Post.find({
+          user: { $in: newFeedAuthorIds },
+          $or: [
+            { createdAt: { $lt: parsedDate } },
+            { createdAt: parsedDate, _id: { $lt: parsedId } },
+          ],
+        })
+          .sort({ createdAt: -1, _id: -1 })
+          .limit(3)
+          .populate("user", "_id fullname username avatar")
+      : Post.find({ user: { $in: newFeedAuthorIds } })
+          .sort({ createdAt: -1, _id: -1 })
+          .limit(3)
+          .populate("user", "_id fullname username avatar");
+
+    userFeed = await userFeed;
+
+    let hasMore = false,
+      nextCursor = null;
+    if (userFeed.length === 3) {
+      hasMore = true;
+      userFeed.pop();
+      nextCursor = {
+        createdAt: userFeed[userFeed.length - 1].createdAt,
+        _id: userFeed[userFeed.length - 1]._id,
+      };
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, data: { posts: userFeed, hasMore, nextCursor } });
   } catch (error) {
     console.log(error);
     res.status(500).json({

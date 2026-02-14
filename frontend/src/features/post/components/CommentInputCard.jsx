@@ -24,7 +24,7 @@ const CommentInputCard = () => {
               rows={3}
               className="mb-3 resize-none"
             />
-            <Button onClick disabled={!comment} size="sm">
+            <Button disabled={!comment} size="sm">
               Post Comment
             </Button>
           </div>

@@ -55,7 +55,7 @@ const ProfileSettingsCard = () => {
           <div className="flex flex-wrap gap-2">
             {genres.map((genre) => (
               <Badge
-                key={genre}
+                key={genre.id}
                 variant={
                   favouriteGenres.includes(genre.id) ? "default" : "outline"
                 }

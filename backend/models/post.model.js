@@ -21,7 +21,7 @@ const postSchema = new Schema(
       type: String,
       required: [true, "Book review is required"],
       minlength: [10, "Review must be atleast 10 characters long"],
-      maxlength: [500, "Review must be atmost 500 characters long"],
+      maxlength: [1200, "Review must be atmost 1200 characters long"],
     },
     likesCount: { type: Number, default: 0 },
   },

@@ -88,11 +88,11 @@ const ProfileTabs = ({ isOwnProfile }) => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="posts">
-        <div className="flex flex-col gap-8 mt-5">
+        {/* <div className="flex flex-col gap-8 mt-5">
           <PostCard />
           <PostCard />
           <PostCard />
-        </div>
+        </div> */}
       </TabsContent>
       <TabsContent value="reads"></TabsContent>
       <TabsContent value="followers">

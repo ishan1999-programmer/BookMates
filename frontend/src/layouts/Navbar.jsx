@@ -1,19 +1,17 @@
-import React from "react";
-import { BookOpen, Search, Bell, MessageCircle, User } from "lucide-react";
+import { BookOpen, Search } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
+import { Link, useNavigate } from "react-router-dom";
 import NotificationButton from "@/features/notification/components/NotificationButton";
 import FollowRequestButton from "@/features/follow/components/FollowRequestButton";
 
-
 const Navbar = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   return (
     <div className="bg-background border-b border-border h-16 w-screen p-4 lg:px-6 sticky top-0 z-40">
-      <div className="mx-auto max-w-7xl px-4 flex items-center justify-between">
+      <div className="px-4 flex items-center justify-between">
         <div className="flex gap-2">
           <BookOpen
             className={`${isMobile ? "h-6 w-6" : "h-8 w-8"} text-primary`}
@@ -37,12 +35,12 @@ const Navbar = () => {
               } h-9 bg-muted/50`}
             />
           </div>
-          <Button variant="default" className="px-3 py-2 h-auto">
-            <Link to="/add-post">
-              <span className="text-primary-foreground font-medium">
-                + Post
-              </span>
-            </Link>
+          <Button
+            onClick={() => navigate("/add-post")}
+            variant="default"
+            className="px-3 py-2 h-auto"
+          >
+            <span className="text-primary-foreground font-medium">+ Post</span>
           </Button>
 
           <NotificationButton />

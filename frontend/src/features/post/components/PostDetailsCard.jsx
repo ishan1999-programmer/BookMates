@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -109,7 +108,7 @@ const PostDetailsCard = () => {
               render={({ field }) => (
                 <div className="flex flex-wrap gap-2">
                   {genres.map((genre) => {
-                    const isSelected = field.value.includes(genre.id);
+                    const isSelected = field.value.includes(genre.label);
 
                     return (
                       <Badge
@@ -118,8 +117,8 @@ const PostDetailsCard = () => {
                         variant={isSelected ? "default" : "outline"}
                         onClick={() => {
                           const newGenres = isSelected
-                            ? field.value.filter((g) => g !== genre.id)
-                            : [...field.value, genre.id];
+                            ? field.value.filter((g) => g !== genre.label)
+                            : [...field.value, genre.label];
 
                           field.onChange(newGenres);
                         }}
@@ -183,8 +182,8 @@ const PostDetailsCard = () => {
                   message: "Review must be atlest 10 charecters long.",
                 },
                 maxLength: {
-                  value: 500,
-                  message: "Review must be atmost 500 characters long.",
+                  value: 1200,
+                  message: "Review must be atmost 1200 characters long.",
                 },
               })}
             />

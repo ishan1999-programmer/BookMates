@@ -5,8 +5,21 @@ import { BookOpen, Star, Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CommentCard from "./CommentCard";
 import CommentInputCard from "./CommentInputCard";
+import { formatDistanceToNow } from "date-fns";
 
-const PostCard = () => {
+const PostCard = ({
+  fullname,
+  username,
+  avatar,
+  bookTitle,
+  bookAuthor,
+  bookGenres,
+  bookRating,
+  bookImage,
+  bookReview,
+  likesCount,
+  createdAt,
+}) => {
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
   let post = { isLiked: true, likes: 3, commentCount: 4 };
@@ -24,15 +37,15 @@ const PostCard = () => {
         <div className="flex flex-col gap-4 pb-5 border-border border-b">
           <div className="flex gap-2 items-center">
             <Avatar className="w-10 h-10">
-              <AvatarImage src="" />
+              <AvatarImage src={avatar} />
               <AvatarFallback className="bg-primary/10 text-primary">
                 IT
               </AvatarFallback>
             </Avatar>
             <div>
-              <h4 className="font-semibold text-foreground">Ishan Tripathi</h4>
+              <h4 className="font-semibold text-foreground">{fullname}</h4>
               <p className="text-sm text-muted-foreground">
-                @mystery_reader • 5 hours ago
+                {`${username} • ${formatDistanceToNow(createdAt, { addSuffix: true })}`}
               </p>
             </div>
           </div>
@@ -40,7 +53,7 @@ const PostCard = () => {
             <div className="w-16 h-24 bg-muted rounded flex items-center justify-center flex-shrink-0">
               {false ? (
                 <img
-                  src=""
+                  src={bookImage}
                   alt=""
                   className="w-full h-full object-cover rounded"
                 />
@@ -50,24 +63,27 @@ const PostCard = () => {
             </div>
             <div className="flex flex-col">
               <h3 className="font-bold text-lg text-foreground mb-1">
-                Rock Paper Scissors
+                {bookTitle}
               </h3>
-              <p className="text-muted-foreground mb-2">by Alice Feeney</p>
-              <p className="text-sm text-muted-foreground mb-2">Mystery</p>
+              <p className="text-muted-foreground mb-2">{`by ${bookAuthor}`}</p>
+              <p className="text-sm text-muted-foreground mb-2">
+                {bookGenres.join(", ")}
+              </p>
               <div className="flex gap-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                {Array.from({ length: bookRating }).map((star, idx) => (
+                  <Star
+                    key={idx}
+                    className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
               </div>
             </div>
           </div>
           <div>
             <p className="text-foreground leading-relaxed">
-              {showFullReview ? review : truncateReview(review)}
+              {showFullReview ? bookReview : truncateReview(bookReview)}
             </p>
-            {review.length > 200 && (
+            {bookReview.length > 200 && (
               <button
                 onClick={() => setShowFullReview((prev) => !prev)}
                 className="text-primary hover:text-primary/80 text-sm font-medium mt-2"
@@ -80,7 +96,6 @@ const PostCard = () => {
         <div className="flex items-center gap-3 pt-3 pb-3">
           <Button
             variant="ghost"
-            onClick
             className={`flex items-center gap-2 ${
               post.isLiked
                 ? "text-red-500 hover:text-red-600"
@@ -90,7 +105,7 @@ const PostCard = () => {
             <Heart
               className={`h-5 w-5 ${post.isLiked ? "fill-current" : ""}`}
             />
-            <span>{post.likes}</span>
+            <span>{likesCount}</span>
           </Button>
           <Button
             variant="ghost"
