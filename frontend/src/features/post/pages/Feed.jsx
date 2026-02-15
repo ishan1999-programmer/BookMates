@@ -15,7 +15,7 @@ const Feed = () => {
   if (isFetching && posts.length === 0) {
     return (
       <>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 max-w-[1000px]">
           <PostCardSkeleton />
           <PostCardSkeleton />
         </div>
@@ -28,7 +28,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 max-w-[1000px]">
       {posts?.map((post) => (
         <PostCard
           key={post._id}
@@ -42,7 +42,9 @@ const Feed = () => {
           bookImage={post.bookImage}
           bookReview={post.bookReview}
           likesCount={post.likesCount}
+          commentsCount={post.commentsCount}
           createdAt={post.createdAt}
+          postId={post._id}
         />
       ))}
       {isFetching ? (

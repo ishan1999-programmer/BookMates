@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { BookOpen, Star, Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CommentCard from "./CommentCard";
 import CommentInputCard from "./CommentInputCard";
+import CommentList from "./CommentList";
 import { formatDistanceToNow } from "date-fns";
+import useComments from "../hooks/useComments";
 
 const PostCard = ({
   fullname,
@@ -18,8 +19,14 @@ const PostCard = ({
   bookImage,
   bookReview,
   likesCount,
+  commentsCount,
   createdAt,
+  postId,
 }) => {
+  const { comments, isFetching, error, fetchNext, hasMore, prependComment } =
+    useComments(postId);
+
+
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
   let post = { isLiked: true, likes: 3, commentCount: 4 };
@@ -29,8 +36,6 @@ const PostCard = ({
     return text.substring(0, maxLength) + "...";
   };
 
-  let review =
-    "There were parts of this book that genuinely had me petrified. The eeriness and creepiness of the chapel that Adam and Amelia were staying in was captured brilliantly by the author. I always listen to music via my headphones whilst I read and there was more than one occasion I had to slip them off as I thought I heard someone creeping around my own cottage.";
   return (
     <Card>
       <CardContent className="p-5">
@@ -109,11 +114,18 @@ const PostCard = ({
           </Button>
           <Button
             variant="ghost"
-            onClick={() => setIsCommentsShow((prev) => !prev)}
+            onClick={() => {
+              if (isCommentsShow) {
+                setIsCommentsShow(false);
+              } else {
+                fetchNext();
+                setIsCommentsShow(true);
+              }
+            }}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <MessageCircle className="h-5 w-5" />
-            <span>{post.commentCount}</span>
+            <span>{commentsCount || 0}</span>
           </Button>
           <Button
             variant="ghost"
@@ -126,16 +138,19 @@ const PostCard = ({
         {isCommentsShow && (
           <div className="flex flex-col border-border border-t pt-5">
             <h3 className="text-xl font-semibold text-foreground mb-3">
-              Comments (2)
+              {`Comments (${commentsCount})`}
             </h3>
-            <CommentInputCard />
-            <div className="flex flex-col gap-5 mt-5  h-96  overflow-scroll">
-              <CommentCard />
-              <CommentCard />
-              <CommentCard />
-              <CommentCard />
-              <CommentCard />
-            </div>
+            <CommentInputCard
+              postId={postId}
+              onCreateComment={prependComment}
+            />
+            <CommentList
+              comments={comments}
+              isFetching={isFetching}
+              error={error}
+              fetchNext={fetchNext}
+              hasMore={hasMore}
+            />
           </div>
         )}
       </CardContent>

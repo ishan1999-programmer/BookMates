@@ -126,18 +126,18 @@ const getCurrentUserFeed = async (req, res) => {
           ],
         })
           .sort({ createdAt: -1, _id: -1 })
-          .limit(3)
+          .limit(21)
           .populate("user", "_id fullname username avatar")
       : Post.find({ user: { $in: newFeedAuthorIds } })
           .sort({ createdAt: -1, _id: -1 })
-          .limit(3)
+          .limit(21)
           .populate("user", "_id fullname username avatar");
 
     userFeed = await userFeed;
 
     let hasMore = false,
       nextCursor = null;
-    if (userFeed.length === 3) {
+    if (userFeed.length === 21) {
       hasMore = true;
       userFeed.pop();
       nextCursor = {

@@ -9,7 +9,10 @@ const {
   unlikePost,
 } = require("../controllers/post.controller");
 
-const { getCommentsByPost } = require("../controllers/comment.controller");
+const {
+  getCommentsByPost,
+  createComment,
+} = require("../controllers/comment.controller");
 
 const postRouter = express.Router();
 
@@ -18,6 +21,7 @@ postRouter.get("/:postId", getPost);
 postRouter.put("/:postId", updatePost);
 postRouter.delete("/:postId", deletePost);
 postRouter.get("/:postId/comments", getCommentsByPost);
+postRouter.post("/:postId/comments", createComment);
 postRouter.post("/:postId/like", likePost);
 postRouter.delete("/:postId/like", unlikePost);
 

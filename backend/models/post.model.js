@@ -24,6 +24,7 @@ const postSchema = new Schema(
       maxlength: [1200, "Review must be atmost 1200 characters long"],
     },
     likesCount: { type: Number, default: 0 },
+    commentsCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

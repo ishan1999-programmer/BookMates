@@ -9,7 +9,6 @@ const {
 
 const commentRouter = express.Router();
 
-commentRouter.post("/", createComment);
 commentRouter.get("/:id", getComment);
 commentRouter.put("/:id", updateComment);
 commentRouter.delete("/:id", deleteComment);
