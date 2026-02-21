@@ -2,7 +2,7 @@ const express = require("express");
 
 const {
   createUser,
-  getUserById,
+  getUser,
   getCurrentUser,
   updateCurrentUser,
   deleteCurrentUser,
@@ -27,6 +27,6 @@ userRouter.get("/me/posts", authenticator, getCurrentUserPosts);
 userRouter.get("/me/feed", authenticator, getCurrentUserFeed);
 userRouter.delete("/:userId/follow", authenticator, unfollowUser);
 userRouter.get("/:userId/posts", authenticator, getPostsByUser);
-userRouter.get("/:userId", authenticator, getUserById);
+userRouter.get("/:username", authenticator, getUser);
 
 module.exports = userRouter;

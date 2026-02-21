@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { Schema, model } = mongoose; 
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema(
   {
@@ -25,11 +25,11 @@ const userSchema = new Schema(
       required: [true, "Username is required"],
       minlength: [3, "Username must be at least 3 characters long"],
       lowercase: true,
-      unique: true,
+      unique: [true, "Username already exists"],
     },
     bio: { type: String, default: "" },
     avatar: { type: String, default: "" },
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], 
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followersCount: { type: Number, default: 0 },
     followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followingsCount: { type: Number, default: 0 },
@@ -40,7 +40,7 @@ const userSchema = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = model("User", userSchema);

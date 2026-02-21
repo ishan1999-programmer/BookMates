@@ -31,8 +31,9 @@ const LoginForm = () => {
 
   const onSubmit = async (formData) => {
     try {
-      const { token } = await login(formData);
+      const { token, userDetails } = await login(formData);
       localStorage.setItem("accessToken", token);
+      localStorage.setItem("username", userDetails.username);
       navigate("/feed");
     } catch (error) {
       setError("root", {

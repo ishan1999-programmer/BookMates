@@ -36,14 +36,14 @@ const createUser = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUser = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const user = await User.findById(userId).select("-password");
+    const { username } = req.params;
+    const user = await User.findOne({ username: username }).select("-password");
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found." });
+        .json({ success: false, message: "User not found" });
     }
     res.status(200).json({ success: true, data: user });
   } catch (error) {
@@ -103,7 +103,7 @@ const unfollowUser = async (req, res) => {
         $inc: { followingsCount: -1 },
         $pull: { followings: followeeUserId },
       },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     const updatedFollowee = await User.findByIdAndUpdate(
       followeeUserId,
@@ -111,7 +111,7 @@ const unfollowUser = async (req, res) => {
         $inc: { followersCount: -1 },
         $pull: { followers: followerUserId },
       },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     return res.status(200).json({
@@ -137,7 +137,7 @@ const updateCurrentUser = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       updatedUserDetails,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     ).select("-password");
     if (!updatedUser) {
       return res
@@ -163,9 +163,8 @@ const updateCurrentUser = async (req, res) => {
 const deleteCurrentUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    const deletedUser = await User.findByIdAndDelete(userId).select(
-      "-password"
-    );
+    const deletedUser =
+      await User.findByIdAndDelete(userId).select("-password");
     if (!deletedUser) {
       return res
         .status(404)
@@ -182,7 +181,7 @@ const deleteCurrentUser = async (req, res) => {
 };
 
 module.exports = {
-  getUserById,
+  getUser,
   getCurrentUser,
   updateCurrentUser,
   deleteCurrentUser,

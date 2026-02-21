@@ -7,6 +7,7 @@ import CommentInputCard from "./CommentInputCard";
 import CommentList from "./CommentList";
 import { formatDistanceToNow } from "date-fns";
 import useComments from "../hooks/useComments";
+import { Link } from "react-router-dom";
 
 const PostCard = ({
   fullname,
@@ -25,7 +26,6 @@ const PostCard = ({
 }) => {
   const { comments, isFetching, error, fetchNext, hasMore, prependComment } =
     useComments(postId);
-
 
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
@@ -48,7 +48,9 @@ const PostCard = ({
               </AvatarFallback>
             </Avatar>
             <div>
-              <h4 className="font-semibold text-foreground">{fullname}</h4>
+              <Link to={`/users/${username}`}>
+                <h4 className="font-semibold text-foreground hover:text-muted-foreground hover:underline">{fullname}</h4>
+              </Link>
               <p className="text-sm text-muted-foreground">
                 {`${username} • ${formatDistanceToNow(createdAt, { addSuffix: true })}`}
               </p>
