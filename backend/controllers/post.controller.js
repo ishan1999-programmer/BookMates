@@ -128,10 +128,12 @@ const getCurrentUserFeed = async (req, res) => {
           .sort({ createdAt: -1, _id: -1 })
           .limit(21)
           .populate("user", "_id fullname username avatar")
+          .lean()
       : Post.find({ user: { $in: newFeedAuthorIds } })
           .sort({ createdAt: -1, _id: -1 })
           .limit(21)
-          .populate("user", "_id fullname username avatar");
+          .populate("user", "_id fullname username avatar")
+          .lean();
 
     userFeed = await userFeed;
 
@@ -145,6 +147,19 @@ const getCurrentUserFeed = async (req, res) => {
         _id: userFeed[userFeed.length - 1]._id,
       };
     }
+
+    const postIds = userFeed.map((post) => post._id);
+    const likedPosts = await Like.find({
+      user: userId,
+      post: { $in: postIds },
+    });
+    const likedPostIds = new Set(
+      likedPosts.map((like) => like.post.toString()),
+    );
+
+    userFeed.forEach((post) => {
+      post.isLikedByMe = likedPostIds.has(post._id.toString());
+    });
 
     return res
       .status(200)

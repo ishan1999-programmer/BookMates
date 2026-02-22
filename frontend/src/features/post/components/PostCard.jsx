@@ -23,13 +23,15 @@ const PostCard = ({
   commentsCount,
   createdAt,
   postId,
+  isLikedByMe,
+
+  toggleLike,
 }) => {
   const { comments, isFetching, error, fetchNext, hasMore, prependComment } =
     useComments(postId);
 
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
-  let post = { isLiked: true, likes: 3, commentCount: 4 };
 
   const truncateReview = (text, maxLength = 200) => {
     if (text.length <= maxLength) return text;
@@ -49,7 +51,9 @@ const PostCard = ({
             </Avatar>
             <div>
               <Link to={`/users/${username}`}>
-                <h4 className="font-semibold text-foreground hover:text-muted-foreground hover:underline">{fullname}</h4>
+                <h4 className="font-semibold text-foreground hover:text-muted-foreground hover:underline">
+                  {fullname}
+                </h4>
               </Link>
               <p className="text-sm text-muted-foreground">
                 {`${username} • ${formatDistanceToNow(createdAt, { addSuffix: true })}`}
@@ -102,16 +106,15 @@ const PostCard = ({
         </div>
         <div className="flex items-center gap-3 pt-3 pb-3">
           <Button
+            onClick={() => toggleLike(postId, isLikedByMe)}
             variant="ghost"
             className={`flex items-center gap-2 ${
-              post.isLiked
+              isLikedByMe
                 ? "text-red-500 hover:text-red-600"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Heart
-              className={`h-5 w-5 ${post.isLiked ? "fill-current" : ""}`}
-            />
+            <Heart className={`h-5 w-5 ${isLikedByMe ? "fill-current" : ""}`} />
             <span>{likesCount}</span>
           </Button>
           <Button

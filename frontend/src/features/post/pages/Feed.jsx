@@ -6,7 +6,8 @@ import ErrorPosts from "../components/ErrorPosts";
 import PostCardSkeleton from "../components/PostCardSkeleton";
 
 const Feed = () => {
-  const { posts, hasMore, isFetching, fetchNext, error } = useFeed();
+  const { posts, hasMore, isFetching, fetchNext, error, toggleLike } =
+    useFeed();
 
   if (error && posts.length === 0) {
     return <ErrorPosts fetchNext={fetchNext} />;
@@ -45,6 +46,8 @@ const Feed = () => {
           commentsCount={post.commentsCount}
           createdAt={post.createdAt}
           postId={post._id}
+          isLikedByMe={post.isLikedByMe}
+          toggleLike={toggleLike}
         />
       ))}
       {isFetching ? (
