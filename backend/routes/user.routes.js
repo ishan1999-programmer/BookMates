@@ -7,6 +7,7 @@ const {
   updateCurrentUser,
   deleteCurrentUser,
   unfollowUser,
+  searchUsers
 } = require("../controllers/user.controller");
 
 const {
@@ -19,6 +20,7 @@ const authenticator = require("../middlewares/auth.middleware");
 
 const userRouter = express.Router();
 
+userRouter.get("/search", authenticator, searchUsers);
 userRouter.post("/", createUser);
 userRouter.get("/me", authenticator, getCurrentUser);
 userRouter.put("/me", authenticator, updateCurrentUser);
@@ -28,5 +30,6 @@ userRouter.get("/me/feed", authenticator, getCurrentUserFeed);
 userRouter.delete("/:userId/follow", authenticator, unfollowUser);
 userRouter.get("/:userId/posts", authenticator, getPostsByUser);
 userRouter.get("/:username", authenticator, getUser);
+
 
 module.exports = userRouter;

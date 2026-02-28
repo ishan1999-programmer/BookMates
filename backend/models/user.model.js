@@ -29,6 +29,7 @@ const userSchema = new Schema(
     },
     bio: { type: String, default: "" },
     avatar: { type: String, default: "" },
+    favGenres: [{ type: String }],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followersCount: { type: Number, default: 0 },
     followings: [{ type: Schema.Types.ObjectId, ref: "User" }],

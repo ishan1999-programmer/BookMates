@@ -180,6 +180,37 @@ const deleteCurrentUser = async (req, res) => {
   }
 };
 
+const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+    const trimmed = q.trim();
+    const users = await User.find({
+      $or: [
+        {
+          fullname: { $regex: `^${trimmed}`, $options: "i" },
+        },
+        {
+          username: { $regex: `^${trimmed}`, $options: "i" },
+        },
+      ],
+    })
+      .limit(5)
+      .select("_id fullname username avatar")
+      .lean();
+
+    return res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message || "An unexpected error occurred while fetching users.",
+    });
+  }
+};
+
 module.exports = {
   getUser,
   getCurrentUser,
@@ -187,4 +218,5 @@ module.exports = {
   deleteCurrentUser,
   createUser,
   unfollowUser,
+  searchUsers,
 };

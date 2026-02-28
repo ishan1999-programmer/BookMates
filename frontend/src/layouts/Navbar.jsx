@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationButton from "@/features/notification/components/NotificationButton";
 import FollowRequestButton from "@/features/follow/components/FollowRequestButton";
+import SearchUsers from "@/features/user/components/SearchUsers";
 
 const Navbar = () => {
   const isMobile = useIsMobile();
@@ -25,16 +26,7 @@ const Navbar = () => {
           </p>
         </div>
         <div className="navbar-content-right flex items-center gap-3">
-          <div className="search-bar relative">
-            <Search className="absolute left-2 top-1/4 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder={isMobile ? "Search..." : "Search users..."}
-              className={`pl-9 pr-8 ${
-                isMobile ? "w-32" : "w-48 lg:w-64"
-              } h-9 bg-muted/50`}
-            />
-          </div>
+          <SearchUsers/>
           <Button
             onClick={() => navigate("/add-post")}
             variant="default"
