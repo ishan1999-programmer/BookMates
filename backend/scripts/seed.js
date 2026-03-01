@@ -10,10 +10,6 @@ const MONGO_URI = process.env.MONGO_URI;
 const NUM_USERS = 50;
 const POSTS_PER_USER = 20;
 
-/* ================================
-   🇮🇳 Indian Names Dataset
-================================ */
-
 const indianFirstNames = [
   "Aarav",
   "Vivaan",
@@ -55,9 +51,6 @@ const indianLastNames = [
   "Agarwal",
 ];
 
-/* ================================
-   📚 Books Dataset
-================================ */
 
 const booksDataset = [
   {
@@ -104,10 +97,6 @@ const booksDataset = [
   },
 ];
 
-/* ================================
-   ✍️ Bio Templates
-================================ */
-
 const bioTemplates = [
   "Avid reader 📚 | Fiction lover | Coffee & books",
   "Currently reading 3 books at once 😅",
@@ -122,10 +111,6 @@ const bioTemplates = [
   "Indian literature lover 🇮🇳",
 ];
 
-/* ================================
-   ✍️ Review Templates
-================================ */
-
 const reviewTemplates = [
   "Absolutely loved the storytelling and character depth in this book.",
   "A gripping read from start to finish. Highly recommended.",
@@ -137,9 +122,7 @@ const reviewTemplates = [
   "An unforgettable reading experience.",
 ];
 
-/* ================================
-   ⭐ Realistic Rating Generator
-================================ */
+
 
 function generateRating() {
   const weights = [1, 2, 3, 4, 5];
@@ -154,9 +137,7 @@ function generateRating() {
   return 4;
 }
 
-/* ================================
-   🚀 Seeder
-================================ */
+
 
 async function seedDatabase() {
   try {
@@ -173,9 +154,6 @@ async function seedDatabase() {
 
     const hashedPassword = await bcrypt.hash("password123", 10);
 
-    /* ================================
-       👤 Create Users
-    ================================ */
 
     const usersData = [];
 
@@ -206,9 +184,7 @@ async function seedDatabase() {
     const users = await User.insertMany(usersData);
     console.log("👤 50 Indian users created");
 
-    /* ================================
-       📚 Create Posts
-    ================================ */
+ 
 
     const postsData = [];
 

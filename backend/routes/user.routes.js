@@ -7,6 +7,7 @@ const {
   updateCurrentUser,
   deleteCurrentUser,
   unfollowUser,
+  followUser,
   searchUsers
 } = require("../controllers/user.controller");
 
@@ -28,6 +29,7 @@ userRouter.delete("/me", authenticator, deleteCurrentUser);
 userRouter.get("/me/posts", authenticator, getCurrentUserPosts);
 userRouter.get("/me/feed", authenticator, getCurrentUserFeed);
 userRouter.delete("/:userId/follow", authenticator, unfollowUser);
+userRouter.post("/:userId/follow", authenticator, followUser);
 userRouter.get("/:userId/posts", authenticator, getPostsByUser);
 userRouter.get("/:username", authenticator, getUser);
 

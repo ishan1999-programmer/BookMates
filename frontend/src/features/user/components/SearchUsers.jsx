@@ -54,6 +54,7 @@ const SearchUsers = () => {
         sideOffset={4}
         className={`w-${isMobile ? "48" : "72"} p-2`}
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onClick={() => setOpen(false)}
       >
         {isFetching ? (
           <>

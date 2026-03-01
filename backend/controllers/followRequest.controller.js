@@ -6,14 +6,14 @@ const sendFollowRequest = async (req, res) => {
     const { userId: senderId } = req.user;
     const { receiver: receiverId } = req.body;
 
-    const existingSender = await User.findById(senderId);
+    const existingSender = await User.exists({ _id: senderId });
     if (!existingSender) {
       return res
         .status(404)
         .json({ success: false, message: "Sender not found" });
     }
 
-    const existingReceiver = await User.findById(receiverId);
+    const existingReceiver = await User.exists({ _id: receiverId });
     if (!existingReceiver) {
       return res
         .status(404)
@@ -27,12 +27,12 @@ const sendFollowRequest = async (req, res) => {
       });
     }
 
-    const existingFollowRequest = await FollowRequest.findOne({
+    const existingFollowRequest = await FollowRequest.exists({
       sender: senderId,
       receiver: receiverId,
     });
     if (existingFollowRequest) {
-      res.status(409).json({
+      return res.status(409).json({
         success: false,
         message: "You already sent a follow request to this user",
       });
@@ -55,6 +55,30 @@ const sendFollowRequest = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while sending follow request.",
+    });
+  }
+};
+
+const cancelFollowRequest = async (req, res) => {
+  try {
+    const { followRequestId } = req.params;
+
+    const deletedFollowRequest =
+      await FollowRequest.findByIdAndDelete(followRequestId);
+
+    if (!deletedFollowRequest) {
+      return res.status(409).json({
+        success: false,
+        message: "You have not sent a follow request to this user",
+      });
+    }
+
+    return res.status(201).json({ success: true, data: deletedFollowRequest });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while canceling follow request.",
     });
   }
 };
@@ -95,7 +119,7 @@ const handleFollowRequest = async (req, res) => {
           $inc: { followingsCount: 1 },
           $addToSet: { followings: receiverId },
         },
-        { runValidators: true, new: true }
+        { runValidators: true, new: true },
       );
       updatedReceiver = await User.findByIdAndUpdate(
         receiverId,
@@ -103,13 +127,12 @@ const handleFollowRequest = async (req, res) => {
           $inc: { followersCount: 1 },
           $addToSet: { followers: senderId },
         },
-        { runValidators: true, new: true }
+        { runValidators: true, new: true },
       );
     }
 
-    const deletedFollowRequest = await FollowRequest.findByIdAndDelete(
-      followRequestId
-    );
+    const deletedFollowRequest =
+      await FollowRequest.findByIdAndDelete(followRequestId);
 
     return res.status(200).json({
       success: true,
@@ -129,4 +152,8 @@ const handleFollowRequest = async (req, res) => {
   }
 };
 
-module.exports = { sendFollowRequest, handleFollowRequest };
+module.exports = {
+  sendFollowRequest,
+  cancelFollowRequest,
+  handleFollowRequest,
+};

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-
 const User = require("../models/user.model");
+const followRequest = require("../models/followRequest.model");
 
 const createUser = async (req, res) => {
   try {
@@ -38,13 +38,33 @@ const createUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
+    const { userId } = req.user;
     const { username } = req.params;
-    const user = await User.findOne({ username: username }).select("-password");
+    const user = await User.findOne({ username: username })
+      .select("-password -followers -followings -booksRead")
+      .lean();
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+
+    const isFollowedByMe = await User.exists({
+      _id: userId,
+      followings: user._id,
+    });
+
+    const isRequestSent = await followRequest.exists({
+      sender: userId,
+      receiver: user._id,
+    });
+
+    user.isFollowedByMe = isFollowedByMe ? true : false;
+
+    user.isFollowRequestSent = isRequestSent ? true : false;
+
+    user.followRequestId = isRequestSent ? isRequestSent._id : null;
+
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({
@@ -92,7 +112,7 @@ const unfollowUser = async (req, res) => {
     });
 
     if (!isFollowing) {
-      res
+      return res
         .status(400)
         .json({ success: false, message: "You are not following this user." });
     }
@@ -105,6 +125,7 @@ const unfollowUser = async (req, res) => {
       },
       { new: true, runValidators: true },
     );
+
     const updatedFollowee = await User.findByIdAndUpdate(
       followeeUserId,
       {
@@ -126,6 +147,64 @@ const unfollowUser = async (req, res) => {
       success: false,
       message:
         error.message || "An unexpected error occurred while deleting user.",
+    });
+  }
+};
+
+const followUser = async (req, res) => {
+  try {
+    const { userId: followerUserId } = req.user;
+    const { userId: followeeUserId } = req.params;
+
+    if (followerUserId === followeeUserId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot follow yourself.",
+      });
+    }
+
+    const isFollowing = await User.exists({
+      _id: followerUserId,
+      followings: followeeUserId,
+    });
+
+    if (isFollowing) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already following this user.",
+      });
+    }
+
+    const updatedFollower = await User.findByIdAndUpdate(
+      followerUserId,
+      {
+        $inc: { followingsCount: +1 },
+        $push: { followings: followeeUserId },
+      },
+      { new: true, runValidators: true },
+    );
+
+    const updatedFollowee = await User.findByIdAndUpdate(
+      followeeUserId,
+      {
+        $inc: { followersCount: +1 },
+        $push: { followers: followerUserId },
+      },
+      { new: true, runValidators: true },
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        followedUser: followeeUserId,
+        followingsCount: updatedFollower.followingsCount,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error.message || "An unexpected error occurred while following user.",
     });
   }
 };
@@ -218,5 +297,6 @@ module.exports = {
   deleteCurrentUser,
   createUser,
   unfollowUser,
+  followUser,
   searchUsers,
 };
