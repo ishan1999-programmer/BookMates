@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/empty";
 import { BookOpen } from "lucide-react";
 
-function ErrorComments({ fetchNext }) {
+function ErrorComments({ fetchNext, postId }) {
   return (
     <Empty className="h-full">
       <EmptyHeader>
@@ -22,7 +22,7 @@ function ErrorComments({ fetchNext }) {
       </EmptyHeader>
       <EmptyContent>
         <p
-          onClick={() => fetchNext()}
+          onClick={() => fetchNext(postId)}
           className="text-primary text-center cursor-pointer hover:text-primary/80 hover:underline text-sm font-medium"
         >
           Try Again

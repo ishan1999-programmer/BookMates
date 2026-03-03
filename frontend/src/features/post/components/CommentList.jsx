@@ -3,9 +3,16 @@ import CommentCardSkeleton from "./CommentCardSkeleton";
 import NoComments from "./NoComments";
 import ErrorComments from "./ErrorComments";
 
-const CommentList = ({ comments, isFetching, error, hasMore, fetchNext }) => {
+const CommentList = ({
+  comments,
+  isFetching,
+  error,
+  hasMore,
+  fetchNext,
+  postId,
+}) => {
   if (error && comments.length === 0) {
-    return <ErrorComments fetchNext={fetchNext} />;
+    return <ErrorComments fetchNext={fetchNext} postId={postId} />;
   }
 
   if (isFetching && comments.length === 0) {

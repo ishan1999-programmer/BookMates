@@ -7,14 +7,19 @@ import useCreateComment from "../hooks/useCreateComment";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
-const CommentInputCard = ({ postId, onCreateComment }) => {
+const CommentInputCard = ({
+  postId,
+  prependComment,
+  incrementCommentsCount,
+}) => {
   const { isSubmitting, createComment, error } = useCreateComment();
   const [comment, setComment] = useState("");
 
   const onSubmit = async () => {
     try {
       const createdComment = await createComment(postId, { text: comment });
-      onCreateComment(createdComment);
+      prependComment(createdComment);
+      incrementCommentsCount(postId);
       toast.success("Comment published successfully.", {
         position: "top-center",
       });

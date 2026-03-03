@@ -20,15 +20,15 @@ const PostCard = ({
   bookImage,
   bookReview,
   likesCount,
-  commentsCount,
   createdAt,
   postId,
   isLikedByMe,
-
+  commentsCount,
   toggleLike,
+  incrementCommentsCount,
 }) => {
   const { comments, isFetching, error, fetchNext, hasMore, prependComment } =
-    useComments(postId);
+    useComments();
 
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
@@ -123,14 +123,14 @@ const PostCard = ({
               if (isCommentsShow) {
                 setIsCommentsShow(false);
               } else {
-                fetchNext();
+                fetchNext(postId);
                 setIsCommentsShow(true);
               }
             }}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <MessageCircle className="h-5 w-5" />
-            <span>{commentsCount || 0}</span>
+            <span>{commentsCount}</span>
           </Button>
           <Button
             variant="ghost"
@@ -143,11 +143,12 @@ const PostCard = ({
         {isCommentsShow && (
           <div className="flex flex-col border-border border-t pt-5">
             <h3 className="text-xl font-semibold text-foreground mb-3">
-              {`Comments (${commentsCount})`}
+              {`Comments (${comments.length})`}
             </h3>
             <CommentInputCard
               postId={postId}
-              onCreateComment={prependComment}
+              prependComment={prependComment}
+              incrementCommentsCount={incrementCommentsCount}
             />
             <CommentList
               comments={comments}
@@ -155,6 +156,7 @@ const PostCard = ({
               error={error}
               fetchNext={fetchNext}
               hasMore={hasMore}
+              postId={postId}
             />
           </div>
         )}

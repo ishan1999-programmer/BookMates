@@ -35,7 +35,9 @@ const useFeed = () => {
           ? {
               ...post,
               isLikedByMe: !post.isLikedByMe,
-              likesCount: post.isLikedByMe ? post.likesCount - 1 : post.likesCount + 1,
+              likesCount: post.isLikedByMe
+                ? post.likesCount - 1
+                : post.likesCount + 1,
             }
           : post,
       ),
@@ -61,6 +63,18 @@ const useFeed = () => {
     }
   }, []);
 
+  const incrementCommentsCount = useCallback((postId) => {
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p._id === postId) {
+          return { ...p, commentsCount: p.commentsCount + 1 };
+        } else {
+          return p;
+        }
+      }),
+    );
+  }, []);
+
   useEffect(() => {
     fetchNext();
   }, []);
@@ -72,6 +86,7 @@ const useFeed = () => {
     fetchNext,
     error,
     toggleLike,
+    incrementCommentsCount,
   };
 };
 
