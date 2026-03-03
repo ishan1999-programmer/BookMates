@@ -21,4 +21,4 @@ const useCancelFollowRequest = () => {
   return { isSubmitting, error, cancelFollowRequest };
 };
 
-export default useCancelFollowRequest;
+export default useCancelFollowRequest; 

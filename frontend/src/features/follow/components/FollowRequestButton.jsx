@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,20 +9,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import FollowRequestCard from "./FollowRequestCard";
+import FollowReqestCardSkeleton from "./FollowRequestCardSkeleton";
+import NoFollowRequests from "./NoFollowRequests";
+import ErrorFollowRequests from "./ErrorFollowRequests";
+import useFollowRequests from "../hooks/useFollowRequests";
 
 const FollowRequestButton = () => {
+  const {
+    data,
+    error,
+    isFetching,
+    isSubmittingIds,
+    fetchFollowRequets,
+    acceptFollowRequest,
+    rejectFollowRequest,
+  } = useFollowRequests();
   const isMobile = useIsMobile();
 
-  const followRequestData = [
-    {
-      sender: "Ishan Tripathi",
-      createdAt: "2 hours ago",
-    },
-    {
-      sender: "Karuna Gupta",
-      createdAt: "2 hours ago",
-    },
-  ];
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -34,36 +37,51 @@ const FollowRequestButton = () => {
           <User
             className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
           />
-          {followRequestData.length > 0 && (
+          {data.length > 0 && (
             <Badge
               variant="destructive"
               className="absolute -top-1 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {followRequestData.length}
+              {data.length}
             </Badge>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="pl-0 pr-0 pb-0 w-96">
+      <PopoverContent
+        align="end"
+        className="pl-0 pr-0 pb-0 w-96 max-h-[417px] overflow-y-auto"
+      >
         <div className="mb-3 pl-4">
           <h3 className="font-semibold text-lg">Follow Requests</h3>
-          {followRequestData.length > 0 && (
-            <p className="text-sm text-muted-foreground">{`${followRequestData.length} pending`}</p>
+          {!isFetching && !error && data.length > 0 && (
+            <p className="text-sm text-muted-foreground">{`${data.length} pending`}</p>
           )}
         </div>
-        {followRequestData.length > 0 ? (
-          <div>
-            {followRequestData.map((followRequestData) => (
+        {isFetching ? (
+          <>
+            <FollowReqestCardSkeleton />
+            <FollowReqestCardSkeleton />
+            <FollowReqestCardSkeleton />
+          </>
+        ) : error ? (
+          <ErrorFollowRequests fetchAgain={fetchFollowRequets} />
+        ) : data.length === 0 ? (
+          <NoFollowRequests />
+        ) : (
+          <>
+            {data.map((d) => (
               <FollowRequestCard
-                sender={followRequestData.sender}
-                createdAt={followRequestData.createdAt}
+                key={d._id}
+                followRequestId={d._id}
+                sender={d.sender.fullname}
+                createdAt={d.createdAt}
+                avatar={d.sender.avatar}
+                acceptFollowRequest={acceptFollowRequest}
+                rejectFollowRequest={rejectFollowRequest}
+                isSubmittingIds={isSubmittingIds}
               />
             ))}
-          </div>
-        ) : (
-          <div className="p-4 text-center text-muted-foreground">
-            No follow requests
-          </div>
+          </>
         )}
       </PopoverContent>
     </Popover>

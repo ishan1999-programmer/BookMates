@@ -6,4 +6,18 @@ const sendFollowRequest = (requestDetails) =>
 const cancelFollowRequest = (followRequestId) =>
   axiosInstance.delete(`/follow-requests/${followRequestId}`);
 
-export { sendFollowRequest, cancelFollowRequest };
+const acceptFollowRequest = (followRequestId) =>
+  axiosInstance.put(`/follow-requests/${followRequestId}/accept`);
+
+const rejectFollowRequest = (followRequestId) =>
+  axiosInstance.put(`/follow-requests/${followRequestId}/reject`);
+
+const getFollowRequests = () => axiosInstance.get("/follow-requests");
+
+export {
+  sendFollowRequest,
+  cancelFollowRequest,
+  acceptFollowRequest,
+  rejectFollowRequest,
+  getFollowRequests,
+};

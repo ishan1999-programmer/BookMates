@@ -67,7 +67,7 @@ const cancelFollowRequest = async (req, res) => {
       await FollowRequest.findByIdAndDelete(followRequestId);
 
     if (!deletedFollowRequest) {
-      return res.status(409).json({
+      return res.status(404).json({
         success: false,
         message: "You have not sent a follow request to this user",
       });
@@ -83,71 +83,152 @@ const cancelFollowRequest = async (req, res) => {
   }
 };
 
-const handleFollowRequest = async (req, res) => {
+const acceptFollowRequest = async (req, res) => {
+
   try {
     const { followRequestId } = req.params;
-    const { action } = req.body;
 
     const existingFollowRequest = await FollowRequest.findById(followRequestId);
     if (!existingFollowRequest) {
-      res
-        .status(404)
-        .json({ success: false, message: "Follow request not found." });
+      return res.status(404).json({
+        success: false,
+        message: "The follow request doesn't exist.",
+      });
     }
 
-    const senderId = existingFollowRequest.sender;
-    const existingSender = await User.findById(senderId);
+    const { sender: senderId, receiver: receiverId } = existingFollowRequest;
+
+    const existingSender = await User.exists({ _id: senderId });
     if (!existingSender) {
       return res
         .status(404)
         .json({ success: false, message: "Sender not found" });
     }
 
-    const { userId: receiverId } = req.user;
-    const existingReceiver = await User.findById(receiverId);
+    const existingReceiver = await User.exists({ _id: receiverId });
     if (!existingReceiver) {
       return res
         .status(404)
         .json({ success: false, message: "Receiver not found" });
     }
 
-    let updatedSender, updatedReceiver;
-    if (action === "accepted") {
-      updatedSender = await User.findByIdAndUpdate(
-        senderId,
-        {
-          $inc: { followingsCount: 1 },
-          $addToSet: { followings: receiverId },
-        },
-        { runValidators: true, new: true },
-      );
-      updatedReceiver = await User.findByIdAndUpdate(
-        receiverId,
-        {
-          $inc: { followersCount: 1 },
-          $addToSet: { followers: senderId },
-        },
-        { runValidators: true, new: true },
-      );
+    if (senderId === receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot accept your own request.",
+      });
     }
 
-    const deletedFollowRequest =
-      await FollowRequest.findByIdAndDelete(followRequestId);
-
-    return res.status(200).json({
-      success: true,
-      data: {
-        sender: deletedFollowRequest.sender,
-        receiver: deletedFollowRequest.receiver,
-        followersCount: updatedReceiver.followersCount,
+    const updatedSender = await User.findByIdAndUpdate(
+      senderId,
+      {
+        $addToSet: { followings: receiverId },
+        $inc: { followingsCount: 1 },
       },
-    });
+      { runValidators: true, new: true },
+    );
+    const updatedReceiver = await User.findByIdAndUpdate(
+      receiverId,
+      {
+        $addToSet: { followers: senderId },
+        $inc: { followersCount: 1 },
+      },
+      { runValidators: true, new: true },
+    );
+
+    const { _id, followersCount } = updatedReceiver;
+
+    await FollowRequest.findByIdAndDelete(followRequestId);
+
+    return res
+      .status(200)
+      .json({ success: true, data: { _id, followersCount } });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
       message:
-        "An unexpected error occurred while accepting/rejecting follow request.",
+        error?.message ||
+        "An unexpected error occurred while accepting follow request.",
+    });
+  }
+};
+
+const rejectFollowRequest = async (req, res) => {
+  
+
+  try {
+    const { followRequestId } = req.params;
+
+    const existingFollowRequest = await FollowRequest.findById(followRequestId);
+    if (!existingFollowRequest) {
+      return res.status(404).json({
+        success: false,
+        message: "The follow request doesn't exist.",
+      });
+    }
+
+    const { sender: senderId, receiver: receiverId } = existingFollowRequest;
+
+    const existingSender = await User.exists({ _id: senderId });
+    if (!existingSender) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Sender not found" });
+    }
+
+    const existingReceiver = await User.exists({ _id: receiverId });
+    if (!existingReceiver) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Receiver not found" });
+    }
+
+    if (senderId === receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot reject your own request.",
+      });
+    }
+
+    const { _id, followersCount } = existingReceiver;
+
+    await FollowRequest.findByIdAndDelete(followRequestId);
+
+    return res
+      .status(200)
+      .json({ success: true, data: { _id, followersCount } });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error?.message ||
+        "An unexpected error occurred while rejecting follow request.",
+    });
+  }
+};
+
+const getFollowRequests = async (req, res) => {
+  try {
+    const { userId } = req.user;
+
+    const existingUser = await User.exists({ _id: userId });
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const followRequests = await FollowRequest.find({
+      receiver: userId,
+    }).populate("sender", "fullname username avatar");
+
+    return res.status(200).json({ success: true, data: followRequests });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error?.message ||
+        "An unexpected error occurred while fetching follow requests.",
     });
   }
 };
@@ -155,5 +236,7 @@ const handleFollowRequest = async (req, res) => {
 module.exports = {
   sendFollowRequest,
   cancelFollowRequest,
-  handleFollowRequest,
+  acceptFollowRequest,
+  rejectFollowRequest,
+  getFollowRequests,
 };
