@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Post = require("../models/post.model");
 const User = require("../models/user.model");
 const Like = require("../models/like.model");
+const Notification = require("../models/notification.model");
 
 const createPost = async (req, res) => {
   try {
@@ -246,7 +247,27 @@ const likePost = async (req, res) => {
       { runValidators: true, new: true },
     );
 
-    res
+    const existingNotification = await Notification.exists({
+      sender: userId,
+      receiver: existingPost.user,
+      post: postId,
+      type: "like",
+    });
+
+    if (existingNotification) {
+      return res
+        .status(409)
+        .json({ success: false, message: "Notification already exists." });
+    }
+
+    await Notification.create({
+      sender: userId,
+      receiver: existingPost.user,
+      post: postId,
+      type: "like",
+    });
+
+    return res
       .status(201)
       .json({ success: true, data: { postId, likesCount: post.likesCount } });
   } catch (error) {
@@ -281,7 +302,20 @@ const unlikePost = async (req, res) => {
       { runValidators: true, new: true },
     );
 
-    res
+    const deletedNotification = await Notification.deleteOne({
+      sender: userId,
+      receiver: existingPost.user,
+      post: postId,
+      type: "like",
+    });
+
+    if (deletedNotification.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found." });
+    }
+
+    return res
       .status(200)
       .json({ success: true, data: { postId, likesCount: post.likesCount } });
   } catch (error) {

@@ -73,7 +73,8 @@ const FollowRequestButton = () => {
               <FollowRequestCard
                 key={d._id}
                 followRequestId={d._id}
-                sender={d.sender.fullname}
+                fullname={d.sender.fullname}
+                username={d.sender.username}
                 createdAt={d.createdAt}
                 avatar={d.sender.avatar}
                 acceptFollowRequest={acceptFollowRequest}

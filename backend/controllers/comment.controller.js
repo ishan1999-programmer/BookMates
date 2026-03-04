@@ -2,6 +2,8 @@ const { json } = require("express");
 const Comment = require("../models/comment.model");
 const User = require("../models/user.model");
 const Post = require("../models/post.model");
+const Notification = require("../models/notification.model");
+
 const { default: mongoose } = require("mongoose");
 
 const createComment = async (req, res) => {
@@ -31,7 +33,7 @@ const createComment = async (req, res) => {
 
     const populatedComment = await createdComment.populate(
       "user",
-      "_id fullname avatar",
+      "_id fullname avatar username",
     );
 
     await Post.findByIdAndUpdate(
@@ -42,7 +44,27 @@ const createComment = async (req, res) => {
       { runValidators: true, new: true },
     );
 
-    res.status(201).json({ success: true, data: populatedComment });
+    const existingNotification = await Notification.exists({
+      sender: userId,
+      receiver: existingPost.user,
+      post: postId,
+      type: "comment",
+    });
+
+    if (existingNotification) {
+      return res
+        .status(409)
+        .json({ success: false, message: "Notification already exists." });
+    }
+
+    await Notification.create({
+      sender: userId,
+      receiver: existingPost.user,
+      post: postId,
+      type: "comment",
+    });
+
+    return res.status(201).json({ success: true, data: populatedComment });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({
@@ -112,13 +134,13 @@ const getCommentsByPost = async (req, res) => {
         })
           .sort({ createdAt: -1, _id: -1 })
           .limit(6)
-          .populate("user", "_id fullname avatar")
+          .populate("user", "_id fullname avatar username")
       : Comment.find({
           post: postId,
         })
           .sort({ createdAt: -1, _id: -1 })
           .limit(6)
-          .populate("user", "_id fullname avatar");
+          .populate("user", "_id fullname avatar username");
 
     comments = await comments;
 

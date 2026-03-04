@@ -35,6 +35,7 @@ const CommentList = ({
         <CommentCard
           key={comment._id}
           fullname={comment.user.fullname}
+          username={comment.user.username}
           createdAt={comment.createdAt}
           avatar={comment.user.avatar}
           text={comment.text}

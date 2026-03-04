@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { Link } from "react-router-dom";
 
 const FollowReqestCard = ({
   followRequestId,
-  sender,
+  fullname,
+  username,
   createdAt,
   avatar,
   acceptFollowRequest,
@@ -36,7 +38,7 @@ const FollowReqestCard = ({
   };
 
   return (
-    <div className="flex gap-3 pb-4 pt-3 pl-4 pr-4 border-t border-border hover:bg-accent/50 transition-colors">
+    <div className="flex gap-3 pb-4 pt-3 pl-4 pr-4 border-t border-border">
       <Avatar className="w-8 h-8 flex-shrink-0">
         <AvatarImage src={avatar} />
         <AvatarFallback className="bg-primary/10 text-primary text-sm">
@@ -47,9 +49,11 @@ const FollowReqestCard = ({
       <div className="flex flex-col gap-1 min-w-0">
         <div className="flex gap-1 items-center min-w-0">
           <UserPlus className="h-4 w-4 text-green-500" />
-
-          <p className="font-medium text-sm truncate">{sender}</p>
-
+          <Link to={`/users/${username}`}>
+            <p className="font-medium text-sm truncate hover:text-muted-foreground hover:underline">
+              {fullname}
+            </p>
+          </Link>
           <p className="text-sm text-foreground truncate">
             wants to follow you
           </p>

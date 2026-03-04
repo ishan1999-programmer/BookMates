@@ -2,9 +2,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 
-const CommentCard = ({ fullname, avatar, createdAt, text }) => {
-  
+const CommentCard = ({ fullname,username, avatar, createdAt, text }) => {
   return (
     <Card>
       <CardContent className="p-5">
@@ -17,9 +17,11 @@ const CommentCard = ({ fullname, avatar, createdAt, text }) => {
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <h4 className="font-medium text-foreground hover:text-primary transition-colors">
-                {fullname}
-              </h4>
+              <Link to={`/users/${username}`}>
+                <h4 className="font-medium text-foreground hover:text-muted-foreground hover:underline">
+                  {fullname}
+                </h4>
+              </Link>
               <p className="text-sm text-muted-foreground">
                 {formatDistanceToNow(createdAt, { addSuffix: true })}
               </p>

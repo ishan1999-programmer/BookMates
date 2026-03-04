@@ -9,31 +9,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import NotificationCard from "./NotificationCard";
+import NotificationCardSkeleton from "./NotificationCardSkeleton";
+import NoNotifications from "./NoNotifications";
+import ErrorNotifications from "./ErrorNotifications";
+import useFetchNotifications from "../hooks/useFetchNotifications";
 
 const NotificationButton = () => {
+  const { data, isFetching, error, fetchNotifications } =
+    useFetchNotifications();
   const isMobile = useIsMobile();
 
-  const notificationData = [
-    {
-      sender: "Ishan Tripathi",
-      type: "like",
-      postTitle: "The Silent Patient",
-      isRead: true,
-      createdAt: "2 hours ago",
-    },
-    {
-      sender: "Karuna Gupta",
-      type: "comment",
-      postTitle: "Rock Paper Scissor",
-      isRead: false,
-      createdAt: "2 hours ago",
-    },
-  ];
-
-  const unreadCount = notificationData.reduce(
-    (acc, curr) => (!curr.isRead ? acc + 1 : 0),
-    0
-  );
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,39 +30,51 @@ const NotificationButton = () => {
           <Bell
             className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
           />{" "}
-          {notificationData.length > 0 && (
+          {data.length > 0 && (
             <Badge
               variant="destructive"
               className="absolute -top-1 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {unreadCount}
+              {data.length}
             </Badge>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="pl-0 pr-0 pb-0 w-96">
+      <PopoverContent
+        align="end"
+        className="pl-0 pr-0 pb-0 w-96 max-h-[357px] overflow-y-auto"
+      >
         <div className="mb-3 pl-4">
           <h3 className="font-semibold text-lg">Notifications</h3>{" "}
-          {notificationData.length > 0 && (
-            <p className="text-sm text-muted-foreground">{`${unreadCount} unread`}</p>
+          {!isFetching && !error && data.length > 0 && (
+            <p className="text-sm text-muted-foreground">{`${data.length} unread`}</p>
           )}
         </div>
-        {notificationData.length > 0 ? (
-          <div>
-            {notificationData.map((notification) => (
+        {isFetching ? (
+          <>
+            <NotificationCardSkeleton />
+            <NotificationCardSkeleton />
+            <NotificationCardSkeleton />
+          </>
+        ) : error ? (
+          <ErrorNotifications fetchAgain={fetchNotifications} />
+        ) : data.length === 0 ? (
+          <NoNotifications />
+        ) : (
+          <>
+            {data.map((d) => (
               <NotificationCard
-                sender={notification.sender}
-                type={notification.type}
-                postTitle={notification.postTitle}
-                isRead={notification.isRead}
-                createdAt={notification.createdAt}
+                key={d._id}
+                fullname={d.sender.fullname}
+                username={d.sender.username}
+                avatar={d.sender.avatar}
+                type={d.type}
+                postTitle={d.post.bookTitle}
+                isRead={d.isRead}
+                createdAt={d.createdAt}
               />
             ))}
-          </div>
-        ) : (
-          <div className="p-4 text-center text-muted-foreground">
-            No notifications yet
-          </div>
+          </>
         )}
       </PopoverContent>
     </Popover>

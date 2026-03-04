@@ -1,55 +1,57 @@
 import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MessageCircle, Heart } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 
-const NotificationCard = ({ sender, type, isRead, createdAt, postTitle }) => {
-  const notification = {
-    sender,
-    senderAvatar: sender
-      ? sender.split(" ").reduce((acc, curr) => acc + curr[0].toUpperCase(), "")
-      : "",
-    postTitle,
-    icon: type === "like" ? Heart : MessageCircle,
-    iconColor: type === "like" ? "red" : "blue",
-    message: type === "like" ? "liked your post" : "commented on your post",
-    isRead,
-    createdAt,
-  };
+const NotificationCard = ({
+  fullname,
+  username,
+  avatar,
+  type,
+  isRead,
+  createdAt,
+  postTitle,
+}) => {
   return (
     <div
       className={`flex gap-3 pb-4 pt-3 pl-4 pr-4 ${
-        !notification.isRead ? "bg-primary/5" : ""
-      } border-t border-border hover:bg-accent/50 transition-colors`}
+        !isRead ? "bg-primary/5" : ""
+      } border-t border-border`}
     >
+      {!isRead && <div className="w-2 h-2 bg-primary rounded-full mt-3" />}
       <Avatar className="w-8 h-8 flex-shrink-0">
+        <AvatarImage src={avatar} />
         <AvatarFallback className="bg-primary/10 text-primary text-sm">
-          {notification.senderAvatar}
+          {avatar}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex flex-col gap-1 min-w-0">
         <div className="flex gap-1 items-center min-w-0">
-          <notification.icon className={`h-4 w-4 flex-shrink-0 text-${notification.iconColor}-500`} />
+          {type === "like" ? (
+            <Heart className={`h-4 w-4 flex-shrink-0 text-red-500`} />
+          ) : (
+            <MessageCircle className={`h-4 w-4 flex-shrink-0 text-blue-500`} />
+          )}
 
-          <p className="font-medium text-sm truncate">{notification.sender}</p>
+          <Link to={`/users/${username}`}>
+            <p className="font-medium text-sm truncate hover:text-muted-foreground hover:underline">
+              {fullname}
+            </p>
+          </Link>
 
           <p className="text-sm text-foreground truncate">
-            {notification.message}
+            {type === "like" ? "liked your post" : "commented on your post"}
           </p>
         </div>
 
-        <p className="text-xs text-primary truncate">
-          {notification.postTitle}
-        </p>
+        <p className="text-xs text-primary truncate">{postTitle}</p>
 
         <p className="text-xs text-muted-foreground mt-1">
-          {notification.createdAt}
+          {formatDistanceToNow(createdAt, { addSuffix: true })}
         </p>
       </div>
-
-      {!notification.isRead && (
-        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1" />
-      )}
     </div>
   );
 };
