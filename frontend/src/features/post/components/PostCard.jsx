@@ -143,7 +143,7 @@ const PostCard = ({
         {isCommentsShow && (
           <div className="flex flex-col border-border border-t pt-5">
             <h3 className="text-xl font-semibold text-foreground mb-3">
-              {`Comments (${comments.length})`}
+              {`Comments (${commentsCount})`}
             </h3>
             <CommentInputCard
               postId={postId}

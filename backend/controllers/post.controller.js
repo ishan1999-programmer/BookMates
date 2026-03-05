@@ -32,16 +32,28 @@ const createPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
+  
+
   try {
+    const { userId } = req.user;
     const { postId } = req.params;
-    const post = await Post.findById(postId);
-    if (!post) {
+
+    const existingPost = await Post.findById(postId)
+      .populate("user", "fullname username avatar")
+      .lean();
+    if (!existingPost) {
       return res
         .status(404)
         .json({ success: false, message: "Post not found." });
     }
-    res.status(200).json({ success: true, data: post });
+
+    const isLikedByMe = await Like.exists({ user: userId, post: postId });
+
+    existingPost.isLikedByMe = isLikedByMe ? true : false;
+    res.status(200).json({ success: true, data: existingPost });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while getting post.",
@@ -128,12 +140,12 @@ const getCurrentUserFeed = async (req, res) => {
         })
           .sort({ createdAt: -1, _id: -1 })
           .limit(21)
-          .populate("user", "_id fullname username avatar")
+          .populate("user", "fullname username avatar")
           .lean()
       : Post.find({ user: { $in: newFeedAuthorIds } })
           .sort({ createdAt: -1, _id: -1 })
           .limit(21)
-          .populate("user", "_id fullname username avatar")
+          .populate("user", "fullname username avatar")
           .lean();
 
     userFeed = await userFeed;

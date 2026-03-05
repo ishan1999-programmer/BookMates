@@ -6,6 +6,7 @@ import Landing from "../features/landing/pages/Landing.jsx";
 import Settings from "@/features/user/pages/Settings.jsx";
 import Profile from "@/features/user/pages/Profile.jsx";
 import AddPost from "@/features/post/pages/AddPost.jsx";
+import Post from "@/features/post/pages/Post.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout.jsx";
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/users/:username" element={<Profile />} />
           <Route path="/add-post" element={<AddPost />} />
+          <Route path="/posts/:postId" element={<Post />} />
         </Route>
       </Route>
     </Routes>

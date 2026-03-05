@@ -11,5 +11,6 @@ const getFeed = (cursor) => {
     );
   }
 };
+const getPost = (postId) => axiosInstance.get(`/posts/${postId}`);
 
-export { createPost, getFeed };
+export { createPost, getFeed, getPost };

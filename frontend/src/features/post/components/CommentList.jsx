@@ -48,7 +48,7 @@ const CommentList = ({
         </>
       ) : error ? (
         <p
-          onClick={() => fetchNext()}
+          onClick={() => fetchNext(postId)}
           className="text-primary text-center cursor-pointer hover:text-primary/80 underline text-sm font-medium"
         >
           Couldn’t load more comments. Tap to retry.
@@ -56,7 +56,7 @@ const CommentList = ({
       ) : (
         hasMore && (
           <p
-            onClick={() => fetchNext()}
+            onClick={() => fetchNext(postId)}
             className="text-primary text-center cursor-pointer hover:text-primary/80 hover:underline text-sm font-medium"
           >
             View more comments

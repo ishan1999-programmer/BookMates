@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Bell, MessageCircle, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,12 +15,13 @@ import ErrorNotifications from "./ErrorNotifications";
 import useFetchNotifications from "../hooks/useFetchNotifications";
 
 const NotificationButton = () => {
+  const [open, setOpen] = useState(false);
   const { data, isFetching, error, fetchNotifications } =
     useFetchNotifications();
   const isMobile = useIsMobile();
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
@@ -70,8 +71,10 @@ const NotificationButton = () => {
                 avatar={d.sender.avatar}
                 type={d.type}
                 postTitle={d.post.bookTitle}
+                postId={d.post._id}
                 isRead={d.isRead}
                 createdAt={d.createdAt}
+                setOpen={setOpen}
               />
             ))}
           </>

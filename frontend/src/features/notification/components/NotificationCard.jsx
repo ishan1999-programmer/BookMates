@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MessageCircle, Heart } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NotificationCard = ({
   fullname,
@@ -12,12 +12,19 @@ const NotificationCard = ({
   isRead,
   createdAt,
   postTitle,
+  postId,
+  setOpen,
 }) => {
+  const navigate = useNavigate();
   return (
     <div
       className={`flex gap-3 pb-4 pt-3 pl-4 pr-4 ${
         !isRead ? "bg-primary/5" : ""
-      } border-t border-border`}
+      } border-t border-border cursor-pointer`}
+      onClick={() => {
+        setOpen(false);
+        navigate(`/posts/${postId}`);
+      }}
     >
       {!isRead && <div className="w-2 h-2 bg-primary rounded-full mt-3" />}
       <Avatar className="w-8 h-8 flex-shrink-0">
@@ -35,11 +42,16 @@ const NotificationCard = ({
             <MessageCircle className={`h-4 w-4 flex-shrink-0 text-blue-500`} />
           )}
 
-          <Link to={`/users/${username}`}>
-            <p className="font-medium text-sm truncate hover:text-muted-foreground hover:underline">
-              {fullname}
-            </p>
-          </Link>
+          <p
+            className="font-medium text-sm truncate hover:text-muted-foreground hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              navigate(`/users/${username}`);
+            }}
+          >
+            {fullname}
+          </p>
 
           <p className="text-sm text-foreground truncate">
             {type === "like" ? "liked your post" : "commented on your post"}

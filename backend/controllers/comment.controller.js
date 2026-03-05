@@ -44,19 +44,6 @@ const createComment = async (req, res) => {
       { runValidators: true, new: true },
     );
 
-    const existingNotification = await Notification.exists({
-      sender: userId,
-      receiver: existingPost.user,
-      post: postId,
-      type: "comment",
-    });
-
-    if (existingNotification) {
-      return res
-        .status(409)
-        .json({ success: false, message: "Notification already exists." });
-    }
-
     await Notification.create({
       sender: userId,
       receiver: existingPost.user,
@@ -101,7 +88,6 @@ const getCommentsByPost = async (req, res) => {
   try {
     const { postId } = req.params;
     const { createdAt, _id } = req.query;
-
 
     const isExistingPost = await Post.exists({ _id: postId });
     if (!isExistingPost) {
@@ -160,6 +146,8 @@ const getCommentsByPost = async (req, res) => {
       .status(200)
       .json({ success: true, data: { comments, nextCursor, hasMore } });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while getting comments of post.",

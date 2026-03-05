@@ -10,7 +10,7 @@ import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-function ErrorProfile({ errorStatus, reFetch }) {
+function ErrorPost({ errorStatus, reFetch, postId }) {
   const navigate = useNavigate();
   return (
     <Empty className="h-full">
@@ -20,13 +20,13 @@ function ErrorProfile({ errorStatus, reFetch }) {
         </EmptyMedia>
         <EmptyTitle>
           {errorStatus === 404
-            ? "User not found"
+            ? "Post not found"
             : "Oops, something went wrong"}
         </EmptyTitle>
         <EmptyDescription className="max-w-xs text-pretty">
           {errorStatus === 404
-            ? "The profile you’re looking for doesn’t exist."
-            : "We couldn’t fetch your profile right now. Please try again."}
+            ? "The post you’re looking for doesn’t exist."
+            : "We couldn’t fetch your post right now. Please try again."}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
@@ -36,7 +36,7 @@ function ErrorProfile({ errorStatus, reFetch }) {
           </Button>
         ) : (
           <p
-            onClick={() => reFetch()}
+            onClick={() => reFetch(postId)}
             className="text-primary text-center cursor-pointer hover:text-primary/80 hover:underline text-sm font-medium"
           >
             Try Again
@@ -47,4 +47,4 @@ function ErrorProfile({ errorStatus, reFetch }) {
   );
 }
 
-export default ErrorProfile;
+export default ErrorPost;
