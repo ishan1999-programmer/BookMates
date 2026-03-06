@@ -16,9 +16,18 @@ import useFetchNotifications from "../hooks/useFetchNotifications";
 
 const NotificationButton = () => {
   const [open, setOpen] = useState(false);
-  const { data, isFetching, error, fetchNotifications } =
-    useFetchNotifications();
+  const {
+    data,
+    isFetching,
+    error,
+    count: notReadCount,
+    fetchNotifications,
+    markNotificationRead,
+  } = useFetchNotifications();
   const isMobile = useIsMobile();
+
+  console.log(data);
+  
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -31,12 +40,12 @@ const NotificationButton = () => {
           <Bell
             className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
           />{" "}
-          {data.length > 0 && (
+          {notReadCount > 0 && (
             <Badge
               variant="destructive"
               className="absolute -top-1 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {data.length}
+              {notReadCount}
             </Badge>
           )}
         </Button>
@@ -48,7 +57,7 @@ const NotificationButton = () => {
         <div className="mb-3 pl-4">
           <h3 className="font-semibold text-lg">Notifications</h3>{" "}
           {!isFetching && !error && data.length > 0 && (
-            <p className="text-sm text-muted-foreground">{`${data.length} unread`}</p>
+            <p className="text-sm text-muted-foreground">{`${notReadCount} unread`}</p>
           )}
         </div>
         {isFetching ? (
@@ -66,6 +75,7 @@ const NotificationButton = () => {
             {data.map((d) => (
               <NotificationCard
                 key={d._id}
+                notificationId={d._id}
                 fullname={d.sender.fullname}
                 username={d.sender.username}
                 avatar={d.sender.avatar}
@@ -75,6 +85,7 @@ const NotificationButton = () => {
                 isRead={d.isRead}
                 createdAt={d.createdAt}
                 setOpen={setOpen}
+                markNotificationRead={markNotificationRead}
               />
             ))}
           </>

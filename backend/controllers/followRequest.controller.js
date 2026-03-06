@@ -84,7 +84,6 @@ const cancelFollowRequest = async (req, res) => {
 };
 
 const acceptFollowRequest = async (req, res) => {
-
   try {
     const { followRequestId } = req.params;
 
@@ -154,8 +153,6 @@ const acceptFollowRequest = async (req, res) => {
 };
 
 const rejectFollowRequest = async (req, res) => {
-  
-
   try {
     const { followRequestId } = req.params;
 
@@ -220,7 +217,9 @@ const getFollowRequests = async (req, res) => {
 
     const followRequests = await FollowRequest.find({
       receiver: userId,
-    }).populate("sender", "fullname username avatar");
+    })
+      .sort({ createdAt: -1 })
+      .populate("sender", "fullname username avatar");
 
     return res.status(200).json({ success: true, data: followRequests });
   } catch (error) {

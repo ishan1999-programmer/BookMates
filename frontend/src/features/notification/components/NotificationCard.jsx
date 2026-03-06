@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
 const NotificationCard = ({
+  notificationId,
   fullname,
   username,
   avatar,
@@ -14,6 +15,7 @@ const NotificationCard = ({
   postTitle,
   postId,
   setOpen,
+  markNotificationRead,
 }) => {
   const navigate = useNavigate();
   return (
@@ -24,6 +26,7 @@ const NotificationCard = ({
       onClick={() => {
         setOpen(false);
         navigate(`/posts/${postId}`);
+        markNotificationRead(notificationId);
       }}
     >
       {!isRead && <div className="w-2 h-2 bg-primary rounded-full mt-3" />}

@@ -12,11 +12,19 @@ const getNotifications = async (req, res) => {
     }
 
     const notifications = await Notification.find({ receiver: userId })
+      .sort({ createdAt: -1 })
       .populate("sender", "avatar fullname username")
       .populate("post", "bookTitle")
       .lean();
 
-    return res.status(200).json({ success: true, data: notifications });
+    const notReadCount = notifications.reduce(
+      (acc, curr) => (curr.isRead ? acc : acc + 1),
+      0,
+    );
+
+    return res
+      .status(200)
+      .json({ success: true, data: { notifications, notReadCount } });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -25,4 +33,36 @@ const getNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getNotifications };
+const updateNotification = async (req, res) => {
+  try {
+    const { notificationId } = req.params;
+
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { isRead: true },
+      { runValidators: true, new: true },
+    );
+
+    if (!updatedNotification) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found." });
+    }
+
+    return res.status(200).json({ success: true, data: updatedNotification });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed while updating notification.",
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "An unexpected error occurred while updating notification.",
+      });
+    }
+  }
+};
+
+module.exports = { getNotifications, updateNotification };
