@@ -124,14 +124,10 @@ const SignupForm = () => {
                 placeholder="Create a password"
                 {...register("password", {
                   required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
-                  },
                   pattern: {
                     value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
                     message:
-                      "Password must contain at least one letter and one number",
+                      "Password must contain at least 8 characters, including one letter and one number.",
                   },
                 })}
               />

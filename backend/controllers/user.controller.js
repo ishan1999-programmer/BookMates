@@ -13,6 +13,16 @@ const createUser = async (req, res) => {
         message: "User already exists with this email.",
       });
     }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must contain at least 8 characters, including one letter and one number.",
+      });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await User.create({
@@ -21,7 +31,6 @@ const createUser = async (req, res) => {
     });
     res.status(201).json({ success: true, data: newUser });
   } catch (error) {
-    console.log(error);
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
@@ -264,6 +273,15 @@ const updateUserPassword = async (req, res) => {
       return res
         .status(401)
         .json({ success: false, message: "Incorrect current password" });
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must contain at least 8 characters, including one letter and one number.",
+      });
     }
 
     const salt = await bcrypt.genSalt();
