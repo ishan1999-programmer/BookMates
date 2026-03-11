@@ -32,8 +32,12 @@ const NotificationCard = ({
       {!isRead && <div className="w-2 h-2 bg-primary rounded-full mt-3" />}
       <Avatar className="w-8 h-8 flex-shrink-0">
         <AvatarImage src={avatar} />
-        <AvatarFallback className="bg-primary/10 text-primary text-sm">
-          {avatar}
+        <AvatarFallback className="text-m bg-primary/10 text-primary">
+          {fullname
+            .split(" ")
+            .map((u) => u[0])
+            .join("")
+            .toUpperCase()}
         </AvatarFallback>
       </Avatar>
 

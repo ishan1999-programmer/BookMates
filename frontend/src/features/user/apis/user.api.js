@@ -10,4 +10,17 @@ const unfollowUser = (userId) =>
 
 const followUser = (userId) => axiosInstance.post(`/users/${userId}/follow`);
 
-export { getUser, searchUsers, unfollowUser, followUser };
+const updateUserInfo = (updatedDetails) =>
+  axiosInstance.put("users/me", updatedDetails);
+
+const updateUserPassword = (updatedPasswordDetails) =>
+  axiosInstance.put("users/me/password", updatedPasswordDetails);
+
+export {
+  getUser,
+  searchUsers,
+  unfollowUser,
+  followUser,
+  updateUserInfo,
+  updateUserPassword,
+};

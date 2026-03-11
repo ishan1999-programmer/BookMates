@@ -16,11 +16,11 @@ const Profile = () => {
   const myUsername = localStorage.getItem("username");
   const isOwnProfile = !username || username === myUsername;
   const {
-    userData,
+    data,
     isFetching,
     error,
     getUser: reFetch,
-  } = useUserProfile(username || myUsername);
+  } = useUserProfile(isOwnProfile ? myUsername : username);
   const { isSubmitting: isSendingFollowRequest, sendFollowRequest } =
     useSendRequest();
   const { isSubmitting: isCancelingFollowRequest, cancelFollowRequest } =
@@ -39,29 +39,29 @@ const Profile = () => {
   return (
     <div className="flex flex-col gap-5">
       <ProfileInformationCard
-        fullname={userData?.fullname}
-        username={userData?.username}
-        avatar={userData?.avatar}
-        bio={userData?.bio}
-        followersCount={userData?.followersCount}
-        followingsCount={userData?.followingsCount}
-        booksReadCount={userData?.booksReadCount}
-        favGenres={[]}
-        createdAt={userData?.createdAt}
+        fullname={data?.fullname}
+        username={data?.username}
+        avatar={data?.avatar}
+        bio={data?.bio}
+        followersCount={data?.followersCount}
+        followingsCount={data?.followingsCount}
+        booksReadCount={data?.booksReadCount}
+        favGenres={data?.favGenres}
+        createdAt={data?.createdAt}
         isOwnProfile={isOwnProfile}
         isSendingFollowRequest={isSendingFollowRequest}
         sendFollowRequest={sendFollowRequest}
         isCancelingFollowRequest={isCancelingFollowRequest}
         cancelFollowRequest={cancelFollowRequest}
-        userId={userData._id}
-        isFollowedByMe={userData.isFollowedByMe}
+        userId={data._id}
+        isFollowedByMe={data.isFollowedByMe}
         isUnfollowing={isUnfollowing}
         unfollowUser={unfollowUser}
         isFollowing={isFollowing}
         followUser={followUser}
-        isPrivate={userData.isPrivate}
-        isFollowRequestSent={userData.isFollowRequestSent}
-        followRequestId={userData.followRequestId}
+        isPrivate={data.isPrivate}
+        isFollowRequestSent={data.isFollowRequestSent}
+        followRequestId={data.followRequestId}
       />
       <ProfileTabs isOwnProfile={isOwnProfile} />
     </div>

@@ -107,7 +107,11 @@ const ProfileInformationCard = ({
           <Avatar className="w-32 h-32">
             <AvatarImage src={avatar} />
             <AvatarFallback className="text-4xl font-bold bg-primary/10 text-primary">
-              IT
+              {fullname
+                .split(" ")
+                .map((u) => u[0])
+                .join("")
+                .toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col flex-1 gap-4">
@@ -173,13 +177,13 @@ const ProfileInformationCard = ({
                   Favourite Genres
                 </Label>
                 <div className="flex flex-wrap gap-2">
-                  {favGenres.map((genre) => (
+                  {favGenres.map((genre,idx) => (
                     <Badge
                       variant="secondary"
                       className="bg-accent/50"
-                      key={genre.id}
+                      key={idx}
                     >
-                      {genre.label}
+                      {genre}
                     </Badge>
                   ))}
                 </div>

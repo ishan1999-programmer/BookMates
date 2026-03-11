@@ -36,7 +36,7 @@ const createUser = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+const getUserByUsername = async (req, res) => {
   try {
     const { userId } = req.user;
     const { username } = req.params;
@@ -78,12 +78,15 @@ const getUser = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId)
+      .select("-password -followers -followings -booksRead")
+      .lean();
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found." });
+        .json({ success: false, message: "User not found" });
     }
+
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({
@@ -209,10 +212,11 @@ const followUser = async (req, res) => {
   }
 };
 
-const updateCurrentUser = async (req, res) => {
+const updateUserInfo = async (req, res) => {
   try {
     const { userId } = req.user;
     const updatedUserDetails = req.body;
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       updatedUserDetails,
@@ -223,7 +227,7 @@ const updateCurrentUser = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found." });
     }
-    res.status(200).json({ success: true, data: updatedUser });
+    return res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({
@@ -239,7 +243,58 @@ const updateCurrentUser = async (req, res) => {
   }
 };
 
-const deleteCurrentUser = async (req, res) => {
+const updateUserPassword = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { currentPassword, newPassword } = req.body;
+    const existingUser = await User.findById(userId).select("password");
+
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const isPasswordMatched = await bcrypt.compare(
+      currentPassword,
+      existingUser.password,
+    );
+
+    if (!isPasswordMatched) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect current password" });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        password: hashedNewPassword,
+      },
+      { runValidators: true, new: true },
+    ).select("-password");
+
+    return res.status(200).json({ success: true, data: updatedUser });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed while updating user password.",
+      });
+    }
+    res.status(500).json({
+      success: false,
+      message:
+        error.message ||
+        "An unexpected error occurred while updating user password.",
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
   try {
     const { userId } = req.user;
     const deletedUser =
@@ -291,10 +346,11 @@ const searchUsers = async (req, res) => {
 };
 
 module.exports = {
-  getUser,
+  getUserByUsername,
   getCurrentUser,
-  updateCurrentUser,
-  deleteCurrentUser,
+  updateUserInfo,
+  updateUserPassword,
+  deleteUser,
   createUser,
   unfollowUser,
   followUser,

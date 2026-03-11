@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SearchCardSkeleton = ({ fullname, username, avatar, _id }) => {

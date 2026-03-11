@@ -6,14 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import useUpdateUserPassword from "../hooks/useUpdateUserPassword";
 
 const ChangePasswordCard = () => {
+  const { isSubmitting, updateUserPassword } = useUpdateUserPassword();
   const {
     register,
     handleSubmit,
     setError,
+    getValues,
+    reset,
     formState: { errors },
   } = useForm();
+
+  const onSubmit = async (formData) => {
+    try {
+      const { currentPassword, newPassword } = formData;
+      await updateUserPassword({ currentPassword, newPassword });
+      toast.success("Password updated successfully", {
+        position: "top-center",
+      });
+      reset();
+    } catch (error) {
+      setError("root", {
+        message:
+          error?.message || "Updating password failed. Please try again.",
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -24,7 +46,7 @@ const ChangePasswordCard = () => {
       </CardHeader>
 
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <Input
               id="currentPassword"
@@ -85,7 +107,18 @@ const ChangePasswordCard = () => {
               </p>
             )}
           </div>
-          <Button type="submit" className="mt-4">Change Password</Button>
+          <p className="text-sm text-red-500 text-center mt-2">
+            {errors.root?.message}
+          </p>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="mt-4 w-[150px]"
+            >
+              {isSubmitting ? <Spinner /> : "Change Password"}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

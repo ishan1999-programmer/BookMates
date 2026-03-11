@@ -2,10 +2,11 @@ const express = require("express");
 
 const {
   createUser,
-  getUser,
+  getUserByUsername,
   getCurrentUser,
-  updateCurrentUser,
-  deleteCurrentUser,
+  updateUserInfo,
+  updateUserPassword,
+  deleteUser,
   unfollowUser,
   followUser,
   searchUsers
@@ -24,14 +25,15 @@ const userRouter = express.Router();
 userRouter.get("/search", authenticator, searchUsers);
 userRouter.post("/", createUser);
 userRouter.get("/me", authenticator, getCurrentUser);
-userRouter.put("/me", authenticator, updateCurrentUser);
-userRouter.delete("/me", authenticator, deleteCurrentUser);
+userRouter.put("/me", authenticator, updateUserInfo);
+userRouter.put("/me/password", authenticator, updateUserPassword);
+userRouter.delete("/me", authenticator, deleteUser);
 userRouter.get("/me/posts", authenticator, getCurrentUserPosts);
 userRouter.get("/me/feed", authenticator, getCurrentUserFeed);
 userRouter.delete("/:userId/follow", authenticator, unfollowUser);
 userRouter.post("/:userId/follow", authenticator, followUser);
 userRouter.get("/:userId/posts", authenticator, getPostsByUser);
-userRouter.get("/:username", authenticator, getUser);
+userRouter.get("/:username", authenticator, getUserByUsername);
 
 
 module.exports = userRouter;

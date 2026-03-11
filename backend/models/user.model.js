@@ -27,7 +27,11 @@ const userSchema = new Schema(
       lowercase: true,
       unique: [true, "Username already exists"],
     },
-    bio: { type: String, default: "" },
+    bio: {
+      type: String,
+      default: "",
+      maxlength: [250, "Bio must be at most 250 characters long"],
+    },
     avatar: { type: String, default: "" },
     favGenres: [{ type: String }],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],

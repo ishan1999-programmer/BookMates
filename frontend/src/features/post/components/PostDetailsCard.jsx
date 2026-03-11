@@ -107,23 +107,23 @@ const PostDetailsCard = () => {
               }}
               render={({ field }) => (
                 <div className="flex flex-wrap gap-2">
-                  {genres.map((genre) => {
-                    const isSelected = field.value.includes(genre.label);
+                  {genres.map((genre,idx) => {
+                    const isSelected = field.value.includes(genre);
 
                     return (
                       <Badge
-                        key={genre.id}
+                        key={idx}
                         className="cursor-pointer"
                         variant={isSelected ? "default" : "outline"}
                         onClick={() => {
                           const newGenres = isSelected
-                            ? field.value.filter((g) => g !== genre.label)
-                            : [...field.value, genre.label];
+                            ? field.value.filter((g) => g !== genre)
+                            : [...field.value, genre];
 
                           field.onChange(newGenres);
                         }}
                       >
-                        {genre.label}
+                        {genre}
                       </Badge>
                     );
                   })}

@@ -12,8 +12,12 @@ const FollowCard = ({ fullname, username, isFollow }) => {
           <div className="flex items-center gap-3">
             <Avatar className="w-12 h-12">
               <AvatarImage src="" />
-              <AvatarFallback className="text-m font-bold bg-primary/10 text-primary">
-                IT
+              <AvatarFallback className="text-m bg-primary/10 text-primary">
+                {fullname
+                  .split(" ")
+                  .map((u) => u[0])
+                  .join("")
+                  .toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">

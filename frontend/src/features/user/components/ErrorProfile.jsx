@@ -6,7 +6,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { BookOpen } from "lucide-react";
+import { User, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ function ErrorProfile({ errorStatus, reFetch }) {
     <Empty className="h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <BookOpen />
+          {errorStatus === 404 ? <UserX /> : <User />}
         </EmptyMedia>
         <EmptyTitle>
           {errorStatus === 404

@@ -10,8 +10,12 @@ const SearchCard = ({ fullname, username, avatar, _id }) => {
       >
         <Avatar className="w-8 h-8 flex-shrink-0">
           <AvatarImage src={avatar} />
-          <AvatarFallback className="bg-primary/10 text-primary">
-            IT
+          <AvatarFallback className="text-m bg-primary/10 text-primary">
+            {fullname
+              .split(" ")
+              .map((u) => u[0])
+              .join("")
+              .toUpperCase()}
           </AvatarFallback>
         </Avatar>
 

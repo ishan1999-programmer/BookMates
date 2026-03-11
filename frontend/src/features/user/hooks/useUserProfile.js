@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getUser as getUserApi } from "../apis/user.api";
 
 const useUserProfile = (username) => {
-  const [userData, setUserData] = useState(null);
+  const [data, setData] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,7 +12,7 @@ const useUserProfile = (username) => {
     try {
       const response = await getUserApi(username);
       const { data } = response.data;
-      setUserData(data);
+      setData(data);
     } catch (error) {
       setError(error);
     } finally {
@@ -24,7 +24,7 @@ const useUserProfile = (username) => {
     getUser();
   }, [username]);
 
-  return { userData, isFetching, error, getUser };
+  return { data, isFetching, error, getUser };
 };
 
 export default useUserProfile;
