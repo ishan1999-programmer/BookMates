@@ -16,8 +16,10 @@ const updateUserInfo = (updatedDetails) =>
 const updateUserPassword = (updatedPasswordDetails) =>
   axiosInstance.put("/users/me/password", updatedPasswordDetails);
 
-const deleteUser = () => axiosInstance.delete("/users/me");
-
+const deleteUser = (password) =>
+  axiosInstance.delete("/users/me", {
+    data: password,
+  });
 export {
   getUser,
   searchUsers,

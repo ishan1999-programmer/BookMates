@@ -1,12 +1,22 @@
-import React from "react";
+import { useEffect } from "react";
 import "../styles/landing.css";
 import { BookOpen, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import features from "../data/features";
 import FeatureCard from "../components/FeatureCard";
+import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 const Landing = () => {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.accountDeletionSuccess) {
+      toast.success("Your account has been permanently deleted", {
+        position: "top-center",
+      });
+    }
+  }, [location.state?.accountDeletionSuccess]);
   return (
     <div className="landing-page bg-gradient-to-br from-accent via-background to-secondary">
       <section className="hero-section">

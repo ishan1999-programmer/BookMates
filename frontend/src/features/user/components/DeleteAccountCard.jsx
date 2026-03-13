@@ -15,12 +15,28 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import useDeleteUser from "../hooks/useDeleteUser";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const DeleteAccountCard = () => {
+  const { isSubmitting, deleteUser, error } = useDeleteUser();
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleClick = async () => {
-    alert("clicked");
+    try {
+      await deleteUser({ password });
+      localStorage.clear();
+      navigate("/", {
+        replace: true,
+        state: { accountDeletionSuccess: true },
+      });
+    } catch (error) {
+    } finally {
+      setPassword("");
+    }
   };
 
   return (
@@ -61,25 +77,37 @@ const DeleteAccountCard = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {error && (
+                  <p className="text-sm text-red-500 text-center">
+                    {error?.message}
+                  </p>
+                )}
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel asChild>
-                  <Button variant="outline" onClick={() => setPassword("")}>
+                  <Button
+                    variant="outline"
+                    disabled={isSubmitting}
+                    onClick={() => setPassword("")}
+                  >
                     Cancel
                   </Button>
                 </AlertDialogCancel>
 
-                <AlertDialogAction asChild>
-                  <Button
-                    variant="destructive"
-                    className="bg-destructive text-white hover:bg-destructive/90"
-                    disabled={!password}
-                    onClick={handleClick}
-                  >
-                    <Trash2 />
-                    Permanently Delete Account
-                  </Button>
-                </AlertDialogAction>
+                <Button
+                  variant="destructive"
+                  className="bg-destructive text-white hover:bg-destructive/90 min-w-[245px]"
+                  disabled={!password || isSubmitting}
+                  onClick={handleClick}
+                >
+                  {isSubmitting ? (
+                    <Spinner />
+                  ) : (
+                    <>
+                      <Trash2 /> Permanently Delete Account
+                    </>
+                  )}
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
