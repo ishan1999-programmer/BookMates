@@ -11,10 +11,12 @@ const unfollowUser = (userId) =>
 const followUser = (userId) => axiosInstance.post(`/users/${userId}/follow`);
 
 const updateUserInfo = (updatedDetails) =>
-  axiosInstance.put("users/me", updatedDetails);
+  axiosInstance.put("/users/me", updatedDetails);
 
 const updateUserPassword = (updatedPasswordDetails) =>
-  axiosInstance.put("users/me/password", updatedPasswordDetails);
+  axiosInstance.put("/users/me/password", updatedPasswordDetails);
+
+const deleteUser = () => axiosInstance.delete("/users/me");
 
 export {
   getUser,
@@ -23,4 +25,5 @@ export {
   followUser,
   updateUserInfo,
   updateUserPassword,
+  deleteUser,
 };

@@ -12,7 +12,6 @@ const commentSchema = new Schema(
       minlength: [1, "Comment must not be empty"],
       maxlength: [200, "Comment must be atmost 500 characters long"],
     },
-    likesCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

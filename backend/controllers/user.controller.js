@@ -1,6 +1,13 @@
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const followRequest = require("../models/followRequest.model");
+const Post = require("../models/post.model");
+const FollowRequest = require("../models/followRequest.model");
+const Notification = require("../models/notification.model");
+const Read = require("../models/read.model");
+const Comment = require("../models/comment.model");
+const Like = require("../models/like.model");
 
 const createUser = async (req, res) => {
   try {
@@ -315,14 +322,91 @@ const updateUserPassword = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    const deletedUser =
-      await User.findByIdAndDelete(userId).select("-password");
-    if (!deletedUser) {
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required",
+      });
+    }
+
+    const existingUser = await User.findById(userId).select(
+      "password followers followings",
+    );
+
+    if (!existingUser) {
       return res
         .status(404)
         .json({ success: false, message: "User not found." });
     }
-    res.status(200).json({ success: true, data: deletedUser });
+
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      existingUser.password,
+    );
+    if (!isPasswordMatched) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect password" });
+    }
+
+    const posts = await Post.find({ user: userId }).select("_id").lean();
+    const postsIds = posts.map((p) => p._id);
+    await Comment.deleteMany({ post: { $in: postsIds } });
+    await Like.deleteMany({ post: { $in: postsIds } });
+    await Notification.deleteMany({ post: { $in: postsIds } });
+    await Post.deleteMany({ user: userId });
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const commentedPostsWithCount = await Comment.aggregate([
+      { $match: { user: userObjectId } },
+      { $group: { _id: "$post", count: { $sum: 1 } } },
+    ]);
+    for (const post of commentedPostsWithCount) {
+      const { _id: postId, count } = post;
+      await Post.updateOne(
+        { _id: postId },
+        {
+          $inc: { commentsCount: -count },
+        },
+      );
+    }
+    await Comment.deleteMany({ user: userId });
+
+    const likedPosts = await Like.find({ user: userId }).lean();
+    const likedPostsIds = likedPosts.map((c) => c.post);
+    await Post.updateMany(
+      { _id: { $in: likedPostsIds } },
+      { $inc: { likesCount: -1 } },
+    );
+    await Like.deleteMany({ user: userId });
+
+    await FollowRequest.deleteMany({
+      $or: [{ sender: userId }, { receiver: userId }],
+    });
+
+    await Notification.deleteMany({
+      $or: [{ sender: userId }, { receiver: userId }],
+    });
+
+    await Read.deleteMany({ user: userId });
+
+    const followersIds = existingUser.followers;
+    const followingsIds = existingUser.followings;
+    await User.updateMany(
+      { _id: { $in: followersIds } },
+      { $pull: { followings: userId }, $inc: { followingsCount: -1 } },
+    );
+    await User.updateMany(
+      { _id: { $in: followingsIds } },
+      { $pull: { followers: userId }, $inc: { followersCount: -1 } },
+    );
+    await User.findByIdAndDelete(userId);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Account deleted successfully" });
   } catch (error) {
     res.status(500).json({
       success: false,
