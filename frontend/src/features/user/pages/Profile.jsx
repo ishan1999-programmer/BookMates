@@ -63,7 +63,10 @@ const Profile = () => {
         isFollowRequestSent={data.isFollowRequestSent}
         followRequestId={data.followRequestId}
       />
-      <ProfileTabs isOwnProfile={isOwnProfile} />
+      <ProfileTabs
+        isOwnProfile={isOwnProfile}
+        username={isOwnProfile ? myUsername : username}
+      />
     </div>
   );
 };

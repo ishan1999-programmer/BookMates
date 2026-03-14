@@ -6,16 +6,18 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import {BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
-function NoPosts() {
+function NoPosts({ title, description }) {
   return (
     <Empty className="h-full">
       <EmptyHeader>
-        <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
-        <EmptyTitle>No Posts yet.</EmptyTitle>
+        <EmptyMedia variant="icon">
+          <BookOpen />
+        </EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription className="max-w-xs text-pretty">
-          Follow people to see their updates.
+          {description}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent></EmptyContent>

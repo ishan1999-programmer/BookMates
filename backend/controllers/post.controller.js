@@ -32,8 +32,6 @@ const createPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  
-
   try {
     const { userId } = req.user;
     const { postId } = req.params;
@@ -61,26 +59,91 @@ const getPost = async (req, res) => {
   }
 };
 
-const getPostsByUser = async (req, res) => {
+const getPostsByUsername = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const existingUser = await User.findById(userId);
-    if (!existingUser) {
+    const { userId } = req.user;
+    const { username } = req.params;
+    const { createdAt, _id } = req.query;
+
+    const isUserExists = await User.exists({ username });
+    if (!isUserExists) {
       return res
         .status(404)
         .json({ success: false, message: "User not found." });
     }
-    const userPosts = await Post.find({ user: userId });
-    res.status(200).json({ success: true, data: userPosts });
+    const userIdOfUser = isUserExists._id;
+
+    let isCursorValid = false;
+    let parsedDate = null;
+    let parsedId = null;
+
+    if (createdAt && _id) {
+      const tempDate = new Date(createdAt);
+      const isDateValid = !isNaN(tempDate.getTime());
+      const isIdValid = mongoose.Types.ObjectId.isValid(_id);
+
+      if (isDateValid && isIdValid) {
+        parsedDate = tempDate;
+        parsedId = new mongoose.Types.ObjectId(_id);
+        isCursorValid = true;
+      }
+    }
+
+    const userPosts = isCursorValid
+      ? await Post.find({
+          user: userIdOfUser,
+          $or: [
+            { createdAt: { $lt: parsedDate } },
+            { createdAt: parsedDate, _id: { $lt: parsedId } },
+          ],
+        })
+          .sort({ createdAt: -1, _id: -1 })
+          .limit(6)
+          .populate("user", "fullname username avatar")
+          .lean()
+      : await Post.find({ user: userIdOfUser })
+          .sort({ createdAt: -1, _id: -1 })
+          .limit(6)
+          .populate("user", "fullname username avatar")
+          .lean();
+
+    let hasMore = false,
+      nextCursor = null;
+    if (userPosts.length === 6) {
+      hasMore = true;
+      userPosts.pop();
+      nextCursor = {
+        createdAt: userPosts[userPosts.length - 1].createdAt,
+        _id: userPosts[userPosts.length - 1]._id,
+      };
+    }
+
+    const postIds = userPosts.map((post) => post._id);
+    const likedPosts = await Like.find({
+      user: userId,
+      post: { $in: postIds },
+    });
+    const likedPostIds = new Set(
+      likedPosts.map((like) => like.post.toString()),
+    );
+
+    userPosts.forEach((post) => {
+      post.isLikedByMe = likedPostIds.has(post._id.toString());
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, data: { posts: userPosts, hasMore, nextCursor } });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
-      message: "An unexpected error occurred while getting posts of user.",
+      message: "An unexpected error occurred while getting user posts.",
     });
   }
 };
 
-const getCurrentUserPosts = async (req, res) => {
+const getUserPosts = async (req, res) => {
   try {
     const { userId } = req.user;
     const existingUser = await User.findById(userId);
@@ -99,7 +162,7 @@ const getCurrentUserPosts = async (req, res) => {
   }
 };
 
-const getCurrentUserFeed = async (req, res) => {
+const getUserFeed = async (req, res) => {
   try {
     const { userId } = req.user;
     const { createdAt, _id } = req.query;
@@ -111,8 +174,8 @@ const getCurrentUserFeed = async (req, res) => {
         .json({ success: false, message: "User not found." });
     }
 
-    const feedAuthorIds = existingUser.followings;
-    const newFeedAuthorIds = [...feedAuthorIds, userId];
+    const feedUserIds = existingUser.followings;
+    const newFeedUserIds = [...feedUserIds, userId];
 
     let isCursorValid = false;
     let parsedDate = null;
@@ -132,7 +195,7 @@ const getCurrentUserFeed = async (req, res) => {
 
     let userFeed = isCursorValid
       ? Post.find({
-          user: { $in: newFeedAuthorIds },
+          user: { $in: newFeedUserIds },
           $or: [
             { createdAt: { $lt: parsedDate } },
             { createdAt: parsedDate, _id: { $lt: parsedId } },
@@ -142,7 +205,7 @@ const getCurrentUserFeed = async (req, res) => {
           .limit(21)
           .populate("user", "fullname username avatar")
           .lean()
-      : Post.find({ user: { $in: newFeedAuthorIds } })
+      : Post.find({ user: { $in: newFeedUserIds } })
           .sort({ createdAt: -1, _id: -1 })
           .limit(21)
           .populate("user", "fullname username avatar")
@@ -341,9 +404,9 @@ const unlikePost = async (req, res) => {
 module.exports = {
   createPost,
   getPost,
-  getPostsByUser,
-  getCurrentUserFeed,
-  getCurrentUserPosts,
+  getPostsByUsername,
+  getUserFeed,
+  getUserPosts,
   updatePost,
   deletePost,
   likePost,

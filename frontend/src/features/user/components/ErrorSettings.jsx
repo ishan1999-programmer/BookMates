@@ -7,11 +7,9 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+
 
 function ErrorSettings({ reFetch }) {
-  const navigate = useNavigate();
   return (
     <Empty className="h-full">
       <EmptyHeader>

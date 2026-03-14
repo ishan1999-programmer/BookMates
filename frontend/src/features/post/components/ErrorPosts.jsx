@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/empty";
 import { BookOpen } from "lucide-react";
 
-function ErrorPosts({ fetchNext }) {
+function ErrorPosts({ reFetch, username, description }) {
   return (
     <Empty className="h-full">
       <EmptyHeader>
@@ -17,12 +17,12 @@ function ErrorPosts({ fetchNext }) {
         </EmptyMedia>
         <EmptyTitle>Oops, something went wrong</EmptyTitle>
         <EmptyDescription className="max-w-xs text-pretty">
-          We couldn’t fetch your feed right now. Please try again.
+          {description}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <p
-          onClick={() => fetchNext()}
+          onClick={() => reFetch(username)}
           className="text-primary text-center cursor-pointer hover:text-primary/80 hover:underline text-sm font-medium"
         >
           Try Again

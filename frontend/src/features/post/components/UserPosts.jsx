@@ -1,11 +1,11 @@
 import React from "react";
-import PostCard from "../components/PostCard";
-import useFeed from "../hooks/useFeed";
-import NoPosts from "../components/NoPosts";
-import ErrorPosts from "../components/ErrorPosts";
-import PostCardSkeleton from "../components/PostCardSkeleton";
+import PostCard from "./PostCard";
+import useUserPosts from "../hooks/useUserPosts";
+import NoPosts from "./NoPosts";
+import ErrorPosts from "./ErrorPosts";
+import PostCardSkeleton from "./PostCardSkeleton";
 
-const Feed = () => {
+const UserPosts = ({ username }) => {
   const {
     posts,
     hasMore,
@@ -14,13 +14,14 @@ const Feed = () => {
     error,
     toggleLike,
     incrementCommentsCount,
-  } = useFeed();
+  } = useUserPosts(username);
 
   if (error && posts.length === 0) {
     return (
       <ErrorPosts
-        reFetch={fetchNext}                                                                             
-        description="We couldn’t fetch your feed right now. Please try again"
+        reFetch={fetchNext}
+        username={username}
+        description="We couldn’t fetch posts right now. Please try again."
       />
     );
   }
@@ -30,19 +31,13 @@ const Feed = () => {
       <>
         <div className="flex flex-col gap-8 max-w-[1000px]">
           <PostCardSkeleton />
-          <PostCardSkeleton />
         </div>
       </>
     );
   }
 
   if (!isFetching && posts.length === 0) {
-    return (
-      <NoPosts
-        title="No Posts yet"
-        description="Follow people to see their posts"
-      />
-    );
+    return <NoPosts title="No Posts" description="User has not posted yet" />;
   }
 
   return (
@@ -71,11 +66,10 @@ const Feed = () => {
       {isFetching ? (
         <>
           <PostCardSkeleton />
-          <PostCardSkeleton />
         </>
       ) : error ? (
         <p
-          onClick={() => fetchNext()}
+          onClick={() => fetchNext(username)}
           className="text-primary text-center cursor-pointer hover:text-primary/80 underline text-sm font-medium"
         >
           Couldn’t load more posts. Tap to retry.
@@ -83,7 +77,7 @@ const Feed = () => {
       ) : (
         hasMore && (
           <p
-            onClick={() => fetchNext()}
+            onClick={() => fetchNext(username)}
             className="text-primary text-center cursor-pointer hover:text-primary/80 hover:underline text-sm font-medium"
           >
             Show more posts
@@ -94,4 +88,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default UserPosts;

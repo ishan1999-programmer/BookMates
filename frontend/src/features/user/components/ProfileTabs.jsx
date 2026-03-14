@@ -10,57 +10,13 @@ import {
 } from "lucide-react";
 import PostCard from "@/features/post/components/PostCard";
 import FollowCard from "@/features/follow/components/FollowCard";
-const ProfileTabs = ({ isOwnProfile }) => {
+import UserPosts from "@/features/post/components/UserPosts";
+const ProfileTabs = ({ isOwnProfile, username }) => {
   const followData = [
     {
       fullname: "Ishan Tripathi",
       username: "@mystery_reader",
       isFollow: false,
-    },
-    {
-      fullname: "Karuna Gupta",
-      username: "@romance_reader",
-      isFollow: true,
-    },
-    {
-      fullname: "Ishan Tripathi",
-      username: "@mystery_reader",
-      isFollow: false,
-    },
-    {
-      fullname: "Karuna Gupta",
-      username: "@romance_reader",
-      isFollow: true,
-    },
-    {
-      fullname: "Ishan Tripathi",
-      username: "@mystery_reader",
-      isFollow: false,
-    },
-    {
-      fullname: "Karuna Gupta",
-      username: "@romance_reader",
-      isFollow: true,
-    },
-    {
-      fullname: "Ishan Tripathi",
-      username: "@mystery_reader",
-      isFollow: false,
-    },
-    {
-      fullname: "Karuna Gupta",
-      username: "@romance_reader",
-      isFollow: true,
-    },
-    {
-      fullname: "Ishan Tripathi",
-      username: "@mystery_reader",
-      isFollow: false,
-    },
-    {
-      fullname: "Karuna Gupta",
-      username: "@romance_reader",
-      isFollow: true,
     },
   ];
   return (
@@ -88,11 +44,7 @@ const ProfileTabs = ({ isOwnProfile }) => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="posts">
-        {/* <div className="flex flex-col gap-8 mt-5">
-          <PostCard />
-          <PostCard />
-          <PostCard />
-        </div> */}
+        <UserPosts username={username} />
       </TabsContent>
       <TabsContent value="reads"></TabsContent>
       <TabsContent value="followers">

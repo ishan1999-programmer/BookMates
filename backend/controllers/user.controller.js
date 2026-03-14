@@ -91,7 +91,7 @@ const getUserByUsername = async (req, res) => {
   }
 };
 
-const getCurrentUser = async (req, res) => {
+const getUser = async (req, res) => {
   try {
     const { userId } = req.user;
     const user = await User.findById(userId)
@@ -449,7 +449,7 @@ const searchUsers = async (req, res) => {
 
 module.exports = {
   getUserByUsername,
-  getCurrentUser,
+  getUser,
   updateUserInfo,
   updateUserPassword,
   deleteUser,

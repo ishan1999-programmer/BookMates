@@ -152,24 +152,24 @@ const ProfileInformationCard = ({
             </div>
             <p className="text-foreground mb-6 leading-relaxed">{bio}</p>
             <div className="flex gap-5">
-              <Badge className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
+              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
                   {followingsCount}
                 </div>
                 <div className="text-sm text-muted-foreground">Followings</div>
-              </Badge>
-              <Badge className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
+              </div>
+              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
                   {followersCount}
                 </div>
                 <div className="text-sm text-muted-foreground">Followers</div>
-              </Badge>
-              <Badge className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
+              </div>
+              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
                   {booksReadCount}
                 </div>
                 <div className="text-sm text-muted-foreground">Books Read</div>
-              </Badge>
+              </div>
             </div>
             {favGenres.length > 0 && (
               <div>
@@ -177,7 +177,7 @@ const ProfileInformationCard = ({
                   Favourite Genres
                 </Label>
                 <div className="flex flex-wrap gap-2">
-                  {favGenres.map((genre,idx) => (
+                  {favGenres.map((genre, idx) => (
                     <Badge
                       variant="secondary"
                       className="bg-accent/50"

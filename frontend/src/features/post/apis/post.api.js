@@ -12,5 +12,15 @@ const getFeed = (cursor) => {
   }
 };
 const getPost = (postId) => axiosInstance.get(`/posts/${postId}`);
+const getUserPosts = (username, cursor) => {
+  if (!cursor) {
+    return axiosInstance.get(`/users/${username}/posts`);
+  } else {
+    const { createdAt, _id } = cursor;
+    return axiosInstance.get(
+      `/users/${username}/posts?createdAt=${createdAt}&_id=${_id}`,
+    );
+  }
+};
 
-export { createPost, getFeed, getPost };
+export { createPost, getFeed, getPost, getUserPosts };
