@@ -4,7 +4,7 @@ import useUserFollowers from "../hooks/useUserFollowers";
 import NoFollowersFollowings from "./NoFollowersFollowings";
 import ErrorFollowersFollowings from "./ErrorFollowersFollowings";
 
-const UserFollowers = ({ username }) => {
+const UserFollowers = ({ username, isOwnProfile }) => {
   const {
     data,
     isFetching,
@@ -42,8 +42,12 @@ const UserFollowers = ({ username }) => {
   if (!isFetching && data.length === 0) {
     return (
       <NoFollowersFollowings
-        title="No Followers"
-        description="User has no followers yet"
+        title="No followers yet"
+        description={
+          isOwnProfile
+            ? "When people follow you, they'll appear here"
+            : "When people follow this user, they’ll appear here"
+        }
       />
     );
   }

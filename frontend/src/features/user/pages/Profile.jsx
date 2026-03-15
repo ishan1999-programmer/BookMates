@@ -42,6 +42,7 @@ const Profile = () => {
         isSubmitting={isSubmitting}
       />
       <ProfileTabs
+        user={data}
         isOwnProfile={isOwnProfile}
         username={isOwnProfile ? myUsername : username}
       />

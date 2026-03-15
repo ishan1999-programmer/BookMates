@@ -42,8 +42,14 @@ const UserFollowings = ({ username, isOwnProfile }) => {
   if (!isFetching && data.length === 0) {
     return (
       <NoFollowersFollowings
-        title="No Followings"
-        description="User has not followed anyone yet"
+        title={
+          isOwnProfile ? "You're not following anyone" : "Not following anyone"
+        }
+        description={
+          isOwnProfile
+            ? "Follow people to see their posts in your feed"
+            : "Accounts this user follows will appear here"
+        }
       />
     );
   }

@@ -5,7 +5,7 @@ import NoPosts from "./NoPosts";
 import ErrorPosts from "./ErrorPosts";
 import PostCardSkeleton from "./PostCardSkeleton";
 
-const UserPosts = ({ username }) => {
+const UserPosts = ({ username, isOwnProfile }) => {
   const {
     posts,
     hasMore,
@@ -37,7 +37,16 @@ const UserPosts = ({ username }) => {
   }
 
   if (!isFetching && posts.length === 0) {
-    return <NoPosts title="No Posts" description="User has not posted yet" />;
+    return (
+      <NoPosts
+        title="No posts yet"
+        description={
+          isOwnProfile
+            ? "Share your thoughts on books and start posting"
+            : "This user hasn’t shared anything yet"
+        }
+      />
+    );
   }
 
   return (

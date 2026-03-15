@@ -4,15 +4,11 @@ import FollowCard from "@/features/follow/components/FollowCard";
 import UserPosts from "@/features/post/components/UserPosts";
 import UserFollowers from "@/features/follow/components/UserFollowers";
 import UserFollowings from "@/features/follow/components/UserFollowings";
+import PrivateProfile from "./PrivateProfile";
 
-const ProfileTabs = ({ isOwnProfile, username }) => {
-  const followData = [
-    {
-      fullname: "Ishan Tripathi",
-      username: "@mystery_reader",
-      isFollow: false,
-    },
-  ];
+const ProfileTabs = ({ user, isOwnProfile, username }) => {
+  const { isFollowedByMe, isPrivate } = user;
+  const isVisible = isOwnProfile || !isPrivate || isFollowedByMe;
   return (
     <Tabs defaultValue="posts">
       <TabsList className="flex">
@@ -38,14 +34,32 @@ const ProfileTabs = ({ isOwnProfile, username }) => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="posts">
-        <UserPosts username={username} />
+        {isVisible ? (
+          <UserPosts username={username} isOwnProfile={isOwnProfile} />
+        ) : (
+          <PrivateProfile description="Follow this user to see their posts" />
+        )}
       </TabsContent>
-      <TabsContent value="reads"></TabsContent>
+      <TabsContent value="reads">
+        {isVisible ? (
+          <div>Feature coming soon......</div>
+        ) : (
+          <PrivateProfile description="Follow this user to see their reading activity." />
+        )}
+      </TabsContent>
       <TabsContent value="followers">
-        <UserFollowers username={username} />
+        {isVisible ? (
+          <UserFollowers username={username} isOwnProfile={isOwnProfile} />
+        ) : (
+          <PrivateProfile description="Follow this user to see their followers" />
+        )}
       </TabsContent>
       <TabsContent value="followings">
-        <UserFollowings username={username} isOwnProfile={isOwnProfile} />
+        {isVisible ? (
+          <UserFollowings username={username} isOwnProfile={isOwnProfile} />
+        ) : (
+          <PrivateProfile description="Follow this user to see who they follow" />
+        )}
       </TabsContent>
     </Tabs>
   );
