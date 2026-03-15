@@ -447,6 +447,92 @@ const searchUsers = async (req, res) => {
   }
 };
 
+const getFollowersByUsername = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { username } = req.params;
+    const profileUser = await User.findOne({ username })
+      .select("followers")
+      .populate("followers", "fullname username avatar")
+      .lean();
+    if (!profileUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const currentUser = await User.findById(userId).select("followings").lean();
+    const followingIds = new Set(currentUser.followings.map((f) => String(f)));
+
+    const followRequests = await FollowRequest.find({ sender: userId })
+      .select("receiver")
+      .lean();
+    const sentRequestUserIds = new Set(
+      followRequests.map((request) => String(request.receiver)),
+    );
+
+    const followers = profileUser.followers;
+
+    followers.forEach((follower) => {
+      const followerId = String(follower._id);
+      follower.isFollowedByMe = followingIds.has(followerId);
+      follower.isFollowRequestSent = sentRequestUserIds.has(followerId);
+    });
+
+    return res.status(200).json({ success: true, data: followers });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message ||
+        "An unexpected error occurred while fetching user followers.",
+    });
+  }
+};
+
+const getFollowingsByUsername = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { username } = req.params;
+    const profileUser = await User.findOne({ username })
+      .select("followings")
+      .populate("followings", "fullname username avatar")
+      .lean();
+    if (!profileUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const currentUser = await User.findById(userId).select("followings").lean();
+    const followingIds = new Set(currentUser.followings.map((f) => String(f)));
+
+    const followRequests = await FollowRequest.find({ sender: userId })
+      .select("receiver")
+      .lean();
+    const sentRequestUserIds = new Set(
+      followRequests.map((request) => String(request.receiver)),
+    );
+
+    const followings = profileUser.followings;
+
+    followings.forEach((following) => {
+      const followingId = String(following._id);
+      following.isFollowedByMe = followingIds.has(followingId);
+      following.isFollowRequestSent = sentRequestUserIds.has(followingId);
+    });
+
+    return res.status(200).json({ success: true, data: followings });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message ||
+        "An unexpected error occurred while fetching user followings",
+    });
+  }
+};
+
 module.exports = {
   getUserByUsername,
   getUser,
@@ -457,4 +543,6 @@ module.exports = {
   unfollowUser,
   followUser,
   searchUsers,
+  getFollowersByUsername,
+  getFollowingsByUsername,
 };

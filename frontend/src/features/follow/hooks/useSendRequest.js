@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { sendFollowRequest as sendFollowRequestApi } from "../apis/api";
+import { sendFollowRequest as sendFollowRequestApi } from "../apis/follow.api";
 
 const useSendFollowRequest = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

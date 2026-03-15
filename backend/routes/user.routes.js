@@ -9,7 +9,9 @@ const {
   deleteUser,
   unfollowUser,
   followUser,
-  searchUsers
+  searchUsers,
+  getFollowersByUsername,
+  getFollowingsByUsername,
 } = require("../controllers/user.controller");
 
 const {
@@ -34,6 +36,7 @@ userRouter.delete("/:userId/follow", authenticator, unfollowUser);
 userRouter.post("/:userId/follow", authenticator, followUser);
 userRouter.get("/:username/posts", authenticator, getPostsByUsername);
 userRouter.get("/:username", authenticator, getUserByUsername);
-
+userRouter.get("/:username/followers", authenticator, getFollowersByUsername);
+userRouter.get("/:username/followings", authenticator, getFollowingsByUsername);
 
 module.exports = userRouter;

@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   UserPlus,
   UserCheck,
@@ -14,45 +11,45 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
 const ProfileInformationCard = ({
+  user,
   isOwnProfile,
-  userId,
-  username,
-  fullname,
-  bio,
-  avatar,
-  followersCount,
-  followingsCount,
-  booksReadCount,
-  favGenres,
-  createdAt,
-  isSendingFollowRequest,
   sendFollowRequest,
-  isCancelingFollowRequest,
   cancelFollowRequest,
-  isFollowedByMe,
-  isUnfollowing,
   unfollowUser,
-  isFollowing,
   followUser,
-  isPrivate,
-  isFollowRequestSent,
-  followRequestId,
+  isSubmitting,
 }) => {
-  const [buttonStatus, setButtonStatus] = useState(
-    isOwnProfile
-      ? "ownProfile"
-      : isFollowedByMe
-        ? "following"
-        : isFollowRequestSent
-          ? "requestSent"
-          : "requestNotSent",
-  );
+  const navigate = useNavigate();
+  const {
+    _id: userId,
+    username,
+    fullname,
+    bio,
+    avatar,
+    followersCount,
+    followingsCount,
+    booksReadCount,
+    favGenres,
+    createdAt,
+    isFollowedByMe,
+    isPrivate,
+    isFollowRequestSent,
+    followRequestId,
+  } = user;
+
+  const buttonStatus = isOwnProfile
+    ? "ownProfile"
+    : isFollowedByMe
+      ? "following"
+      : isFollowRequestSent
+        ? "requestSent"
+        : "requestNotSent";
 
   const buttonStatusToStyleMap = {
     ownProfile: {
@@ -69,26 +66,19 @@ const ProfileInformationCard = ({
     },
   };
 
-  const navigate = useNavigate();
-
   const handleOnClick = async () => {
     try {
-      const currentButtonStatus = buttonStatus;
-      if (currentButtonStatus === "ownProfile") {
+      if (buttonStatus === "ownProfile") {
         navigate("/settings");
-      } else if (currentButtonStatus === "following") {
+      } else if (buttonStatus === "following") {
         await unfollowUser(userId);
-        setButtonStatus("requestNotSent");
-      } else if (currentButtonStatus === "requestSent") {
+      } else if (buttonStatus === "requestSent") {
         await cancelFollowRequest(followRequestId);
-        setButtonStatus("requestNotSent");
       } else {
         if (isPrivate) {
           await sendFollowRequest({ receiver: userId });
-          setButtonStatus("requestSent");
         } else {
           await followUser(userId);
-          setButtonStatus("following");
         }
       }
     } catch (error) {
@@ -128,19 +118,11 @@ const ProfileInformationCard = ({
                 <p className="text-muted-foreground text-lg">{username}</p>
               </div>
               <Button
-                disabled={
-                  isSendingFollowRequest ||
-                  isCancelingFollowRequest ||
-                  isUnfollowing ||
-                  isFollowing
-                }
+                disabled={isSubmitting}
                 variant={buttonStatusToStyleMap[buttonStatus].variant}
                 onClick={handleOnClick}
               >
-                {isSendingFollowRequest ||
-                isCancelingFollowRequest ||
-                isUnfollowing ||
-                isFollowing ? (
+                {isSubmitting ? (
                   <Spinner />
                 ) : (
                   <>

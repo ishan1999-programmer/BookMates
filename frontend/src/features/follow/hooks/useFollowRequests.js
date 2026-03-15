@@ -3,7 +3,7 @@ import {
   getFollowRequests,
   acceptFollowRequest as acceptFollowRequestApi,
   rejectFollowRequest as rejectFollowRequestApi,
-} from "../apis/api";
+} from "../apis/follow.api";
 
 const useFollowRequests = () => {
   const [data, setData] = useState([]);

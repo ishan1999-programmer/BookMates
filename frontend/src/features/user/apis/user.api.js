@@ -20,6 +20,7 @@ const deleteUser = (password) =>
   axiosInstance.delete("/users/me", {
     data: password,
   });
+
 export {
   getUser,
   searchUsers,

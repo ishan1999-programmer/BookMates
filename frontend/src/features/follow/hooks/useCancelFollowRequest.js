@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { cancelFollowRequest as cancelFollowRequestApi } from "../apis/api";
+import { cancelFollowRequest as cancelFollowRequestApi } from "../apis/follow.api";
 
 const useCancelFollowRequest = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,4 +21,4 @@ const useCancelFollowRequest = () => {
   return { isSubmitting, error, cancelFollowRequest };
 };
 
-export default useCancelFollowRequest; 
+export default useCancelFollowRequest;

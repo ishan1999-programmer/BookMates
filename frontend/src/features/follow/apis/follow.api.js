@@ -14,10 +14,18 @@ const rejectFollowRequest = (followRequestId) =>
 
 const getFollowRequests = () => axiosInstance.get("/follow-requests");
 
+const getUserFollowers = (username) =>
+  axiosInstance.get(`/users/${username}/followers`);
+
+const getUserFollowings = (username) =>
+  axiosInstance.get(`/users/${username}/followings`);
+
 export {
   sendFollowRequest,
   cancelFollowRequest,
   acceptFollowRequest,
   rejectFollowRequest,
   getFollowRequests,
+  getUserFollowers,
+  getUserFollowings,
 };

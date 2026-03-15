@@ -11,6 +11,8 @@ import {
 import PostCard from "@/features/post/components/PostCard";
 import FollowCard from "@/features/follow/components/FollowCard";
 import UserPosts from "@/features/post/components/UserPosts";
+import UserFollowers from "@/features/follow/components/UserFollowers";
+import FollowCardSkeleton from "@/features/follow/components/FollowCardSkeleton";
 const ProfileTabs = ({ isOwnProfile, username }) => {
   const followData = [
     {
@@ -48,17 +50,7 @@ const ProfileTabs = ({ isOwnProfile, username }) => {
       </TabsContent>
       <TabsContent value="reads"></TabsContent>
       <TabsContent value="followers">
-        <div className="flex gap-4 flex-wrap mt-5">
-          {followData.map((follow) => (
-            <div className="flex-1">
-              <FollowCard
-                fullname={follow.fullname}
-                username={follow.username}
-                isFollow={follow.isFollow}
-              />
-            </div>
-          ))}
-        </div>
+        <UserFollowers username={username} />
       </TabsContent>
       <TabsContent value="followings">
         <div className="flex gap-4 flex-wrap  mt-5">
