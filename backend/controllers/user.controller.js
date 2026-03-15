@@ -453,7 +453,7 @@ const getFollowersByUsername = async (req, res) => {
     const { username } = req.params;
     const profileUser = await User.findOne({ username })
       .select("followers")
-      .populate("followers", "fullname username avatar")
+      .populate("followers", "fullname username avatar isPrivate")
       .lean();
     if (!profileUser) {
       return res
@@ -467,8 +467,11 @@ const getFollowersByUsername = async (req, res) => {
     const followRequests = await FollowRequest.find({ sender: userId })
       .select("receiver")
       .lean();
-    const sentRequestUserIds = new Set(
-      followRequests.map((request) => String(request.receiver)),
+    const sentRequests = new Map(
+      followRequests.map((followRequest) => [
+        String(followRequest.receiver),
+        followRequest._id,
+      ]),
     );
 
     const followers = profileUser.followers;
@@ -476,7 +479,10 @@ const getFollowersByUsername = async (req, res) => {
     followers.forEach((follower) => {
       const followerId = String(follower._id);
       follower.isFollowedByMe = followingIds.has(followerId);
-      follower.isFollowRequestSent = sentRequestUserIds.has(followerId);
+      follower.isFollowRequestSent = sentRequests.has(followerId);
+      follower.followRequestId = sentRequests.has(followerId)
+        ? sentRequests.get(followerId)
+        : null;
     });
 
     return res.status(200).json({ success: true, data: followers });
@@ -496,7 +502,7 @@ const getFollowingsByUsername = async (req, res) => {
     const { username } = req.params;
     const profileUser = await User.findOne({ username })
       .select("followings")
-      .populate("followings", "fullname username avatar")
+      .populate("followings", "fullname username avatar isPrivate")
       .lean();
     if (!profileUser) {
       return res
@@ -510,8 +516,11 @@ const getFollowingsByUsername = async (req, res) => {
     const followRequests = await FollowRequest.find({ sender: userId })
       .select("receiver")
       .lean();
-    const sentRequestUserIds = new Set(
-      followRequests.map((request) => String(request.receiver)),
+    const sentRequests = new Map(
+      followRequests.map((followRequest) => [
+        String(followRequest.receiver),
+        followRequest._id,
+      ]),
     );
 
     const followings = profileUser.followings;
@@ -519,7 +528,10 @@ const getFollowingsByUsername = async (req, res) => {
     followings.forEach((following) => {
       const followingId = String(following._id);
       following.isFollowedByMe = followingIds.has(followingId);
-      following.isFollowRequestSent = sentRequestUserIds.has(followingId);
+      following.isFollowRequestSent = sentRequests.has(followingId);
+      following.followRequestId = sentRequests.has(followingId)
+        ? sentRequests.get(followingId)
+        : null;
     });
 
     return res.status(200).json({ success: true, data: followings });

@@ -45,7 +45,6 @@ const sendFollowRequest = async (req, res) => {
 
     return res.status(201).json({ success: true, data: createdFollowRequest });
   } catch (error) {
-    console.log(error);
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
@@ -61,6 +60,7 @@ const sendFollowRequest = async (req, res) => {
 
 const cancelFollowRequest = async (req, res) => {
   try {
+
     const { followRequestId } = req.params;
 
     const deletedFollowRequest =

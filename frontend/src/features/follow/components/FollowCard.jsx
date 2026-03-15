@@ -1,31 +1,39 @@
 import { useState } from "react";
-import {
-  UserPlus,
-  UserCheck,
-  Send,
-  UserRoundPen,
-  Calendar,
-  UserLock,
-} from "lucide-react";
+import { UserPlus, UserCheck, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 const FollowCard = ({
-  fullname,
-  username,
-  avatar,
-  isFollowedByMe,
-  isFollowRequestSent,
+  user,
+  sendFollowRequest,
+  cancelFollowRequest,
+  unfollowUser,
+  followUser,
+  submittingIds,
+  isOwnProfile,
 }) => {
-  const [buttonStatus, setButtonStatus] = useState(
-    isFollowedByMe
-      ? "following"
-      : isFollowRequestSent
-        ? "requestSent"
-        : "requestNotSent",
-  );
+  const myUsername = localStorage.getItem("username");
+
+  const {
+    _id: userId,
+    username,
+    fullname,
+    avatar,
+    isFollowedByMe,
+    isPrivate,
+    isFollowRequestSent,
+    followRequestId,
+  } = user;
+
+  const buttonStatus = isFollowedByMe
+    ? "following"
+    : isFollowRequestSent
+      ? "requestSent"
+      : "requestNotSent";
 
   const buttonStatusToStyleMap = {
     following: { icon: UserCheck, text: "Following", variant: "outline" },
@@ -35,6 +43,28 @@ const FollowCard = ({
       text: "Follow",
       variant: "default",
     },
+  };
+
+  const isOwnFollowCard = myUsername === username;
+
+  const handleOnClick = async () => {
+    try {
+      if (buttonStatus === "following") {
+        await unfollowUser(userId, isOwnProfile);
+      } else if (buttonStatus === "requestSent") {
+        await cancelFollowRequest(followRequestId, userId);
+      } else {
+        if (isPrivate) {
+          await sendFollowRequest({ receiver: userId }, userId);
+        } else {
+          await followUser(userId);
+        }
+      }
+    } catch (error) {
+      toast.error("Action failed. Please try again.", {
+        position: "top-center",
+      });
+    }
   };
 
   const IconComponent = buttonStatusToStyleMap[buttonStatus].icon;
@@ -63,10 +93,22 @@ const FollowCard = ({
               <p className="text-sm text-muted-foreground">{username}</p>
             </div>
           </div>
-          <Button variant={buttonStatusToStyleMap[buttonStatus].variant}>
-            <IconComponent />
-            {buttonStatusToStyleMap[buttonStatus].text}
-          </Button>
+          {!isOwnFollowCard && (
+            <Button
+              variant={buttonStatusToStyleMap[buttonStatus].variant}
+              onClick={handleOnClick}
+              disabled={submittingIds[userId]}
+            >
+              {submittingIds[userId] ? (
+                <Spinner />
+              ) : (
+                <>
+                  <IconComponent />
+                  {buttonStatusToStyleMap[buttonStatus].text}
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

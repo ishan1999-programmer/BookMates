@@ -31,11 +31,16 @@ const useUserProfile = (username) => {
 
   const sendFollowRequest = useCallback(async (requestDetails) => {
     setIsSubmitting(true);
-    setData((prev) => ({ ...prev, isFollowRequestSent: true }));
+
     try {
-      await sendFollowRequestApi(requestDetails);
+      const response = await sendFollowRequestApi(requestDetails);
+      const { _id: followRequestId } = response.data.data;
+      setData((prev) => ({
+        ...prev,
+        isFollowRequestSent: true,
+        followRequestId: followRequestId,
+      }));
     } catch (error) {
-      setData((prev) => ({ ...prev, isFollowRequestSent: false }));
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -44,11 +49,14 @@ const useUserProfile = (username) => {
 
   const cancelFollowRequest = useCallback(async (followRequestId) => {
     setIsSubmitting(true);
-    setData((prev) => ({ ...prev, isFollowRequestSent: false }));
     try {
       await cancelFollowRequestApi(followRequestId);
+      setData((prev) => ({
+        ...prev,
+        isFollowRequestSent: false,
+        followRequestId: null,
+      }));
     } catch (error) {
-      setData((prev) => ({ ...prev, isFollowRequestSent: true }));
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -57,19 +65,14 @@ const useUserProfile = (username) => {
 
   const followUser = useCallback(async (userId) => {
     setIsSubmitting(true);
-    setData((prev) => ({
-      ...prev,
-      isFollowedByMe: true,
-      followersCount: prev.followersCount + 1,
-    }));
     try {
       await followUserApi(userId);
-    } catch (error) {
       setData((prev) => ({
         ...prev,
-        isFollowedByMe: false,
-        followersCount: prev.followersCount - 1,
+        isFollowedByMe: true,
+        followersCount: prev.followersCount + 1,
       }));
+    } catch (error) {
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -78,19 +81,14 @@ const useUserProfile = (username) => {
 
   const unfollowUser = useCallback(async (userId) => {
     setIsSubmitting(true);
-    setData((prev) => ({
-      ...prev,
-      isFollowedByMe: false,
-      followersCount: prev.followersCount - 1,
-    }));
     try {
       await unfollowUserApi(userId);
-    } catch (error) {
       setData((prev) => ({
         ...prev,
-        isFollowedByMe: true,
-        followersCount: prev.followersCount + 1,
+        isFollowedByMe: false,
+        followersCount: prev.followersCount - 1,
       }));
+    } catch (error) {
       throw error;
     } finally {
       setIsSubmitting(false);

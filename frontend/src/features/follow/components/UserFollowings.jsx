@@ -1,21 +1,21 @@
 import FollowCard from "./FollowCard";
 import FollowCardSkeleton from "./FollowCardSkeleton";
-import useUserFollowers from "../hooks/useUserFollowers";
+import useUserFollowings from "../hooks/useUserFollowings";
 import NoFollowersFollowings from "./NoFollowersFollowings";
 import ErrorFollowersFollowings from "./ErrorFollowersFollowings";
 
-const UserFollowers = ({ username }) => {
+const UserFollowings = ({ username, isOwnProfile }) => {
   const {
     data,
     isFetching,
-    fetchUserFollowers,
+    fetchUserFollowings,
     error,
     submittingIds,
     sendFollowRequest,
     cancelFollowRequest,
     followUser,
     unfollowUser,
-  } = useUserFollowers(username);
+  } = useUserFollowings(username);
 
   if (isFetching) {
     return (
@@ -32,9 +32,9 @@ const UserFollowers = ({ username }) => {
   if (!isFetching && error) {
     return (
       <ErrorFollowersFollowings
-        reFetch={fetchUserFollowers}
+        reFetch={fetchUserFollowings}
         username={username}
-        description="We couldn’t fetch followers right now. Please try again."
+        description="We couldn’t fetch followings right now. Please try again."
       />
     );
   }
@@ -42,8 +42,8 @@ const UserFollowers = ({ username }) => {
   if (!isFetching && data.length === 0) {
     return (
       <NoFollowersFollowings
-        title="No Followers"
-        description="User has no followers yet"
+        title="No Followings"
+        description="User has not followed anyone yet"
       />
     );
   }
@@ -59,10 +59,11 @@ const UserFollowers = ({ username }) => {
           cancelFollowRequest={cancelFollowRequest}
           followUser={followUser}
           unfollowUser={unfollowUser}
+          isOwnProfile={isOwnProfile}
         />
       ))}
     </div>
   );
 };
 
-export default UserFollowers;
+export default UserFollowings;

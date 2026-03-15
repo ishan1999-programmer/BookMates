@@ -1,18 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Edit3,
-  Calendar,
-  Camera,
-  Users,
-  User,
-  BookOpen,
-  Rss,
-} from "lucide-react";
-import PostCard from "@/features/post/components/PostCard";
+import { Users, User, BookOpen, Rss } from "lucide-react";
 import FollowCard from "@/features/follow/components/FollowCard";
 import UserPosts from "@/features/post/components/UserPosts";
 import UserFollowers from "@/features/follow/components/UserFollowers";
-import FollowCardSkeleton from "@/features/follow/components/FollowCardSkeleton";
+import UserFollowings from "@/features/follow/components/UserFollowings";
+
 const ProfileTabs = ({ isOwnProfile, username }) => {
   const followData = [
     {
@@ -53,17 +45,7 @@ const ProfileTabs = ({ isOwnProfile, username }) => {
         <UserFollowers username={username} />
       </TabsContent>
       <TabsContent value="followings">
-        <div className="flex gap-4 flex-wrap  mt-5">
-          {followData.map((follow) => (
-            <div className="flex-1">
-              <FollowCard
-                fullname={follow.fullname}
-                username={follow.username}
-                isFollow={follow.isFollow}
-              />
-            </div>
-          ))}
-        </div>
+        <UserFollowings username={username} isOwnProfile={isOwnProfile} />
       </TabsContent>
     </Tabs>
   );
