@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MessageCircle, Heart } from "lucide-react";
+import { MessageCircle, Heart, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +17,9 @@ const NotificationCard = ({
   setOpen,
   markNotificationRead,
 }) => {
+  console.log(type, ": ", postTitle);
+  console.log(type, ": ", postId);
+
   const navigate = useNavigate();
   return (
     <div
@@ -25,7 +28,11 @@ const NotificationCard = ({
       } border-t border-border cursor-pointer`}
       onClick={() => {
         setOpen(false);
-        navigate(`/posts/${postId}`);
+        if (type === "like" || type === "comment") {
+          navigate(`/posts/${postId}`);
+        } else {
+          navigate(`/users/${username}`);
+        }
         markNotificationRead(notificationId);
       }}
     >
@@ -45,10 +52,11 @@ const NotificationCard = ({
         <div className="flex gap-1 items-center min-w-0">
           {type === "like" ? (
             <Heart className={`h-4 w-4 flex-shrink-0 text-red-500`} />
-          ) : (
+          ) : type === "comment" ? (
             <MessageCircle className={`h-4 w-4 flex-shrink-0 text-blue-500`} />
+          ) : (
+            <User className={`h-4 w-4 flex-shrink-0 text-green-500`} />
           )}
-
           <p
             className="font-medium text-sm truncate hover:text-muted-foreground hover:underline"
             onClick={(e) => {
@@ -61,11 +69,17 @@ const NotificationCard = ({
           </p>
 
           <p className="text-sm text-foreground truncate">
-            {type === "like" ? "liked your post" : "commented on your post"}
+            {type === "like"
+              ? "liked your post"
+              : type === "comment"
+                ? "commented on your post"
+                : "started following you"}
           </p>
         </div>
 
-        <p className="text-xs text-primary truncate">{postTitle}</p>
+        {postTitle && (
+          <p className="text-xs text-primary truncate">{postTitle}</p>
+        )}
 
         <p className="text-xs text-muted-foreground mt-1">
           {formatDistanceToNow(createdAt, { addSuffix: true })}

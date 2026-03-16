@@ -154,6 +154,18 @@ const unfollowUser = async (req, res) => {
       { new: true, runValidators: true },
     );
 
+    const deletedNotification = await Notification.deleteOne({
+      sender: followerUserId,
+      receiver: followeeUserId,
+      type: "follow",
+    });
+
+    if (deletedNotification.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found." });
+    }
+
     return res.status(200).json({
       success: true,
       data: {
@@ -211,6 +223,24 @@ const followUser = async (req, res) => {
       },
       { new: true, runValidators: true },
     );
+
+    const existingNotification = await Notification.exists({
+      sender: followerUserId,
+      receiver: followeeUserId,
+      type: "follow",
+    });
+
+    if (existingNotification) {
+      return res
+        .status(409)
+        .json({ success: false, message: "Notification already exists." });
+    }
+
+    await Notification.create({
+      sender: followerUserId,
+      receiver: followeeUserId,
+      type: "follow",
+    });
 
     return res.status(200).json({
       success: true,

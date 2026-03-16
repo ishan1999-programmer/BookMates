@@ -26,9 +26,6 @@ const NotificationButton = () => {
   } = useFetchNotifications();
   const isMobile = useIsMobile();
 
-  console.log(data);
-  
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -80,8 +77,8 @@ const NotificationButton = () => {
                 username={d.sender.username}
                 avatar={d.sender.avatar}
                 type={d.type}
-                postTitle={d.post.bookTitle}
-                postId={d.post._id}
+                postTitle={d.post ? d.post.bookTitle : null}
+                postId={d.post ? d.post._id : null}
                 isRead={d.isRead}
                 createdAt={d.createdAt}
                 setOpen={setOpen}

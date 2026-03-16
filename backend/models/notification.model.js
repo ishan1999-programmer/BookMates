@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 
-const { Schema ,model} = mongoose;
+const { Schema, model } = mongoose;
 
 const notificationSchema = new Schema(
   {
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    post: { type: Schema.Types.ObjectId, ref: "Post", required: true },
+    post: { type: Schema.Types.ObjectId, ref: "Post" },
     type: {
       type: String,
       required: [true, "Type is required"],
-      enum: ["like", "comment"],
+      enum: ["like", "comment", "follow"],
     },
     isRead: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Notification = model("Notification", notificationSchema);
