@@ -33,10 +33,14 @@ const PostCard = ({
   const [showFullReview, setShowFullReview] = useState(false);
   const [isCommentsShow, setIsCommentsShow] = useState(false);
 
+  const myUsername = localStorage.getItem("username");
+
   const truncateReview = (text, maxLength = 200) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
   };
+
+  const isOwnPost = myUsername === username;
 
   return (
     <Card>
@@ -111,6 +115,7 @@ const PostCard = ({
         <div className="flex items-center gap-3 pt-3 pb-3">
           <Button
             onClick={() => toggleLike(postId, isLikedByMe)}
+            disabled={isOwnPost}
             variant="ghost"
             className={`flex items-center gap-2 ${
               isLikedByMe

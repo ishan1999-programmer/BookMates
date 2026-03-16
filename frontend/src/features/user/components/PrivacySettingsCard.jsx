@@ -35,9 +35,9 @@ const PrivacySettingsCard = ({ isPrivate }) => {
       <CardContent>
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="font-medium">Public Profile</h4>
+            <h4 className="font-medium">Private Profile</h4>
             <p className="text-sm text-muted-foreground">
-              Allow anyone to follow you
+              Only approved followers can see your posts, reads, and connections
             </p>
           </div>
           <Switch

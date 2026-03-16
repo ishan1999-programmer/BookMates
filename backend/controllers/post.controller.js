@@ -301,12 +301,20 @@ const likePost = async (req, res) => {
   try {
     const { userId } = req.user;
     const { postId } = req.params;
+
     const existingPost = await Post.findById(postId);
     if (!existingPost) {
       return res
         .status(404)
         .json({ success: false, message: "Post not found." });
     }
+
+    if (String(existingPost.user) === userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "You can't like your own post" });
+    }
+
     const existingLike = await Like.findOne({ user: userId, post: postId });
     if (existingLike) {
       return res
@@ -357,12 +365,20 @@ const unlikePost = async (req, res) => {
   try {
     const { userId } = req.user;
     const { postId } = req.params;
+
     const existingPost = await Post.findById(postId);
     if (!existingPost) {
       return res
         .status(404)
         .json({ success: false, message: "Post not found." });
     }
+
+    if (String(existingPost.user) === userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "You can't unlike your own post" });
+    }
+
     const unlike = await Like.findOneAndDelete({ post: postId, user: userId });
     if (!unlike) {
       return res
