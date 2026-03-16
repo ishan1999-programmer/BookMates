@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -8,6 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import useUpdateUserPassword from "../hooks/useUpdateUserPassword";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
 
 const ChangePasswordCard = () => {
   const { isSubmitting, updateUserPassword } = useUpdateUserPassword();
@@ -19,6 +25,9 @@ const ChangePasswordCard = () => {
     reset,
     formState: { errors },
   } = useForm();
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (formData) => {
     try {
@@ -48,15 +57,25 @@ const ChangePasswordCard = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <Input
-              id="currentPassword"
-              type="password"
-              placeholder="Current password"
-              {...register("currentPassword", {
-                required: "Current Password is required",
-              })}
-              className="p-5"
-            />
+            <InputGroup>
+              <InputGroupInput
+                id="currentPassword"
+                type={showCurrentPassword ? "text" : "password"}
+                placeholder="Current password"
+                {...register("currentPassword", {
+                  required: "Current Password is required",
+                })}
+                className="p-5"
+              />
+              <InputGroupAddon
+                align="inline-end"
+                onClick={() => setShowCurrentPassword((prev) => !prev)}
+                className="cursor-pointer"
+              >
+                {showCurrentPassword ? <EyeIcon /> : <EyeOffIcon />}
+              </InputGroupAddon>
+            </InputGroup>
+
             {errors.currentPassword && (
               <p className="text-sm text-red-500">
                 {errors.currentPassword?.message}
@@ -64,20 +83,30 @@ const ChangePasswordCard = () => {
             )}
           </div>
           <div className="mt-4">
-            <Input
-              id="newPassword"
-              type="password"
-              placeholder="New password"
-              {...register("newPassword", {
-                required: "Password is required",
-                pattern: {
-                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-                  message:
-                    "Password must contain at least 8 characters, including one letter and one number.",
-                },
-              })}
-              className="p-5"
-            />
+            <InputGroup>
+              <InputGroupInput
+                id="newPassword"
+                type={showNewPassword ? "text" : "password"}
+                placeholder="New password"
+                {...register("newPassword", {
+                  required: "Password is required",
+                  pattern: {
+                    value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must contain at least 8 characters, including one letter and one number.",
+                  },
+                })}
+                className="p-5"
+              />
+              <InputGroupAddon
+                align="inline-end"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+                className="cursor-pointer"
+              >
+                {showNewPassword ? <EyeIcon /> : <EyeOffIcon />}
+              </InputGroupAddon>
+            </InputGroup>
+
             {errors.newPassword && (
               <p className="text-sm text-red-500">
                 {errors.newPassword?.message}
@@ -85,18 +114,28 @@ const ChangePasswordCard = () => {
             )}
           </div>
           <div className="mt-4">
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm new password"
-              {...register("confirmPassword", {
-                required: "Confirm new password",
-                validate: (value) =>
-                  value === getValues("newPassword") ||
-                  "Passwords do not match",
-              })}
-              className="p-5"
-            />
+            <InputGroup>
+              <InputGroupInput
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm new password"
+                {...register("confirmPassword", {
+                  required: "Confirm new password",
+                  validate: (value) =>
+                    value === getValues("newPassword") ||
+                    "Passwords do not match",
+                })}
+                className="p-5"
+              />
+              <InputGroupAddon
+                align="inline-end"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="cursor-pointer"
+              >
+                {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
+              </InputGroupAddon>
+            </InputGroup>
+
             {errors.confirmPassword && (
               <p className="text-sm text-red-500">
                 {errors.confirmPassword?.message}

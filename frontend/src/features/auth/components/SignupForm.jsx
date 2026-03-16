@@ -14,6 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
 import useSignup from "../hooks/useSignup";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { useState } from "react";
 
 const SignupForm = () => {
   const { isSubmitting, signup } = useSignup();
@@ -25,6 +32,8 @@ const SignupForm = () => {
     getValues,
     formState: { errors },
   } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (formData) => {
     try {
@@ -118,19 +127,29 @@ const SignupForm = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a password"
-                {...register("password", {
-                  required: "Password is required",
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-                    message:
-                      "Password must contain at least 8 characters, including one letter and one number.",
-                  },
-                })}
-              />
+              <InputGroup>
+                <InputGroupInput
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password"
+                  {...register("password", {
+                    required: "Password is required",
+                    pattern: {
+                      value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
+                      message:
+                        "Password must contain at least 8 characters, including one letter and one number.",
+                    },
+                  })}
+                />
+                <InputGroupAddon
+                  align="inline-end"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="cursor-pointer"
+                >
+                  {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                </InputGroupAddon>
+              </InputGroup>
+
               {errors.password && (
                 <p className="text-sm text-red-500">
                   {errors.password?.message}
@@ -139,16 +158,27 @@ const SignupForm = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
-                {...register("confirmPassword", {
-                  required: "Confirm your password",
-                  validate: (value) =>
-                    value === getValues("password") || "Passwords do not match",
-                })}
-              />
+              <InputGroup>
+                <InputGroupInput
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  {...register("confirmPassword", {
+                    required: "Confirm your password",
+                    validate: (value) =>
+                      value === getValues("password") ||
+                      "Passwords do not match",
+                  })}
+                />
+                <InputGroupAddon
+                  align="inline-end"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="cursor-pointer"
+                >
+                  {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
+                </InputGroupAddon>
+              </InputGroup>
+
               {errors.confirmPassword && (
                 <p className="text-sm text-red-500">
                   {errors.confirmPassword?.message}

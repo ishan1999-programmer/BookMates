@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
+import { Trash2, EyeOffIcon, EyeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -17,13 +17,18 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import useDeleteUser from "../hooks/useDeleteUser";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 const DeleteAccountCard = () => {
   const { isSubmitting, deleteUser, error } = useDeleteUser();
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = async () => {
     try {
@@ -70,13 +75,23 @@ const DeleteAccountCard = () => {
               </AlertDialogHeader>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Enter your password to confirm</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <InputGroup>
+                  <InputGroupInput
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <InputGroupAddon
+                    align="inline-end"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="cursor-pointer"
+                  >
+                    {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                  </InputGroupAddon>
+                </InputGroup>
+
                 {error && (
                   <p className="text-sm text-red-500 text-center">
                     {error?.message}

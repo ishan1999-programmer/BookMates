@@ -16,12 +16,18 @@ import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
 import { useEffect, useState } from "react";
 import useLogin from "../hooks/useLogin";
-
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
 
 const LoginForm = () => {
   const { isSubmitting, login } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -76,20 +82,31 @@ const LoginForm = () => {
                   },
                 })}
               />
+
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email?.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", {
-                  required: "Password is required",
-                })}
-              />
+              <InputGroup>
+                <InputGroupInput
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                />
+                <InputGroupAddon
+                  align="inline-end"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="cursor-pointer"
+                >
+                  {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                </InputGroupAddon>
+              </InputGroup>
+
               {errors.password && (
                 <p className="text-sm text-red-500">
                   {errors.password?.message}
