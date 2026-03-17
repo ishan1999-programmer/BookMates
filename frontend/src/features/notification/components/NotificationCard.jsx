@@ -17,9 +17,6 @@ const NotificationCard = ({
   setOpen,
   markNotificationRead,
 }) => {
-  console.log(type, ": ", postTitle);
-  console.log(type, ": ", postId);
-
   const navigate = useNavigate();
   return (
     <div
@@ -33,7 +30,9 @@ const NotificationCard = ({
         } else {
           navigate(`/users/${username}`);
         }
-        markNotificationRead(notificationId);
+        if (!isRead) {
+          markNotificationRead(notificationId);
+        }
       }}
     >
       {!isRead && <div className="w-2 h-2 bg-primary rounded-full mt-3" />}

@@ -16,14 +16,8 @@ import useFetchNotifications from "../hooks/useFetchNotifications";
 
 const NotificationButton = () => {
   const [open, setOpen] = useState(false);
-  const {
-    data,
-    isFetching,
-    error,
-    count: notReadCount,
-    fetchNotifications,
-    markNotificationRead,
-  } = useFetchNotifications();
+  const { data, isFetching, error, fetchNotifications, markNotificationRead } =
+    useFetchNotifications();
   const isMobile = useIsMobile();
 
   return (
@@ -37,12 +31,12 @@ const NotificationButton = () => {
           <Bell
             className={`${isMobile ? "h-4 w-4" : "h-6 w-6"} text-primary`}
           />{" "}
-          {notReadCount > 0 && (
+          {data.notReadCount > 0 && (
             <Badge
               variant="destructive"
               className="absolute -top-1 left-4 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {notReadCount}
+              {data.notReadCount}
             </Badge>
           )}
         </Button>
@@ -53,8 +47,8 @@ const NotificationButton = () => {
       >
         <div className="mb-3 pl-4">
           <h3 className="font-semibold text-lg">Notifications</h3>{" "}
-          {!isFetching && !error && data.length > 0 && (
-            <p className="text-sm text-muted-foreground">{`${notReadCount} unread`}</p>
+          {!isFetching && !error && data.notReadCount > 0 && (
+            <p className="text-sm text-muted-foreground">{`${data.notReadCount} unread`}</p>
           )}
         </div>
         {isFetching ? (
@@ -65,22 +59,24 @@ const NotificationButton = () => {
           </>
         ) : error ? (
           <ErrorNotifications fetchAgain={fetchNotifications} />
-        ) : data.length === 0 ? (
+        ) : data.notifications.length === 0 ? (
           <NoNotifications />
         ) : (
           <>
-            {data.map((d) => (
+            {data.notifications.map((notification) => (
               <NotificationCard
-                key={d._id}
-                notificationId={d._id}
-                fullname={d.sender.fullname}
-                username={d.sender.username}
-                avatar={d.sender.avatar}
-                type={d.type}
-                postTitle={d.post ? d.post.bookTitle : null}
-                postId={d.post ? d.post._id : null}
-                isRead={d.isRead}
-                createdAt={d.createdAt}
+                key={notification._id}
+                notificationId={notification._id}
+                fullname={notification.sender.fullname}
+                username={notification.sender.username}
+                avatar={notification.sender.avatar}
+                type={notification.type}
+                postTitle={
+                  notification.post ? notification.post.bookTitle : null
+                }
+                postId={notification.post ? notification.post._id : null}
+                isRead={notification.isRead}
+                createdAt={notification.createdAt}
                 setOpen={setOpen}
                 markNotificationRead={markNotificationRead}
               />
