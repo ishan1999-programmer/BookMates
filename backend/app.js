@@ -7,6 +7,7 @@ const postRouter = require("./routes/post.routes");
 const commentRouter = require("./routes/comment.routes");
 const followRequestRouter = require("./routes/followRequest.routes");
 const notificationRouter = require("./routes/notification.routes");
+const bookRouter = require("./routes/book.routes");
 const authenticator = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -20,7 +21,6 @@ app.use("/api/posts", authenticator, postRouter);
 app.use("/api/comments", authenticator, commentRouter);
 app.use("/api/follow-requests", authenticator, followRequestRouter);
 app.use("/api/notifications", authenticator, notificationRouter);
+app.use("/api/books", authenticator, bookRouter);
 
 module.exports = app;
-
-

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const SearchCardSkeleton = ({ fullname, username, avatar, _id }) => {
+const SearchUsersCardSkeleton = () => {
   return (
     <div
       className={`flex gap-3 pb-4 pt-3 pl-2 pr-4  hover:bg-accent/50 transition-colors`}
@@ -15,4 +15,4 @@ const SearchCardSkeleton = ({ fullname, username, avatar, _id }) => {
   );
 };
 
-export default SearchCardSkeleton;
+export default SearchUsersCardSkeleton;

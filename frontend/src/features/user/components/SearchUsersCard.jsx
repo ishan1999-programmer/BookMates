@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 
-const SearchCard = ({ fullname, username, avatar, _id }) => {
+const SearchUsersCard = ({ fullname, username, avatar, _id }) => {
   return (
     <Link to={`/users/${username}`}>
       <div
@@ -28,4 +28,4 @@ const SearchCard = ({ fullname, username, avatar, _id }) => {
   );
 };
 
-export default SearchCard;
+export default SearchUsersCard;

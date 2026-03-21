@@ -7,6 +7,7 @@ import Settings from "@/features/user/pages/Settings.jsx";
 import Profile from "@/features/user/pages/Profile.jsx";
 import AddPost from "@/features/post/pages/AddPost.jsx";
 import Post from "@/features/post/pages/Post.jsx";
+import SearchBook from "@/features/book/pages/SearchBook.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout.jsx";
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/users/:username" element={<Profile />} />
           <Route path="/add-post" element={<AddPost />} />
           <Route path="/posts/:postId" element={<Post />} />
+          <Route path="/search" element={<SearchBook />} />
         </Route>
       </Route>
     </Routes>
