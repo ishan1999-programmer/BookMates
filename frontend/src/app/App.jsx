@@ -8,6 +8,7 @@ import Profile from "@/features/user/pages/Profile.jsx";
 import AddPost from "@/features/post/pages/AddPost.jsx";
 import Post from "@/features/post/pages/Post.jsx";
 import SearchBook from "@/features/book/pages/SearchBook.jsx";
+import MyReads from "@/features/read/pages/MyReads.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout.jsx";
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/add-post" element={<AddPost />} />
           <Route path="/posts/:postId" element={<Post />} />
           <Route path="/search" element={<SearchBook />} />
+          <Route path="/my-reads" element={<MyReads />} />
         </Route>
       </Route>
     </Routes>

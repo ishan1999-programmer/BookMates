@@ -20,6 +20,8 @@ const {
   getUserPosts,
 } = require("../controllers/post.controller");
 
+const { getReadsByUsername } = require("../controllers/read.controller");
+
 const authenticator = require("../middlewares/auth.middleware");
 
 const userRouter = express.Router();
@@ -38,5 +40,6 @@ userRouter.get("/:username/posts", authenticator, getPostsByUsername);
 userRouter.get("/:username", authenticator, getUserByUsername);
 userRouter.get("/:username/followers", authenticator, getFollowersByUsername);
 userRouter.get("/:username/followings", authenticator, getFollowingsByUsername);
+userRouter.get("/:username/reads", authenticator, getReadsByUsername);
 
 module.exports = userRouter;

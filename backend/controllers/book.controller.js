@@ -11,6 +11,15 @@ const searchBooks = async (req, res) => {
 &maxResults=10
 &orderBy=relevance
 &printType=books
+&fields=items(
+  id,
+  volumeInfo/title,
+  volumeInfo/authors,
+  volumeInfo/imageLinks/thumbnail,
+  volumeInfo/pageCount,
+  volumeInfo/infoLink,
+  volumeInfo/previewLink
+)
 &key=${process.env.GOOGLE_BOOKS_API_KEY}`);
 
     const jsonData = await data.json();
@@ -37,10 +46,23 @@ const searchBooks = async (req, res) => {
         ) {
           cover = book.volumeInfo.imageLinks.thumbnail;
         }
-        return { id, title, authors, cover };
+
+        let pages = null;
+        if (book.volumeInfo && book.volumeInfo.pageCount) {
+          pages = book.volumeInfo.pageCount;
+        }
+
+        let link = null;
+        if (book.volumeInfo && book.volumeInfo.infoLink) {
+          link = book.volumeInfo.infoLink;
+        }
+
+        return { id, title, authors, cover, pages, link };
       });
     }
-    return res.status(200).json({ success: true, data: formattedData });
+    return res
+      .status(200)
+      .json({ success: true, data: formattedData, jsonData });
   } catch (error) {
     return res.status(500).json({
       success: false,

@@ -135,7 +135,6 @@ const getPostsByUsername = async (req, res) => {
       .status(200)
       .json({ success: true, data: { posts: userPosts, hasMore, nextCursor } });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while getting user posts.",

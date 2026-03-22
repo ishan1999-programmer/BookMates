@@ -5,6 +5,7 @@ import UserPosts from "@/features/post/components/UserPosts";
 import UserFollowers from "@/features/follow/components/UserFollowers";
 import UserFollowings from "@/features/follow/components/UserFollowings";
 import PrivateProfile from "./PrivateProfile";
+import ReadingStatusTabs from "@/features/read/components/ReadingStatusTabs";
 
 const ProfileTabs = ({ user, isOwnProfile, username }) => {
   const { isFollowedByMe, isPrivate } = user;
@@ -42,7 +43,7 @@ const ProfileTabs = ({ user, isOwnProfile, username }) => {
       </TabsContent>
       <TabsContent value="reads">
         {isVisible ? (
-          <div>Feature coming soon......</div>
+          <ReadingStatusTabs />
         ) : (
           <PrivateProfile description="Follow this user to see their reading activity." />
         )}

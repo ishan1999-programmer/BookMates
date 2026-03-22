@@ -73,6 +73,7 @@ const SearchBook = () => {
                       title={book.title}
                       authors={book.authors}
                       cover={book.cover}
+                      link={book.link}
                     />
                   ))}
                 </>
