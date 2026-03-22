@@ -14,21 +14,25 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const normalizedError = {
-      status: error.response?.status || 500,
-      message:
-        error.response?.data?.message ||
-        "Something went wrong. Please try again.",
-    };
+    if (error.name === "CanceledError") {
+      return Promise.reject(error);
+    } else {
+      const normalizedError = {
+        status: error.response?.status || 500,
+        message:
+          error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      };
 
-    return Promise.reject(normalizedError);
-  }
+      return Promise.reject(normalizedError);
+    }
+  },
 );
 
 export default axiosInstance;

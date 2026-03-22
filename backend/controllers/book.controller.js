@@ -6,13 +6,12 @@ const searchBooks = async (req, res) => {
     }
     const trimmed = q.trim();
 
-    const data = await fetch(`https://www.googleapis.com/books/v1/volumes?
-q=intitle:${trimmed}+inauthor:${trimmed}
-&maxResults=5
+    const data =
+      await fetch(`https://www.googleapis.com/books/v1/volumes?q=${trimmed}
+&maxResults=10
 &orderBy=relevance
-&langRestrict=en
 &printType=books
-&fields=items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/imageLinks/thumbnail)&key=${process.env.GOOGLE_BOOKS_API_KEY}`);
+&key=${process.env.GOOGLE_BOOKS_API_KEY}`);
 
     const jsonData = await data.json();
 
@@ -38,7 +37,7 @@ q=intitle:${trimmed}+inauthor:${trimmed}
         ) {
           cover = book.volumeInfo.imageLinks.thumbnail;
         }
-        return { title, authors, cover };
+        return { id, title, authors, cover };
       });
     }
     return res.status(200).json({ success: true, data: formattedData });

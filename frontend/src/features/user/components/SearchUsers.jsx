@@ -12,7 +12,7 @@ import SearchUsersCardSkeleton from "./SearchUsersCardSkeleton";
 import NoUsers from "./NoUsers";
 import ErrorUsers from "./ErrorUsers";
 import useSearchUsers from "../hooks/useSearchUsers";
-import useDebounce from "../hooks/useDebounce";
+import useDebounce from "../../../hooks/useDebounce";
 
 const SearchUsers = () => {
   const isMobile = useIsMobile();
