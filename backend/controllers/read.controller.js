@@ -14,13 +14,7 @@ const getReadsByUsername = async (req, res) => {
 
     const reads = await Read.find({ user: existingUser._id }).lean();
 
-    const wantToRead = reads.filter((book) => book.status === "want to read");
-    const reading = reads.filter((book) => book.status === "reading");
-    const read = reads.filter((book) => book.status === "read");
-
-    return res
-      .status(200)
-      .json({ success: true, data: { wantToRead, reading, read } });
+    return res.status(200).json({ success: true, data: reads });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -35,8 +29,9 @@ const addBook = async (req, res) => {
     const {
       id: bookId,
       title: bookTitle,
-      author: bookAuthor,
+      authors: bookAuthors,
       pages: bookPages,
+      cover: bookCover,
     } = req.body;
 
     const existingUser = await User.exists({ _id: userId });
@@ -58,8 +53,9 @@ const addBook = async (req, res) => {
       user: userId,
       bookId,
       bookTitle,
-      bookAuthor,
+      bookAuthors,
       bookPages,
+      bookCover,
     });
 
     return res.status(201).json({ success: true, data: addedBook });
@@ -73,6 +69,27 @@ const addBook = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An unexpected error occurred while adding book.",
+    });
+  }
+};
+
+const removeBook = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { bookId } = req.params;
+
+    const deletedBook = await Read.deleteOne({ user: userId, bookId: bookId });
+    if (deletedBook.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Book not found" });
+    }
+
+    return res.status(200).json({ success: true, data: deletedBook });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while removing book",
     });
   }
 };
@@ -119,4 +136,4 @@ const updateBook = async (req, res) => {
   }
 };
 
-module.exports = { getReadsByUsername, addBook, updateBook };
+module.exports = { getReadsByUsername, addBook, removeBook, updateBook };

@@ -1,5 +1,8 @@
+const Read = require("../models/read.model");
+
 const searchBooks = async (req, res) => {
   try {
+    const { userId } = req.user;
     const { q } = req.query;
     if (!q) {
       return res.status(200).json({ success: true, data: [] });
@@ -38,7 +41,7 @@ const searchBooks = async (req, res) => {
           authors = book.volumeInfo.authors;
         }
 
-        let cover = null;
+        let cover = "";
         if (
           book.volumeInfo &&
           book.volumeInfo.imageLinks &&
@@ -57,12 +60,26 @@ const searchBooks = async (req, res) => {
           link = book.volumeInfo.infoLink;
         }
 
+        let status = "not added";
+
         return { id, title, authors, cover, pages, link };
       });
     }
-    return res
-      .status(200)
-      .json({ success: true, data: formattedData, jsonData });
+
+    const books = await Read.find({ user: userId })
+      .select("bookId status")
+      .lean();
+
+    const addedBooks = new Map(books.map((book) => [book.bookId, book.status]));
+
+    formattedData.forEach((book) => {
+      const bookId = book.id;
+      book.status = addedBooks.has(bookId)
+        ? addedBooks.get(bookId)
+        : "not added";
+    });
+
+    return res.status(200).json({ success: true, data: formattedData });
   } catch (error) {
     return res.status(500).json({
       success: false,

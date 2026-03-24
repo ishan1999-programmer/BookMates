@@ -2,10 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, User, BookOpen, Rss } from "lucide-react";
 import FollowCard from "@/features/follow/components/FollowCard";
 import UserPosts from "@/features/post/components/UserPosts";
+import UserReads from "@/features/read/components/UserReads";
 import UserFollowers from "@/features/follow/components/UserFollowers";
 import UserFollowings from "@/features/follow/components/UserFollowings";
 import PrivateProfile from "./PrivateProfile";
-import ReadingStatusTabs from "@/features/read/components/ReadingStatusTabs";
 
 const ProfileTabs = ({ user, isOwnProfile, username }) => {
   const { isFollowedByMe, isPrivate } = user;
@@ -43,7 +43,7 @@ const ProfileTabs = ({ user, isOwnProfile, username }) => {
       </TabsContent>
       <TabsContent value="reads">
         {isVisible ? (
-          <ReadingStatusTabs />
+          <UserReads username={username} isOwnProfile={isOwnProfile} />
         ) : (
           <PrivateProfile description="Follow this user to see their reading activity." />
         )}

@@ -17,7 +17,10 @@ const SearchBook = () => {
     data: books,
     error,
     isFetching,
+    submittingIds,
     searchBooks: reFetchBooks,
+    addBook,
+    removeBook,
   } = useSearchBooks(debouncedSearchQuery);
 
   const handleChange = (e) => {
@@ -70,10 +73,16 @@ const SearchBook = () => {
                   {books.map((book) => (
                     <SearchBooksCard
                       key={book.id}
+                      id={book.id}
                       title={book.title}
                       authors={book.authors}
                       cover={book.cover}
                       link={book.link}
+                      status={book.status}
+                      pages={book.pages}
+                      addBook={addBook}
+                      removeBook={removeBook}
+                      submittingIds={submittingIds}
                     />
                   ))}
                 </>

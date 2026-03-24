@@ -8,12 +8,13 @@ const readSchema = new Schema(
     bookId: { type: String, required: [true, "BookId is required"] },
     bookTitle: {
       type: String,
-      required: [true, "Book title is required"],
     },
-    bookAuthor: {
-      type: String,
-      required: [true, "Book author is required"],
-    },
+    bookAuthors: [
+      {
+        type: String,
+      },
+    ],
+    bookCover: { type: String, default: "" },
     bookPages: {
       type: Number,
     },
