@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadingStatusCard from "./ReadingStatusCard";
 import NoReadings from "./NoReadings";
 
-const ReadingStatusTabs = ({ data, getUserReads, isOwnProfile }) => {
+const ReadingStatusTabs = ({ data, isOwnProfile, updateCurrentPage }) => {
   const wantToRead = data.filter((book) => book.status === "want to read");
   const reading = data.filter((book) => book.status === "reading");
   const read = data.filter((book) => book.status === "read");
@@ -25,14 +25,16 @@ const ReadingStatusTabs = ({ data, getUserReads, isOwnProfile }) => {
       </TabsList>
       <TabsContent value="want to read">
         {wantToRead.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(320px,320px))]">
             {wantToRead.map((book) => (
               <ReadingStatusCard
+                key={book._id}
                 title={book.bookTitle}
                 authors={book.bookAuthors}
                 cover={book.bookCover}
                 updatedAt={book.updatedAt}
                 type={book.status}
+                isOwnProfile={isOwnProfile}
               />
             ))}
           </div>
@@ -49,9 +51,11 @@ const ReadingStatusTabs = ({ data, getUserReads, isOwnProfile }) => {
       </TabsContent>
       <TabsContent value="reading">
         {reading.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(320px,320px))]">
             {reading.map((book) => (
               <ReadingStatusCard
+                key={book._id}
+                readId={book._id}
                 title={book.bookTitle}
                 authors={book.bookAuthors}
                 cover={book.bookCover}
@@ -59,6 +63,8 @@ const ReadingStatusTabs = ({ data, getUserReads, isOwnProfile }) => {
                 type={book.status}
                 pages={book.bookPages}
                 currentPage={book.currentPage}
+                isOwnProfile={isOwnProfile}
+                updateCurrentPage={updateCurrentPage}
               />
             ))}
           </div>
@@ -75,9 +81,10 @@ const ReadingStatusTabs = ({ data, getUserReads, isOwnProfile }) => {
       </TabsContent>
       <TabsContent value="read">
         {read.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(320px,320px))]">
             {read.map((book) => (
               <ReadingStatusCard
+                key={book._id}
                 title={book.bookTitle}
                 authors={book.bookAuthors}
                 cover={book.bookCover}

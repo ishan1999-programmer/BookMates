@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getReads } from "../apis/read.api";
+import { getReads, updateBook } from "../apis/read.api";
 
 const useUserReads = (username) => {
   const [data, setData] = useState([]);
@@ -19,6 +19,25 @@ const useUserReads = (username) => {
     }
   }, []);
 
+  const updateCurrentPage = useCallback(async (readId, updatedDetails) => {
+    const { oldPage, newPage } = updatedDetails;
+    setData((prev) =>
+      prev.map((book) =>
+        book._id === readId ? { ...book, currentPage: newPage } : book,
+      ),
+    );
+    try {
+      await updateBook(readId, { currentPage: newPage });
+    } catch (error) {
+      setData((prev) =>
+        prev.map((book) =>
+          book._id === readId ? { ...book, currentPage: oldPage } : book,
+        ),
+      );
+      throw error;
+    }
+  }, []);
+
   useEffect(() => {
     getUserReads(username);
   }, [username]);
@@ -28,6 +47,7 @@ const useUserReads = (username) => {
     error,
     isFetching,
     getUserReads,
+    updateCurrentPage,
   };
 };
 

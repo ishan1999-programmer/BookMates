@@ -18,7 +18,6 @@ const UserReads = ({ username, isOwnProfile }) => {
   return (
     <ReadingStatusTabs
       data={data}
-      getUserReads={getUserReads}
       isOwnProfile={isOwnProfile}
     />
   );
