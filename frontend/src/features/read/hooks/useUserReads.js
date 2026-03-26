@@ -38,6 +38,27 @@ const useUserReads = (username) => {
     }
   }, []);
 
+  const updateBookStatus = useCallback(async (readId, updatedDetails) => {
+console.log(readId);
+    
+    const { oldStatus, newStatus } = updatedDetails;
+    setData((prev) =>
+      prev.map((book) =>
+        book._id === readId ? { ...book, status: newStatus } : book,
+      ),
+    );
+    try {
+      await updateBook(readId, { status: newStatus });
+    } catch (error) {
+      setData((prev) =>
+        prev.map((book) =>
+          book._id === readId ? { ...book, status: oldStatus } : book,
+        ),
+      );
+      throw error;
+    }
+  }, []);
+
   useEffect(() => {
     getUserReads(username);
   }, [username]);
@@ -48,6 +69,7 @@ const useUserReads = (username) => {
     isFetching,
     getUserReads,
     updateCurrentPage,
+    updateBookStatus,
   };
 };
 

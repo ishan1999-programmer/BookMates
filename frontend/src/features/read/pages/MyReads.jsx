@@ -4,8 +4,14 @@ import ErrorUserReadings from "../components/ErrorUserReadings";
 import useUserReads from "../hooks/useUserReads";
 const MyReads = () => {
   const username = localStorage.getItem("username");
-  const { data, error, isFetching, getUserReads, updateCurrentPage } =
-    useUserReads(username);
+  const {
+    data,
+    error,
+    isFetching,
+    getUserReads,
+    updateCurrentPage,
+    updateBookStatus,
+  } = useUserReads(username);
 
   return (
     <div className="flex flex-col gap-5">
@@ -24,6 +30,7 @@ const MyReads = () => {
           data={data}
           isOwnProfile={true}
           updateCurrentPage={updateCurrentPage}
+          updateBookStatus={updateBookStatus}
         />
       )}
     </div>

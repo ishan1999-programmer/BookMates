@@ -17,6 +17,7 @@ const ReadingStatusCard = ({
   currentPage,
   isOwnProfile,
   updateCurrentPage,
+  updateBookStatus,
 }) => {
   const [isPageUpdating, setIsPageUpdating] = useState(false);
   const [newPage, setNewPage] = useState(currentPage);
@@ -32,6 +33,17 @@ const ReadingStatusCard = ({
       setIsPageUpdating(true);
     }
   };
+
+  const handleUpdateStatus = async (oldStatus, newStatus) => {
+    try {
+      await updateBookStatus(readId, { oldStatus, newStatus });
+    } catch (error) {
+      toast.error("Action failed. Please try again.", {
+        position: "top-center",
+      });
+    }
+  };
+
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow">
       <div className="p-3">
@@ -61,7 +73,7 @@ const ReadingStatusCard = ({
 
           <p className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
             <Calendar className="h-3 w-3" />
-            {`${type === "want to read" ? "Added" : type === "reading" ? "Started" : "Completed"} ${format(updatedAt, "MMMM yyyy")}`}
+            {`${type === "want to read" ? "Added" : type === "reading" ? "Started" : "Completed"} ${format(updatedAt, "MMMM dd, yyyy")}`}
           </p>
 
           {type === "reading" && (
@@ -86,10 +98,22 @@ const ReadingStatusCard = ({
                   <div className="flex items-center gap-1">
                     <span>Page</span>
                     <Input
+                      type="text"
                       autoFocus
                       value={newPage}
                       className="w-10 h-5 text-xs px-1 py-0"
-                      onChange={(e) => setNewPage(e.target.value)}
+                      onChange={(e) => {
+                        let value = e.target.value;
+
+                        if (!/^\d*$/.test(value)) return;
+
+                        if (value !== "") {
+                          const num = Number(value);
+                          if (num < 1 || num > pages) return;
+                        }
+
+                        setNewPage(value);
+                      }}
                     />
                     <span>of {pages}</span>
                   </div>
@@ -137,6 +161,7 @@ const ReadingStatusCard = ({
                 <Button
                   size="sm"
                   className="flex gap-1 bg-blue-200 text-blue-700 hover:bg-blue-100"
+                  onClick={() => handleUpdateStatus("want to read", "reading")}
                 >
                   <Plus />
                   Currently Reading
@@ -145,6 +170,7 @@ const ReadingStatusCard = ({
               <Button
                 size="sm"
                 className="flex gap-1 bg-green-200 text-green-700 hover:bg-green-100"
+                onClick={() => handleUpdateStatus("reading", "read")}
               >
                 <Plus />
                 Read
