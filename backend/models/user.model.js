@@ -41,7 +41,6 @@ const userSchema = new Schema(
     followersCount: { type: Number, default: 0 },
     followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followingsCount: { type: Number, default: 0 },
-    booksRead: [{ type: Schema.Types.ObjectId, ref: "Read" }],
     booksReadCount: { type: Number, default: 0 },
     isPrivate: {
       type: Boolean,

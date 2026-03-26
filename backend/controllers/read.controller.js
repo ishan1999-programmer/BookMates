@@ -100,6 +100,8 @@ const updateBook = async (req, res) => {
     const { readId } = req.params;
     const { status, pages: bookPages, currentPage } = req.body;
 
+    await new Promise((res, rej) => setTimeout(() => rej(1), 5000));
+
     const existingUser = await User.exists({ _id: userId });
     if (!existingUser) {
       return res
@@ -117,6 +119,10 @@ const updateBook = async (req, res) => {
         success: false,
         message: "Book not found",
       });
+    }
+
+    if (status === "read") {
+      await User.findByIdAndUpdate(userId, { $inc: { booksReadCount: 1 } });
     }
 
     return res.status(200).json({ success: true, data: updatedBook });

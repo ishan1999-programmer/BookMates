@@ -39,7 +39,6 @@ const useUserReads = (username) => {
   }, []);
 
   const updateBookStatus = useCallback(async (readId, updatedDetails) => {
-console.log(readId);
     
     const { oldStatus, newStatus } = updatedDetails;
     setData((prev) =>

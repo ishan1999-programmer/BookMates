@@ -161,7 +161,7 @@ const ReadingStatusCard = ({
                 <Button
                   size="sm"
                   className="flex gap-1 bg-blue-200 text-blue-700 hover:bg-blue-100"
-                  onClick={() => handleUpdateStatus("want to read", "reading")}
+                  onClick={() => handleUpdateStatus(type, "reading")}
                 >
                   <Plus />
                   Currently Reading
@@ -170,7 +170,7 @@ const ReadingStatusCard = ({
               <Button
                 size="sm"
                 className="flex gap-1 bg-green-200 text-green-700 hover:bg-green-100"
-                onClick={() => handleUpdateStatus("reading", "read")}
+                onClick={() => handleUpdateStatus(type, "read")}
               >
                 <Plus />
                 Read

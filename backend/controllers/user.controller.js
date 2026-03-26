@@ -57,7 +57,7 @@ const getUserByUsername = async (req, res) => {
     const { userId } = req.user;
     const { username } = req.params;
     const user = await User.findOne({ username: username })
-      .select("-password -followers -followings -booksRead")
+      .select("-password -followers -followings")
       .lean();
     if (!user) {
       return res
@@ -95,7 +95,7 @@ const getUser = async (req, res) => {
   try {
     const { userId } = req.user;
     const user = await User.findById(userId)
-      .select("-password -followers -followings -booksRead")
+      .select("-password -followers -followings")
       .lean();
     if (!user) {
       return res

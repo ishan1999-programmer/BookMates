@@ -22,6 +22,11 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.name === "CanceledError") {
       return Promise.reject(error);
+    } else if (error.response && error.response.status === 401) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("username");
+      localStorage.setItem("sessionExpired", "true");
+      window.location.href = "/login";
     } else {
       const normalizedError = {
         status: error.response?.status || 500,

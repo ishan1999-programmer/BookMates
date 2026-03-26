@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -26,7 +26,6 @@ import { EyeOffIcon, EyeIcon } from "lucide-react";
 const LoginForm = () => {
   const { isSubmitting, login } = useLogin();
   const navigate = useNavigate();
-  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -48,14 +47,6 @@ const LoginForm = () => {
       });
     }
   };
-
-  useEffect(() => {
-    if (location.state?.signupSuccess) {
-      toast.success("Account created successfully. Please log in.", {
-        position: "top-center",
-      });
-    }
-  }, [location.state?.signupSuccess]);
 
   return (
     <Card className="w-full max-w-sm">
