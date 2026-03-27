@@ -1,4 +1,6 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const connectDB = require("./config/db.config");
 const app = require("./app");
@@ -13,7 +15,7 @@ const startServer = async () => {
     }
   } catch (error) {
     console.log(
-      error.message || "Something went wrong while starting the server"
+      error.message || "Something went wrong while starting the server",
     );
     process.exit(1);
   }

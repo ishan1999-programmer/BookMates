@@ -19,7 +19,7 @@ const loginUser = async (req, res) => {
         .json({ success: false, message: "Incorrect Password" });
     }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "5s",
+      expiresIn: "1d",
     });
 
     const { password: _, ...userDetails } = user.toObject();

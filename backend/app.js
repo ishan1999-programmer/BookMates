@@ -9,6 +9,7 @@ const followRequestRouter = require("./routes/followRequest.routes");
 const notificationRouter = require("./routes/notification.routes");
 const bookRouter = require("./routes/book.routes");
 const readRouter = require("./routes/read.routes");
+const uploadRouter = require("./routes/upload.routes");
 const authenticator = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -24,5 +25,6 @@ app.use("/api/follow-requests", authenticator, followRequestRouter);
 app.use("/api/notifications", authenticator, notificationRouter);
 app.use("/api/books", authenticator, bookRouter);
 app.use("/api/reads", authenticator, readRouter);
+app.use("/api/uploads", authenticator, uploadRouter);
 
 module.exports = app;
