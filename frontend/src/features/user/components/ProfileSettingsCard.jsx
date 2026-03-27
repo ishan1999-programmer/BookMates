@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { useForm, Controller } from "react-hook-form";
 import useUpdateUserInfo from "../hooks/useUpdateUserInfo";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import useS3Upload from "@/features/upload/hooks/useS3Upload";
 
 const ProfileSettingsCard = ({
   fullname,
@@ -29,10 +30,14 @@ const ProfileSettingsCard = ({
     control,
     formState: { errors },
   } = useForm({ defaultValues: { fullname, username, bio } });
+  const { data, isUploading, uploadFile } = useS3Upload();
+  const fileInputRef = useRef(null);
+  const [file, setFile] = useState(null);
 
   const onSubmit = async (formData) => {
     try {
-      await updateUserInfo(formData);
+      const finalFormData = { ...formData, avatar: data };
+      await updateUserInfo(finalFormData);
       toast.success("Profile information updated successfully", {
         position: "top-center",
       });
@@ -42,6 +47,21 @@ const ProfileSettingsCard = ({
           error?.message ||
           "Updating profile information failed. Please try again.",
       });
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setFile(file);
+    try {
+      await uploadFile(file);
+    } catch (error) {
+      toast.error("Upload failed. Please try again", {
+        position: "top-center",
+      });
+      setFile(null);
+      e.target.value = null;
     }
   };
 
@@ -57,20 +77,43 @@ const ProfileSettingsCard = ({
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center gap-3">
-            <Avatar className="w-20 h-20">
-              <AvatarImage src={avatar} />
-              <AvatarFallback className="text-4xl bg-primary/10 text-primary">
-                {fullname
-                  .split(" ")
-                  .map((u) => u[0])
-                  .join("")
-                  .toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <Button variant="outline" size="sm">
-              <Camera className="h-4 w-4 mr-2" />
-              Change Photo
-            </Button>
+            <div className="relative">
+              <Avatar className="w-20 h-20">
+                <AvatarImage src={file ? URL.createObjectURL(file) : avatar} />
+                <AvatarFallback className="text-4xl bg-primary/10 text-primary">
+                  {fullname
+                    .split(" ")
+                    .map((u) => u[0])
+                    .join("")
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {isUploading && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                  <Spinner />
+                </div>
+              )}
+            </div>
+            <div>
+              <Input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              <Button
+                variant="outline"
+                disabled={isUploading}
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  fileInputRef.current.click();
+                }}
+              >
+                <Camera className="h-4 w-4 mr-2" />
+                Change Photo
+              </Button>
+            </div>
           </div>
           <div className="mt-4">
             <Label className="block text-sm font-medium mb-2">Name</Label>
@@ -171,7 +214,7 @@ const ProfileSettingsCard = ({
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="mt-4 w-[110px]"
             >
               {isSubmitting ? <Spinner /> : "Save Profile"}

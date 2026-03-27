@@ -27,8 +27,6 @@ const generateUploadUrl = async (req, res) => {
       fileUrl,
     });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
       success: false,
       message: "Failed to generate upload URL",
