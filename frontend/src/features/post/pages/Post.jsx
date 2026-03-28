@@ -5,8 +5,6 @@ import PostCardSkeleton from "../components/PostCardSkeleton";
 import { useParams } from "react-router-dom";
 
 const Post = () => {
-  
-
   const params = useParams();
   const { postId } = params;
   const {
@@ -38,7 +36,7 @@ const Post = () => {
         bookAuthor={data.bookAuthor}
         bookGenres={data.bookGenres}
         bookRating={data.bookRating}
-        bookImage={data.bookImage}
+        bookCover={data.bookCover}
         bookReview={data.bookReview}
         likesCount={data.likesCount}
         commentsCount={data.commentsCount}

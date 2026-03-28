@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { User, Camera } from "lucide-react";
+import { User, Camera, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import genres from "@/data/genres";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -30,14 +30,13 @@ const ProfileSettingsCard = ({
     control,
     formState: { errors },
   } = useForm({ defaultValues: { fullname, username, bio } });
-  const { data, isUploading, uploadFile } = useS3Upload();
+  const { isUploading, uploadFile, progress } = useS3Upload();
   const fileInputRef = useRef(null);
-  const [file, setFile] = useState(null);
+  const [profilePic, setProfilePic] = useState(avatar);
 
   const onSubmit = async (formData) => {
     try {
-      const finalFormData = { ...formData, avatar: data };
-      await updateUserInfo(finalFormData);
+      await updateUserInfo({ ...formData, avatar: profilePic });
       toast.success("Profile information updated successfully", {
         position: "top-center",
       });
@@ -53,14 +52,15 @@ const ProfileSettingsCard = ({
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setFile(file);
+    setProfilePic(URL.createObjectURL(file));
     try {
-      await uploadFile(file);
+      const fileUrl = await uploadFile(file);
+      setProfilePic(fileUrl);
     } catch (error) {
       toast.error("Upload failed. Please try again", {
         position: "top-center",
       });
-      setFile(null);
+      setProfilePic(avatar);
       e.target.value = null;
     }
   };
@@ -79,7 +79,7 @@ const ProfileSettingsCard = ({
           <div className="flex items-center gap-3">
             <div className="relative">
               <Avatar className="w-20 h-20">
-                <AvatarImage src={file ? URL.createObjectURL(file) : avatar} />
+                <AvatarImage src={profilePic} />
                 <AvatarFallback className="text-4xl bg-primary/10 text-primary">
                   {fullname
                     .split(" ")
@@ -89,9 +89,19 @@ const ProfileSettingsCard = ({
                 </AvatarFallback>
               </Avatar>
               {isUploading && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
-                  <Spinner />
+                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center rounded-full text-white text-xs">
+                  <span>{progress}%</span>
                 </div>
+              )}
+              {profilePic && !isUploading && (
+                <Badge
+                  size="xs"
+                  variant="destructive"
+                  className="items-center justify-center rounded-full p-0 absolute -top-1 right-0 cursor-pointer hover:bg-red "
+                  onClick={() => setProfilePic("")}
+                >
+                  <X />
+                </Badge>
               )}
             </div>
             <div>

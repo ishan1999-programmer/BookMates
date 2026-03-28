@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { User, Camera, ClipboardList, BookOpen, Star } from "lucide-react";
+import { User, Camera, ClipboardList, BookOpen, Star, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import genres from "@/data/genres";
 import { useForm, Controller } from "react-hook-form";
 import useCreatePost from "../hooks/useCreatePost";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import { useState, useRef } from "react";
+import useS3Upload from "@/features/upload/hooks/useS3Upload";
 
 const PostDetailsCard = () => {
   const { isSubmitting, createPost } = useCreatePost();
@@ -23,10 +25,13 @@ const PostDetailsCard = () => {
     control,
     formState: { errors },
   } = useForm();
+  const { isUploading, uploadFile, progress } = useS3Upload();
+  const fileInputRef = useRef(null);
+  const [bookCover, setBookCover] = useState("");
 
   const onSubmit = async (formData) => {
     try {
-      await createPost(formData);
+      await createPost({ ...formData, bookCover });
       reset();
       toast.success("Post published successfully.", {
         position: "top-center",
@@ -36,6 +41,22 @@ const PostDetailsCard = () => {
       setError("root", {
         message: error?.message || "Something went wrong. Please try again.",
       });
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setBookCover(URL.createObjectURL(file));
+    try {
+      const fileUrl = await uploadFile(file);
+      setBookCover(fileUrl);
+    } catch (error) {
+      toast.error("Upload failed. Please try again", {
+        position: "top-center",
+      });
+      setBookCover("");
+      e.target.value = null;
     }
   };
 
@@ -51,21 +72,52 @@ const PostDetailsCard = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center gap-3">
-            <div className="w-20 h-28 bg-muted rounded flex items-center justify-center flex-shrink-0">
-              {false ? (
+            <div className="relative w-20 h-28 bg-muted rounded flex items-center justify-center flex-shrink-0">
+              {bookCover ? (
                 <img
-                  src=""
+                  src={bookCover}
                   alt=""
                   className="w-full h-full object-cover rounded"
                 />
               ) : (
                 <BookOpen className="h-8 w-8 text-muted-foreground" />
               )}
+              {isUploading && (
+                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-xs">
+                  <span>{progress}%</span>
+                </div>
+              )}
+              {bookCover && !isUploading && (
+                <Badge
+                  size="xs"
+                  variant="destructive"
+                  className="items-center justify-center rounded-full p-0 absolute -top-3 -right-3 cursor-pointer hover:bg-red "
+                  onClick={() => setBookCover("")}
+                >
+                  <X />
+                </Badge>
+              )}
             </div>
-            <Button variant="outline" size="sm">
-              <Camera className="h-4 w-4 mr-2" />
-              Upload Cover
-            </Button>
+            <div>
+              <Input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={isUploading}
+                onClick={(e) => {
+                  e.preventDefault();
+                  fileInputRef.current.click();
+                }}
+              >
+                <Camera className="h-4 w-4 mr-2" />
+                Upload Cover
+              </Button>
+            </div>
           </div>
           <div className="mt-4">
             <Label className="block text-sm font-medium mb-2">Title *</Label>
@@ -107,7 +159,7 @@ const PostDetailsCard = () => {
               }}
               render={({ field }) => (
                 <div className="flex flex-wrap gap-2">
-                  {genres.map((genre,idx) => {
+                  {genres.map((genre, idx) => {
                     const isSelected = field.value.includes(genre);
 
                     return (

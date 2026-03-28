@@ -61,7 +61,7 @@ const UserPosts = ({ username, isOwnProfile }) => {
           bookAuthor={post.bookAuthor}
           bookGenres={post.bookGenres}
           bookRating={post.bookRating}
-          bookImage={post.bookImage}
+          bookCover={post.bookCover}
           bookReview={post.bookReview}
           likesCount={post.likesCount}
           commentsCount={post.commentsCount}

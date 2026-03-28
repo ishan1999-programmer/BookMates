@@ -16,7 +16,7 @@ const postSchema = new Schema(
       min: 0,
       max: 5,
     },
-    bookImage: { type: String, default: "" },
+    bookCover: { type: String, default: "" },
     bookReview: {
       type: String,
       required: [true, "Book review is required"],

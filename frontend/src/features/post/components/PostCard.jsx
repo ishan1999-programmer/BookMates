@@ -17,7 +17,7 @@ const PostCard = ({
   bookAuthor,
   bookGenres,
   bookRating,
-  bookImage,
+  bookCover,
   bookReview,
   likesCount,
   createdAt,
@@ -70,10 +70,9 @@ const PostCard = ({
           </div>
           <div className="flex gap-3">
             <div className="w-16 h-24 bg-muted rounded flex items-center justify-center flex-shrink-0">
-              {false ? (
+              {bookCover ? (
                 <img
-                  src={bookImage}
-                  alt=""
+                  src={bookCover}
                   className="w-full h-full object-cover rounded"
                 />
               ) : (

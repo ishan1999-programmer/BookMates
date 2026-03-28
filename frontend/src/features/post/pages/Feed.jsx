@@ -19,7 +19,7 @@ const Feed = () => {
   if (error && posts.length === 0) {
     return (
       <ErrorPosts
-        reFetch={fetchNext}                                                                             
+        reFetch={fetchNext}
         description="We couldn’t fetch your feed right now. Please try again"
       />
     );
@@ -57,7 +57,7 @@ const Feed = () => {
           bookAuthor={post.bookAuthor}
           bookGenres={post.bookGenres}
           bookRating={post.bookRating}
-          bookImage={post.bookImage}
+          bookCover={post.bookCover}
           bookReview={post.bookReview}
           likesCount={post.likesCount}
           commentsCount={post.commentsCount}
