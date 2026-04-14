@@ -12,11 +12,24 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      match: [
-        /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
-        "Password must contain at least 8 characters, including one letter and one number",
-      ],
+      default: null,
+      validate: {
+        validator: function (value) {
+          if (!value) return true;
+
+          return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(value);
+        },
+        message:
+          "Password must contain at least 8 characters, including one letter and one number",
+      },
+    },
+    googleId: {
+      type: String,
+      default: null,
+    },
+    authProvider: {
+      type: String,
+      default: "local",
     },
     fullname: {
       type: String,
@@ -43,6 +56,10 @@ const userSchema = new Schema(
     followingsCount: { type: Number, default: 0 },
     booksReadCount: { type: Number, default: 0 },
     isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
       type: Boolean,
       default: false,
     },

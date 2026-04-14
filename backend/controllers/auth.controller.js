@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const generateAccessToken = require("../utils/generateAccessToken");
 
 const User = require("../models/user.model");
 
-const loginUser = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -12,15 +12,19 @@ const loginUser = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+    if (!user.password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please login using Google",
+      });
+    }
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
       return res
         .status(401)
         .json({ success: false, message: "Incorrect Password" });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1d",
-    });
+    const token = generateAccessToken(user._id);
 
     const { password: _, ...userDetails } = user.toObject();
 
@@ -36,4 +40,9 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = loginUser;
+const googleLogin = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+module.exports = { login, googleLogin };
