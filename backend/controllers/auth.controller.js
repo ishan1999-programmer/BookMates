@@ -6,6 +6,8 @@ const User = require("../models/user.model");
 
 const login = async (req, res) => {
   try {
+    await new Promise((res, rej) => setTimeout(() => rej("1"), 5000));
+
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select(
       "email username password",
@@ -39,18 +41,19 @@ const login = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "An unexpected error occurred during user login",
+      message: "Login failed. Please try again.",
     });
   }
 };
 
 const googleLogin = async (req, res) => {
   try {
-    const { googleToken } = req.body;
+    await new Promise((res, rej) => setTimeout(() => res("1"), 5000));
+    const { token: googleToken } = req.body;
 
     const payload = await verifyGoogleToken(googleToken);
 
-    const { email, name, picture, sub } = payload;
+    const { email, name, sub } = payload;
 
     const existingUser = await User.findOne({ email }).select(
       "email username googleId",
@@ -64,7 +67,6 @@ const googleLogin = async (req, res) => {
         username: defaultUsername,
         googleId: sub,
         authProvider: "google",
-        avatar: picture || "",
         isVerified: true,
       });
       const token = generateAccessToken(createdUser._id);
@@ -99,7 +101,7 @@ const googleLogin = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "An unexpected error occurred during google login",
+      message: "Login failed. Please try again.",
     });
   }
 };

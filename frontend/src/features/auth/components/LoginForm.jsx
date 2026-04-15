@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
+import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -16,15 +16,18 @@ import { Label } from "@/components/ui/label";
 import "../styles/auth.css";
 import { useEffect, useState } from "react";
 import useLogin from "../hooks/useLogin";
+import useGoogleLogin from "../hooks/useGoogleLogin";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginForm = () => {
   const { isSubmitting, login } = useLogin();
+  const { isSubmitting: isGoogleSubmitting, googleLogin } = useGoogleLogin();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -45,6 +48,19 @@ const LoginForm = () => {
       setError("root", {
         message: error?.message || "Login failed. Please try again.",
       });
+    }
+  };
+
+  const onGoogleSubmit = async (credentialResponse) => {
+    try {
+      const { token, userDetails } = await googleLogin(
+        credentialResponse.credential,
+      );
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("username", userDetails.username);
+      navigate("/feed");
+    } catch (error) {
+      setError("root", { message: "Login failed. Please try again." });
     }
   };
 
@@ -110,12 +126,39 @@ const LoginForm = () => {
           </p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isSubmitting || isGoogleSubmitting}
+          >
             {isSubmitting ? <Spinner /> : "Sign In"}
           </Button>
-          <Button variant="outline" className="w-full">
-            Sign In with Google
-          </Button>
+          <div className="relative w-full">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={isSubmitting || isGoogleSubmitting}
+            >
+              <FcGoogle className="!w-5 !h-5" />
+              {isGoogleSubmitting ? "Signing in..." : "Sign in with Google"}
+            </Button>
+
+            <div
+              className={`absolute inset-0 opacity-0 ${
+                isSubmitting || isGoogleSubmitting ? "pointer-events-none" : ""
+              }`}
+            >
+              <GoogleLogin
+                onSuccess={onGoogleSubmit}
+                onError={() =>
+                  setError("root", {
+                    message: "Login failed. Please try again.",
+                  })
+                }
+              />
+            </div>
+          </div>
           <div className="footer-links-login-form">
             <a href="">Forgot your password?</a>
             <p>

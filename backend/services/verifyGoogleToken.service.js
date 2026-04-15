@@ -1,8 +1,8 @@
-import { OAuth2Client } from "google-auth-library";
+const { OAuth2Client } = require("google-auth-library");
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
-export const verifyGoogleToken = async (token) => {
+const verifyGoogleToken = async (token) => {
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
@@ -10,10 +10,11 @@ export const verifyGoogleToken = async (token) => {
     });
 
     const payload = ticket.getPayload();
-    console.log("payload", payload);
 
     return payload;
   } catch (error) {
     throw new Error("Invalid Google token");
   }
 };
+
+module.exports = verifyGoogleToken;
