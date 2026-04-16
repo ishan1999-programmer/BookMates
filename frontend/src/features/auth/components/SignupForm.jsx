@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Card,
   CardContent,
@@ -21,9 +22,13 @@ import {
 } from "@/components/ui/input-group";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { useState } from "react";
+import useLogin from "../hooks/useLogin";
+import useGoogleLogin from "../hooks/useGoogleLogin";
+import { FcGoogle } from "react-icons/fc";
 
 const SignupForm = () => {
   const { isSubmitting, signup } = useSignup();
+  const { isSubmitting: isGoogleSubmitting, googleLogin } = useGoogleLogin();
   const navigate = useNavigate();
   const {
     register,
@@ -44,6 +49,19 @@ const SignupForm = () => {
       setError("root", {
         message: error?.message || "Signup failed. Please try again.",
       });
+    }
+  };
+
+  const onGoogleSubmit = async (credentialResponse) => {
+    try {
+      const { token, userDetails } = await googleLogin(
+        credentialResponse.credential,
+      );
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("username", userDetails.username);
+      navigate("/feed");
+    } catch (error) {
+      setError("root", { message: "Login failed. Please try again." });
     }
   };
 
@@ -194,6 +212,32 @@ const SignupForm = () => {
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? <Spinner /> : "Create Account"}
           </Button>
+          <div className="relative w-full">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={isSubmitting || isGoogleSubmitting}
+            >
+              <FcGoogle className="!w-5 !h-5" />
+              {isGoogleSubmitting ? "Signing in..." : "Sign in with Google"}
+            </Button>
+
+            <div
+              className={`absolute inset-0 opacity-0 ${
+                isSubmitting || isGoogleSubmitting ? "pointer-events-none" : ""
+              }`}
+            >
+              <GoogleLogin
+                onSuccess={onGoogleSubmit}
+                onError={() =>
+                  setError("root", {
+                    message: "Login failed. Please try again.",
+                  })
+                }
+              />
+            </div>
+          </div>
           <div className="footer-links-signup-form">
             <p>
               Already have an account? <a href="/login">Sign in</a>

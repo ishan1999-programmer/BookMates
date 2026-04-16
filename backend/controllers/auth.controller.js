@@ -6,8 +6,6 @@ const User = require("../models/user.model");
 
 const login = async (req, res) => {
   try {
-    await new Promise((res, rej) => setTimeout(() => rej("1"), 5000));
-
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select(
       "email username password",
@@ -48,7 +46,6 @@ const login = async (req, res) => {
 
 const googleLogin = async (req, res) => {
   try {
-    await new Promise((res, rej) => setTimeout(() => res("1"), 5000));
     const { token: googleToken } = req.body;
 
     const payload = await verifyGoogleToken(googleToken);

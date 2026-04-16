@@ -32,7 +32,8 @@
 .signup-page {
   min-height: 100vh;
   width: 100vw;
-  padding-top: 100px;
+  padding-top: 70px;
+  padding-bottom: 10px;
   background-color: hsl(35 25% 90%);
 }
 
@@ -44,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 20px;
 }
 
 .login-page-title,
