@@ -8,8 +8,6 @@
 }
 
 .hero-section-container {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -27,8 +25,6 @@
 }
 
 .features-section-container {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -43,8 +39,6 @@
 }
 
 .testimonial-section-content {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,11 +52,7 @@
   gap: 5px;
 }
 
-
-
 .cta-section-content {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -71,13 +61,11 @@
   padding: 50px;
 }
 
-.cta-section{
-    margin-bottom: 30px;
+.cta-section {
+  margin-bottom: 30px;
 }
 
 .footer-section-content {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
