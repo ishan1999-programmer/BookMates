@@ -25,7 +25,7 @@ const Feed = () => {
     );
   }
 
-  if (isFetching && posts.length === 0) {
+  if (isFetching) {
     return (
       <>
         <div className="flex flex-col gap-8 max-w-[1000px]">

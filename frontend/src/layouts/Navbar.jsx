@@ -8,31 +8,30 @@ import FollowRequestButton from "@/features/follow/components/FollowRequestButto
 import SearchUsers from "@/features/user/components/SearchUsers";
 
 const Navbar = () => {
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
+
   return (
-    <div className="bg-background border-b border-border h-16 w-screen p-4 lg:px-6 sticky top-0 z-40">
-      <div className="px-4 flex items-center justify-between">
-        <div className="flex gap-2">
-          <BookOpen
-            className={`${isMobile ? "h-6 w-6" : "h-8 w-8"} text-primary`}
-          />
-          <p
-            className={`font-bold ${
-              isMobile ? "text-lg" : "text-xl"
-            } text-primary`}
-          >
-            BookMates
-          </p>
+    <div className="bg-background border-b border-border h-16 w-screen sticky top-0 z-40">
+      <div className="px-4 lg:px-6 h-full flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BookOpen className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-primary" />
+
+          <p className="hidden sm:block font-bold text-primary text-xl">BookMates</p>
         </div>
-        <div className="navbar-content-right flex items-center gap-3">
-          <SearchUsers/>
+
+        {/* Right */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div >
+            <SearchUsers />
+          </div>
+
+          {/* Add Post */}
           <Button
             onClick={() => navigate("/add-post")}
-            variant="default"
-            className="px-3 py-2 h-auto"
+            className="px-2 sm:px-3 h-9"
           >
-            <span className="text-primary-foreground font-medium">+ Post</span>
+            <span className="hidden sm:inline">+ Post</span>
+            <span className="sm:hidden text-lg">+</span>
           </Button>
 
           <NotificationButton />

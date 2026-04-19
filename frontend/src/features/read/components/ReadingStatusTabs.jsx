@@ -1,13 +1,14 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadingStatusCard from "./ReadingStatusCard";
 import NoReadings from "./NoReadings";
-
+import { useIsMobile } from "@/hooks/use-mobile";
 const ReadingStatusTabs = ({
   data,
   isOwnProfile,
   updateCurrentPage,
   updateBookStatus,
 }) => {
+  const isMobile = useIsMobile();
   const wantToRead = data.filter((book) => book.status === "want to read");
   const reading = data.filter((book) => book.status === "reading");
   const read = data.filter((book) => book.status === "read");
@@ -19,13 +20,13 @@ const ReadingStatusTabs = ({
           className="flex-1 flex gap-2 items-center"
           value="want to read"
         >
-          {`Want To Read (${wantToRead.length})`}
+          <span className={isMobile ? "text-[10px]" : "text-[14px]"}>{`Want To Read (${wantToRead.length})`}</span>
         </TabsTrigger>
         <TabsTrigger className="flex-1 flex gap-2 items-center" value="reading">
-          {`Currently Reading (${reading.length})`}
+          <span className={isMobile ? "text-[10px]" : "text-[14px]"}>{`Currently Reading (${reading.length})`}</span>
         </TabsTrigger>
         <TabsTrigger className="flex-1 flex gap-2 items-center" value="read">
-          {`Read (${read.length})`}
+          <span className={isMobile ? "text-[10px]" : "text-[14px]"}>{`Read (${read.length})`}</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="want to read">

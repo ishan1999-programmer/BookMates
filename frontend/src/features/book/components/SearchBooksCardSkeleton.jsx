@@ -2,17 +2,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const SearchBooksCardSkeleton = () => {
   return (
-    <div
-      className={`flex justify-between pb-2 pt-3 pl-2 pr-4 border-b border-border`}
-    >
-      <div className="flex gap-3">
-        <Skeleton className="w-12 h-16" />
+    <div className="flex justify-between items-start pb-2 pt-3 border-b border-border gap-2">
+      <div className="flex gap-3 min-w-0">
+        <Skeleton className="w-12 h-16 rounded flex-shrink-0" />
+
         <div className="flex flex-col min-w-0 gap-2">
-          <Skeleton className="w-48 h-4" />
-          <Skeleton className="w-20 h-3" />
+          <Skeleton className="h-4 w-full sm:w-48" />
+          <Skeleton className="h-3 w-24 sm:w-32" />
         </div>
       </div>
-      <Skeleton className="w-24 h-8" />
+
+      <div className="flex items-center flex-shrink-0">
+        <Skeleton className="h-7 w-16 sm:h-8 sm:w-24 rounded" />
+      </div>
     </div>
   );
 };

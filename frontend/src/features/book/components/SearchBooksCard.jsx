@@ -40,10 +40,9 @@ const SearchBooksCard = ({
     }
   };
   return (
-    <div
-      className={`flex justify-between items-start pb-2 pt-3 pl-2 pr-4 border-b border-border`}
-    >
-      <div className="flex gap-3">
+    <div className="flex justify-between items-start pb-2 pt-3  border-b border-border gap-2">
+      {/* Left */}
+      <div className="flex gap-3 min-w-0">
         <div className="w-12 h-16 bg-muted rounded flex items-center justify-center flex-shrink-0">
           {cover ? (
             <img
@@ -55,25 +54,29 @@ const SearchBooksCard = ({
             <BookOpen className="h-8 w-8 text-muted-foreground" />
           )}
         </div>
-        <div className="flex flex-col">
+
+        <div className="flex flex-col min-w-0">
           <a
             href={link}
             target="_blank"
-            className="font-medium text-sm wrap-break-word w-48 hover:text-muted-foreground hover:underline cursor-pointer"
+            className="font-medium text-sm break-words hover:text-muted-foreground hover:underline cursor-pointer"
           >
             {title}
           </a>
-          <p className="text-xs text-primary wrap-break-word w-48">
-            {authors.length > 0 ? authors.join(",") : ""}
+
+          <p className="text-xs text-primary break-words">
+            {authors.length > 0 ? authors.join(", ") : ""}
           </p>
         </div>
       </div>
-      <div className="flex items-center ml-3 flex-shrink-0">
+
+      {/* Right */}
+      <div className="flex items-center flex-shrink-0">
         {status === "not added" && (
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-[128px] px-3 text-xs"
+            className="h-7 px-2 text-[11px] sm:h-8 sm:px-3 sm:text-xs"
             onClick={handleAddBook}
             disabled={submittingIds[id]}
           >
@@ -81,8 +84,10 @@ const SearchBooksCard = ({
               <Spinner />
             ) : (
               <>
-                <BookPlus className="h-4 w-4" />
-                Want to Read
+                <BookPlus className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-[10px] sm:text-xs  py-1">
+                  Want to Read
+                </span>
               </>
             )}
           </Button>
@@ -91,7 +96,7 @@ const SearchBooksCard = ({
         {status === "want to read" && (
           <Button
             size="sm"
-            className="h-8 w-[86px] px-3 text-xs"
+            className="h-7 px-2 text-[11px] sm:h-8 sm:px-3 sm:text-xs"
             onClick={handleRemoveBook}
             disabled={submittingIds[id]}
           >
@@ -99,21 +104,21 @@ const SearchBooksCard = ({
               <Spinner />
             ) : (
               <>
-                <BookCheck className="h-4 w-4" />
-                Added
+                <BookCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-[10px] sm:text-xs py-1">Added</span>
               </>
             )}
           </Button>
         )}
 
         {status === "reading" && (
-          <span className="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
-            Currently Reading
+          <span className="text-[10px] sm:text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium whitespace-nowrap">
+            Reading
           </span>
         )}
 
         {status === "read" && (
-          <span className="text-xs px-2.5 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+          <span className="text-[10px] sm:text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium whitespace-nowrap">
             Read
           </span>
         )}

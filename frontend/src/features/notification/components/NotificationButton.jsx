@@ -43,7 +43,7 @@ const NotificationButton = () => {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="pl-0 pr-0 pb-0 w-96 max-h-[357px] overflow-y-auto"
+        className="pl-0 pr-0 pb-0 w-96 max-h-[357px] overflow-y-auto ml-2"
       >
         <div className="mb-3 pl-4">
           <h3 className="font-semibold text-lg">Notifications</h3>{" "}

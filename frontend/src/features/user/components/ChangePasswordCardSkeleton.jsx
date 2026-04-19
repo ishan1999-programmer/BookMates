@@ -20,7 +20,10 @@ const ChangePasswordCardSkeleton = () => {
         <div className="mt-4">
           <Skeleton className="h-10 w-full" />
         </div>
-        <Skeleton className="h-8 w-36 mt-4" />
+        <div className="flex justify-end">
+          {" "}
+          <Skeleton className="h-8 w-36 mt-4" />
+        </div>
       </CardContent>
     </Card>
   );

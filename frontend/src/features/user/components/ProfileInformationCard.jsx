@@ -92,11 +92,11 @@ const ProfileInformationCard = ({
 
   return (
     <Card>
-      <CardContent className="p-5">
-        <div className="flex items-start gap-5">
-          <Avatar className="w-32 h-32">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+          <Avatar className="w-20 h-20 sm:w-28 sm:h-28">
             <AvatarImage src={avatar} />
-            <AvatarFallback className="text-4xl font-bold bg-primary/10 text-primary">
+            <AvatarFallback className="text-2xl sm:text-4xl font-bold bg-primary/10 text-primary">
               {fullname
                 .split(" ")
                 .map((u) => u[0])
@@ -104,23 +104,29 @@ const ProfileInformationCard = ({
                 .toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col flex-1 gap-4">
-            <div className="flex items-start justify-between">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-bold text-foreground">
+
+          <div className="flex flex-col flex-1 min-w-0 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex flex-col gap-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl font-bold text-foreground break-words">
                     {fullname}
                   </h1>
                   {isPrivate && (
-                    <UserLock className="h-5 w-5 text-muted-foreground" />
+                    <UserLock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   )}
                 </div>
-                <p className="text-muted-foreground text-lg">{username}</p>
+
+                <p className="text-muted-foreground text-sm sm:text-base break-words">
+                  {username}
+                </p>
               </div>
+
               <Button
                 disabled={isSubmitting}
                 variant={buttonStatusToStyleMap[buttonStatus].variant}
                 onClick={handleOnClick}
+                className="w-full sm:w-auto"
               >
                 {isSubmitting ? (
                   <Spinner />
@@ -132,27 +138,43 @@ const ProfileInformationCard = ({
                 )}
               </Button>
             </div>
-            <p className="text-foreground mb-6 leading-relaxed">{bio}</p>
-            <div className="flex gap-5">
-              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+
+            {bio && (
+              <p className="text-foreground leading-relaxed text-sm sm:text-base break-words">
+                {bio}
+              </p>
+            )}
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col items-center justify-center gap-1 p-3 sm:p-4 bg-muted/50 rounded-lg">
+                <div className="text-lg sm:text-2xl font-bold text-primary">
                   {followingsCount}
                 </div>
-                <div className="text-sm text-muted-foreground">Followings</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">
+                  Followings
+                </div>
               </div>
-              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+
+              <div className="flex flex-col items-center justify-center gap-1 p-3 sm:p-4 bg-muted/50 rounded-lg">
+                <div className="text-lg sm:text-2xl font-bold text-primary">
                   {followersCount}
                 </div>
-                <div className="text-sm text-muted-foreground">Followers</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">
+                  Followers
+                </div>
               </div>
-              <div className="flex flex-1 flex-col gap-1 text-center p-4 bg-muted/50 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+
+              <div className="flex flex-col items-center justify-center gap-1 p-3 sm:p-4 bg-muted/50 rounded-lg">
+                <div className="text-lg sm:text-2xl font-bold text-primary">
                   {booksReadCount}
                 </div>
-                <div className="text-sm text-muted-foreground">Books Read</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">
+                  Books Read
+                </div>
               </div>
             </div>
+
+            {/* Genres */}
             {favGenres.length > 0 && (
               <div>
                 <Label className="block text-sm font-medium mb-2">
@@ -162,7 +184,7 @@ const ProfileInformationCard = ({
                   {favGenres.map((genre, idx) => (
                     <Badge
                       variant="secondary"
-                      className="bg-accent/50"
+                      className="bg-accent/50 text-xs sm:text-sm"
                       key={idx}
                     >
                       {genre}
@@ -171,9 +193,13 @@ const ProfileInformationCard = ({
                 </div>
               </div>
             )}
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              <span>{`Joined ${format(createdAt, "MMMM yyyy")}`}</span>
+
+            {/* Joined */}
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4 flex-shrink-0" />
+              <span className="break-words">
+                {`Joined ${format(createdAt, "MMMM yyyy")}`}
+              </span>
             </div>
           </div>
         </div>
