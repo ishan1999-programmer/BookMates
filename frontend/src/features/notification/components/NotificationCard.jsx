@@ -48,38 +48,44 @@ const NotificationCard = ({
       </Avatar>
 
       <div className="flex flex-col gap-1 min-w-0">
-        <div className="flex gap-1 items-center min-w-0">
+        <div className="flex gap-1 items-start min-w-0">
           {type === "like" ? (
-            <Heart className={`h-4 w-4 flex-shrink-0 text-red-500`} />
+            <Heart className="h-4 w-4 flex-shrink-0 text-red-500 mt-[2px]" />
           ) : type === "comment" ? (
-            <MessageCircle className={`h-4 w-4 flex-shrink-0 text-blue-500`} />
+            <MessageCircle className="h-4 w-4 flex-shrink-0 text-blue-500 mt-[2px]" />
           ) : (
-            <User className={`h-4 w-4 flex-shrink-0 text-green-500`} />
+            <User className="h-4 w-4 flex-shrink-0 text-green-500 mt-[2px]" />
           )}
-          <p
-            className="font-medium text-sm truncate hover:text-muted-foreground hover:underline"
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpen(false);
-              navigate(`/users/${username}`);
-            }}
-          >
-            {fullname}
-          </p>
+          <div className="flex flex-wrap items-start gap-x-1 min-w-0">
+            <p
+              className="font-medium text-sm break-words hover:text-muted-foreground hover:underline"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(false);
+                navigate(`/users/${username}`);
+              }}
+            >
+              {fullname}
+            </p>
 
-          <p className="text-sm text-foreground truncate">
-            {type === "like"
-              ? "liked your post"
-              : type === "comment"
-                ? "commented on your post"
-                : "started following you"}
-          </p>
+            <p className="text-sm text-foreground break-words">
+              {type === "like"
+                ? "liked your post"
+                : type === "comment"
+                  ? "commented on your post"
+                  : "started following you"}
+            </p>
+          </div>{" "}
         </div>
 
+        {/* Post title */}
         {postTitle && (
-          <p className="text-xs text-primary truncate">{postTitle}</p>
+          <p className="text-xs text-primary truncate sm:truncate">
+            {postTitle}
+          </p>
         )}
 
+        {/* Time */}
         <p className="text-xs text-muted-foreground mt-1">
           {formatDistanceToNow(createdAt, { addSuffix: true })}
         </p>

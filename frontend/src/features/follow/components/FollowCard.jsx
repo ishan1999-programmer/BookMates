@@ -70,13 +70,13 @@ const FollowCard = ({
   const IconComponent = buttonStatusToStyleMap[buttonStatus].icon;
 
   return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="w-12 h-12">
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardContent className="p-3 sm:p-5">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <Avatar className="w-8 h-8 sm:w-12 sm:h-12 flex-shrink-0">
               <AvatarImage src={avatar} />
-              <AvatarFallback className="text-m bg-primary/10 text-primary">
+              <AvatarFallback className="text-xs sm:text-base bg-primary/10 text-primary">
                 {fullname
                   .split(" ")
                   .map((u) => u[0])
@@ -84,30 +84,38 @@ const FollowCard = ({
                   .toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
+
+            <div className="flex flex-col min-w-0">
               <Link to={`/users/${username}`}>
-                <h4 className="font-semibold text-foreground hover:text-muted-foreground hover:underline">
+                <h4 className="font-medium text-sm sm:text-base break-words break-all leading-tight">
                   {fullname}
                 </h4>
               </Link>
-              <p className="text-sm text-muted-foreground">{username}</p>
+
+              <p className="text-[11px] sm:text-sm text-muted-foreground break-words break-all leading-tight">
+                {username}
+              </p>
             </div>
           </div>
+
           {!isOwnFollowCard && (
-            <Button
-              variant={buttonStatusToStyleMap[buttonStatus].variant}
-              onClick={handleOnClick}
-              disabled={submittingIds[userId]}
-            >
-              {submittingIds[userId] ? (
-                <Spinner />
-              ) : (
-                <>
-                  <IconComponent />
-                  {buttonStatusToStyleMap[buttonStatus].text}
-                </>
-              )}
-            </Button>
+            <div className="flex-shrink-0">
+              <Button
+                variant={buttonStatusToStyleMap[buttonStatus].variant}
+                onClick={handleOnClick}
+                disabled={submittingIds[userId]}
+                className="h-7 sm:h-8 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap"
+              >
+                {submittingIds[userId] ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    <IconComponent className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>{buttonStatusToStyleMap[buttonStatus].text}</span>
+                  </>
+                )}
+              </Button>
+            </div>
           )}
         </div>
       </CardContent>

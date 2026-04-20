@@ -40,6 +40,7 @@ const ProfileSettingsCard = ({
       toast.success("Profile information updated successfully", {
         position: "top-center",
       });
+      localStorage.setItem("username", formData.username);
     } catch (error) {
       setError("root", {
         message:

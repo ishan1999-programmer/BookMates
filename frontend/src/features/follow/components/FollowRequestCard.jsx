@@ -39,6 +39,7 @@ const FollowReqestCard = ({
 
   return (
     <div className="flex gap-3 pb-4 pt-3 pl-4 pr-4 border-t border-border">
+      {/* Avatar */}
       <Avatar className="w-8 h-8 flex-shrink-0">
         <AvatarImage src={avatar} />
         <AvatarFallback className="text-m bg-primary/10 text-primary">
@@ -50,25 +51,35 @@ const FollowReqestCard = ({
         </AvatarFallback>
       </Avatar>
 
+      {/* Content */}
       <div className="flex flex-col gap-1 min-w-0">
-        <div className="flex gap-1 items-center min-w-0">
-          <UserPlus className="h-4 w-4 text-green-500" />
-          <Link to={`/users/${username}`}>
-            <p className="font-medium text-sm truncate hover:text-muted-foreground hover:underline">
-              {fullname}
+        {/* Top text row */}
+        <div className="flex gap-1 items-start min-w-0">
+          <UserPlus className="h-4 w-4 flex-shrink-0 text-green-500 mt-[2px]" />
+
+          <div className="flex flex-wrap items-start gap-x-1 min-w-0">
+            <Link to={`/users/${username}`}>
+              <p className="font-medium text-sm break-words hover:text-muted-foreground hover:underline">
+                {fullname}
+              </p>
+            </Link>
+
+            <p className="text-sm text-foreground break-words">
+              wants to follow you
             </p>
-          </Link>
-          <p className="text-sm text-foreground truncate">
-            wants to follow you
-          </p>
+          </div>
         </div>
+
+        {/* Time */}
         <p className="text-xs text-muted-foreground">
           {formatDistanceToNow(createdAt, { addSuffix: true })}
         </p>
-        <div className="flex space-x-2 mt-3">
+
+        {/* Actions */}
+        <div className="flex gap-2 mt-2 flex-wrap sm:flex-nowrap">
           <Button
-            size="m"
-            className="h-7 px-3"
+            size="sm"
+            className="h-7 px-2 sm:px-3 text-[11px] sm:text-xs flex-1 sm:flex-none"
             onClick={handleAcceptFollowRequest}
             disabled={isSubmittingIds[followRequestId]}
           >
@@ -81,10 +92,11 @@ const FollowReqestCard = ({
               </>
             )}
           </Button>
+
           <Button
-            size="m"
+            size="sm"
             variant="outline"
-            className="h-7 px-3"
+            className="h-7 px-2 sm:px-3 text-[11px] sm:text-xs flex-1 sm:flex-none"
             onClick={handleRejectFollowRequest}
             disabled={isSubmittingIds[followRequestId]}
           >
