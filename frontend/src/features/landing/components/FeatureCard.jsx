@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import "../styles/landing.css";
 
 const FeatureCard = ({ cardTitle, cardDescription, cardIcon:IconComponent}) => {
   
