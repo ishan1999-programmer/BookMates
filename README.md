@@ -20,6 +20,37 @@ The system is built with a focus on **scalability, performance, and real-world w
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Landing Page
+<img src="./screenshots/home.png" alt="Feed" width="800"/>
+
+### ⚙️ Login
+<img src="./screenshots/login.png" alt="Feed" width="800"/>
+
+### 📰 Notifications
+<img src="./screenshots/notification.png" alt="Feed" width="800"/>
+
+### Follow Requests
+<img src="./screenshots/follow-request.png" alt="Feed" width="800"/>
+
+### ✍️ Create Post
+<img src="./screenshots/add-post.png" alt="Feed" width="800"/>
+
+### 👤 Profile
+<img src="./screenshots/profile.png" alt="Feed" width="800"/>
+
+### 👤 Comments
+<img src="./screenshots/comment.png" alt="Feed" width="800"/>
+
+### 👤 Search Books
+<img src="./screenshots/search-books.png" alt="Feed" width="800"/>
+
+### 👤 Reading Tracking
+<img src="./screenshots/readings.png" alt="Feed" width="800"/>
+
+---
+
 ## Key Features
 
 ### 👤 Authentication & Authorization
