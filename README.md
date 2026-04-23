@@ -97,95 +97,14 @@ The system is built with a focus on **scalability, performance, and real-world w
 
 ## Key Engineering Decisions
 
-### 1. Cursor-Based Pagination
-- Used `createdAt + _id` instead of offset  
-- Ensures consistent ordering  
-- Avoids duplicates/missing data  
-- Scales better with large datasets  
-
----
-
-### 2. Normalized Database Design
-Separate collections for:
-- likes  
-- comments  
-- follow requests  
-- notifications  
-- reading tracking  
-
-Benefits:
-- scalability  
-- reduced duplication  
-- independent querying  
-
----
-
-### 3. Denormalized Counters
-Stored:
-- `likesCount`  
-- `commentsCount`  
-- `followersCount`  
-
-Updated using:$inc
-
----
-
-### 4. Optimistic UI Updates
-Used in:
-- likes  
-- post creation  
-- reading status  
-
-Flow:
-1. Update UI instantly  
-2. Call API  
-3. Rollback on failure  
-
----
-
-### 5. Lazy Loading
-- Comments fetched only when needed  
-- Reduces initial load time  
-- Minimizes API calls  
-
----
-
-### 6. Debounced Search + AbortController
-- Prevents excessive API calls  
-- Cancels outdated requests  
-- Avoids race conditions  
-
----
-
-### 7. Robust Error Handling
-- Feature-specific error messages  
-- All edge cases handled  
-- No generic responses  
-
----
-
-## Performance Optimizations
-
-- Cursor-based pagination  
-- Lazy loading (comments)  
-- Debounced search  
-- Optimistic updates  
-- Skeleton loaders  
-- Efficient MongoDB queries  
-
----
-
-## Authentication Flow
-
-- JWT stored in local storage  
-- Sent with each request  
-- Verified via backend middleware  
-
-### Google OAuth:
-- New user creation  
-- Account linking  
-- Login restrictions handled  
-
+- **Cursor-Based Pagination**  
+- **Normalized Database Design**  
+- **Denormalized Counters**  
+- **Optimistic UI Updates**  
+- **Lazy Loading**  
+- **Debounced Search + AbortController**  
+- **Robust Error Handling**
+    
 ---
 
 ## Deployment
@@ -198,18 +117,7 @@ Flow:
 
 ---
 
-## Data Seeding
-
-- 50+ users  
-- 1000+ posts  
-
-Used for:
-- testing feed scalability  
-- simulating real usage  
-
----
-
-## Future Improvements
+## Future Features
 
 - Real-time notifications (WebSockets)  
 - Recommendation system
@@ -235,15 +143,3 @@ Used for:
 - AWS EC2  
 - AWS S3  
 - Vercel  
-
----
-
-## 🏁 Conclusion
-
-BookMates is a **production-grade full-stack application** focused on:
-
-- scalability  
-- clean architecture  
-- real-world workflows  
-- performance optimization  
-
