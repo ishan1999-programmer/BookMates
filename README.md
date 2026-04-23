@@ -23,31 +23,65 @@ The system is built with a focus on **scalability, performance, and real-world w
 ## 📸 Screenshots
 
 ### 🏠 Landing Page
-<img src="./screenshots/home.png" alt="Feed" width="400"/>
+<p align="center">
+  <img src="./screenshots/home.png" alt="Landing Page" width="400"/>
+</p>
 
-### ⚙️ Login
-<img src="./screenshots/login.png" alt="Feed" width="400"/>
+---
+
+### 🔐 Authentication (Login)
+<p align="center">
+  <img src="./screenshots/login.png" alt="Login" width="400"/>
+</p>
+
+---
 
 ### 📰 Feed with Notifications
-<img src="./screenshots/notification.png" alt="Feed" width="400"/>
+<p align="center">
+  <img src="./screenshots/notification.png" alt="Notifications" width="400"/>
+</p>
 
-### Feed with Follow Requests
-<img src="./screenshots/follow-request.png" alt="Feed" width="400"/>
+---
+
+### 👥 Feed with Follow Requests
+<p align="center">
+  <img src="./screenshots/follow-request.png" alt="Follow Requests" width="400"/>
+</p>
+
+---
 
 ### ✍️ Create Post
-<img src="./screenshots/add-post.png" alt="Feed" width="400"/>
+<p align="center">
+  <img src="./screenshots/add-post.png" alt="Create Post" width="400"/>
+</p>
+
+---
 
 ### 👤 Profile
-<img src="./screenshots/profile.png" alt="Feed" width="400"/>
+<p align="center">
+  <img src="./screenshots/profile.png" alt="Profile" width="400"/>
+</p>
 
-### 👤 Comments
-<img src="./screenshots/comment.png" alt="Feed" width="800"/>
+---
 
-### 👤 Search Books
-<img src="./screenshots/search-books.png" alt="Feed" width="400"/>
+### 💬 Comments
+<p align="center">
+  <img src="./screenshots/comment.png" alt="Comments" width="400"/>
+</p>
 
-### 👤 Reading Tracking
-<img src="./screenshots/readings.png" alt="Feed" width="400"/>
+---
+
+### 🔍 Search Books
+<p align="center">
+  <img src="./screenshots/search-books.png" alt="Search Books" width="400"/>
+</p>
+
+---
+
+### 📖 Reading Tracker
+<p align="center">
+  <img src="./screenshots/readings.png" alt="Reading Tracker" width="400"/>
+</p>
 
 ---
 
