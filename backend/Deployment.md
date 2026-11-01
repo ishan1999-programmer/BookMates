@@ -213,7 +213,8 @@
 - Deploy frontend by linking the github repo of frontend with vercel.
 - Vercel will ask to add env variables seperately.
 - After successfull deployment, we will get a domain from vercel to access our frontend.
-- To get a custom domain name for our frontend (like bookmates.xyz), we will add the domain "bookmates.xyz" for our frontend in vercel
+- To get a custom domain name for our frontend (like bookmates.xyz), we will add the domain "bookmates.xyz" for our frontend in vercel.
+- To add our domain, vercel will ask to add an 'A' record with given IP
 
 # Note:
 
@@ -221,16 +222,14 @@
 - 'A' record maps a domain/subdomain directly to an IP address. 'CName' maps a domain/subdomain to another domain/subdomain (not IP).
 - 'Host' while adding a record means subdomain. Host + Domain = Full domain. We can add multiple subdomains to a domain. So in api.bookmates.xyz, Host is api and domain is bookmates.
 - Host = @ means no subdomain, just the main domain.
-- Since we want to map our domain with domain given by vercel, we need to add a Cname record with Host=@ and Value=domain given by vercel
-- Vercel might also ask to add an 'A' record with given IP
 
-## Install SSL certificate from Let's Encrypt
+## Install SSL certificate from Let's Encrypt and enable HTTPS
 
 - It is done in following steps
   - `sudo apt update` update the system
   - `sudo apt install certbot python3-certbot-nginx -y` install Certbot
   - Certbot modifies Nginx config automatically
-  - `sudo certbot --nginx -d api.bookmates.xyz` Generate SSL certificate
+  - `sudo certbot --nginx -d api.bookmates.xyz` connects with Let's Encrypt and gets SSL certificate from it.
   - Again Certbot modifies Nginx config to add the SSL certificate that it just generated.
   - But we will just delete current config of Nginx and add following config -
 
@@ -267,6 +266,58 @@
     }
 
 - In the config we also add a redirect so that if anyone sends an HTTP request to the server, it is automatically redirected to the HTTPS version of the same URL.
+- Now we can send HTTPS requests on our server.
 
 # Note:
+
+- HTTPS is HTTP + encryption
+- In a HTTP request, data goes as plain text and thus its visible over internet.
+- In HTTPS, data is encrypted. Thus its a secure protocol.
+- Right now on our server, Nginx is listening for HTTP requests at port 80. Thus our communication b/w frontend and backend is not secure. We need to make it secure by using HTTPS.
+- Also, an HTTPS frontend cannot connect with an HTTP backend. Thats why without HTTPS, our frontend(HTTPS because its hosted by vercel) cannot connect with our backend(HTTP).
+- Even if we start running Nginx on port 443 and then send HTTPS requests from our frontend, it won't work because we need a SSL certificate installed on our server to use HTTPS.
+- An SSL certificate is a digital identity card for any server. It is issued by "Let's Encrypt". It is issued for any particular domain and verifies the identity of it.
+- SSL certificate verifies the identity of any website. It says - "This server is genuinely api.bookmates.xyz or any domain, you can trust it".
+- Without an SSL certificate, an HTTPS connection cannot be established.
+- A server listening at port 80(via Nginx) without a SSL certificate is HTTP. A server listening at port 443(via Nginx) with a valid SSL certificate installed is HTTPS.
+- A software named "Certbot" connects with "Let's Encrypt", verifies our domain to it, and then installs SSL certificate in our system. It stores it somewhere in /etc directory.
+- So Certbot basically connects our server to Let's Encrypt to get SSL certificate.
+- After SSL certificate is installed, Certbot modifies the config of Nginx so that it can now run on port 443 and send back SSL certificate(from /etc directory) whenever an HTTPS request comes from a browser.
+- Once the browser verifies the SSL certificate, it starts a secure HTTPS connection.
+- A detailed flow of how all of this happens is explained below -
+
+- Before starting with the flow, lets first understand what Certificate Authority(CA) is.
+- CA is a trusted organisation that verifies domain ownership and issues SSL/TLS certificates.
+- There are many CAs. One of them is Let's Encrypt.
+- Now lets start with the flow.
+- When we run the command `sudo certbot --nginx -d api.bookmates.xyz`, Certbot first generates asymetric keys(a public and a private key), AK1 and AK2.
+- Note: Asymmetric key encryption uses a pair of keys a public key and a private key to secure data, public key for encryption and a private key for decryption.
+- It stores the private key(AK2) on the server and then creates a Certificate Signing Request(CSR) to request an SSL certificate from Let's Encrypt.
+- The CSR contains - our domain name(from command), server's public key(AK1) and other certificate related details.
+- Upon receiving the request, Let's Encrypt first verifies the domain. Then it creates the SSL certificate.
+- This SSL certificate has - domain, server's public key(AK1), certificate issuer(Let's Encrypt), validity period.
+- Then Let's Encrypt signs the certificate using its own private key. After this, the certificate is sent back to server.
+- Certbot stores the certificate in /etc directory of our server.
+- Now lets see what happens when browser sends an HTTPS request to this server.
+- Browser sends an HTTPS request at port 443 of the server. A TCP connection is established.
+- Now the SSL handshake begins from next step,
+- The browser asks for the SSL certificate.
+- Server(Nginx) sends the SSL cetificate.
+- Browser verifies it. It checks things like -
+  - Is the certificate issued by trusted authority(like Let's Encrypt) ?
+  - Does the domain requested(the one present in HTTPS request) matches with the one present on the certificate ?
+  - Is the certificate valid(not expired) ?
+  - Browser verifies the signature(done using private key of Let's Encrypt) using the corresponding public key of Let's Encrypt.
+  - Note: Browser (or OS) already has CA public keys pre-installed. It has public keys of trusted CA's like Let's Encrypt.
+- Once the browser successfully verifies the SSL certificate, it generates a symmetric key, SK.
+- Note: Symmetric key encryption is a method where the same secret key is used for both encrypting and decrypting data, one shared secret key for encryption and decryption.
+- Then it creates a copy of SK, SK_COPY. It keeps one copy(SK) with itself and encrypts the other copy(SK_COPY) using the public key that it received in certificate(AK1).
+- Then it sends back the encrypted SK_COPY to the server.
+- The server uses the corresponding private key(AK2) to decrypt SK_COPY.
+- The browser and the server now shares the same key.
+- Now the SSL handshake is successfully completed.
+- Now whenever browser sends the data, it encrypts it using SK and upon receiving the data, server decrypts it using SK_COPY.
+- And whenever server sends the data, it encrypts it using SK_COPY and upon receiving the data, browser decrypts it using SK.
+- Note: Since SK and SK_COPY are symmetric keys, they can be used for both encryption and decryption.
+- Thus now a secure connection is established between the browser and the server and data can be transferred securely.
 
