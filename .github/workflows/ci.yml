@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - backend/**
 
 jobs:
   build_and_push_docker_image:
@@ -15,5 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check Docker Version
+      - name: Install and Set up Docker
+        uses: docker/setup-docker-action@v5
+        with:
+          version: latest
+
+      - name: Verify Installation
         run: docker --version
