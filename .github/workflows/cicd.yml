@@ -44,7 +44,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no \
             -i ~/.ssh/deploy_key \
             ${{ vars.EC2_USERNAME }}@${{ vars.EC2_HOST }} \
-            "cd /home/ubuntu/test-backend && docker pull ishantripathi16/bookmates-backend \
+            "cd /home/ubuntu/test-backend && sudo docker pull ishantripathi16/bookmates-backend \
              && sudo docker stop bookmates-backend && sudo docker rm bookmates-backend \
              && sudo docker run -d --name bookmates-backend --restart unless-stopped \
              --env-file /home/ubuntu/BookMates/backend/.env -p 3000:3000 ishantripathi16/bookmates-backend"
