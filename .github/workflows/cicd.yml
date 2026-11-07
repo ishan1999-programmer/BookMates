@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push Docker Image to Docker Hub
+      - name: Push Docker Image to DockerHub
         run: docker push ishantripathi16/bookmates-backend
 
   deploy:
