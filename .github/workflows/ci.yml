@@ -17,6 +17,9 @@ jobs:
         uses: docker/setup-docker-action@v5
         with:
           version: 29.9.2
+        
+      - name: Build Docker Image
+        run: cd backend && docker buildx build --platform linux/amd64 --load -t ishantripathi16/bookmates-backend .
 
-      - name: Verify Installation
-        run: docker --version
+      - name: Check image 
+        run: docker images
