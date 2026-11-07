@@ -1,0 +1,50 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install and Set up Docker
+        uses: docker/setup-docker-action@v5
+        with:
+          version: 29.9.2
+
+      - name: Build Docker Image
+        run: cd backend && docker buildx build --platform linux/amd64 --load -t ishantripathi16/bookmates-backend .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Image to Docker Hub
+        run: docker push ishantripathi16/bookmates-backend
+
+  deploy:
+    needs: build_and_push_docker_image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          ssh -o StrictHostKeyChecking=no \
+            -i ~/.ssh/deploy_key \
+            ${{ vars.EC2_USERNAME }}@${{ vars.EC2_HOST }} \
+            "cd /home/ubuntu/test-backend && docker pull ishantripathi16/bookmates-backend \
+             && sudo docker stop bookmates-backend && sudo docker rm bookmates-backend \
+             && sudo docker run -d --name bookmates-backend --restart unless-stopped \
+             --env-file /home/ubuntu/BookMates/backend/.env -p 3000:3000 ishantripathi16/bookmates-backend"
