@@ -14,8 +14,6 @@ const authenticator = require("./middlewares/auth.middleware");
 
 const app = express();
 
-console.log("testing");
-
 app.use(cors());
 app.use(express.json());
 
